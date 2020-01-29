@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 "Aplicación del sistema experto"
+"Librerias para crear elementos de la interfaz grafica"
 from tkinter import *
 import tkinter.ttk as ttk
 from tkinter import font
 import math
 
+"Variables globales"
+"Etiquetas"
 #Tabla 1
 Etiquetas_datos_entrada=["Capacidad Estimada de la hornilla [mp]", "Factor Consumo Bagazo [Fcb]", "Eficiencia Calculada [Eff]", "Bagazillo en Prelimpiador [Bgz]","Cachaza [Chz]", "CSS del Jugo De Caña [Cssi]", "CSS  del Jugo Clarificado [CssCl]", "CSS  del Jugo Posevaporación [CssTE]", "CSS Panela [Bp]", "Tipo de camara", "Humedad del bagazo [Hb]", "Exceso de Aire [λ]", "Extraccion [Extr]", "Porcentaje de Fibra [f]", "Altura del Sitio [h]", "Temperatura Ambiente [Ta]", "Humedad inicial bagazo [Hibv]", "Presion Atmosferica [Pa]","Temperatura Ebullición Agua [Te]"]
 
@@ -41,7 +44,7 @@ Rotulos_Masas=["Caña [Kg/h]", "Jugo [Kg/h]", "Bagazillo [Kg/h]", "Jugo Pre Limp
 
 Rotulos_Propiedades_de_los_jugos=["Inicial P. Clf [Kg/m3]", "Inicial P. Eva 1 [Kg/m3]", "Inicial P. Con [Kg/m3]", "Clarificacón [°C]", "Evaporación [°C]", "Concentración [°C]", "Clarificación [KJ/kg]", "Evaporación [KJ/kg]", "Concentración [KJ/kg]", "Inicial [KJ/Kg °C]", "Clarificado [KJ/Kg °C]", "Eva [KJ/Kg °C]", "Poder Calorifico bagazo [MJ/kg]", "Calor Suministrado [KW]", "Area de Parrilla [m2]"]
 
-
+"Listas de variables"
 Variables_datos_entrada=[]
 Variables_propiedades_jugos=[]
 Variables_Accionamiento=[]
@@ -51,6 +54,7 @@ Variables_Q_Etapa=[]
 Calculos_Molino_2=[]
 Calculos_Masas=[]
 
+"Funciones para realizar los calculos de la geometria de la hornilla"
 root = Tk()
 
 def Mostrar_molino(self):
@@ -65,7 +69,8 @@ def Mostrar_molino(self):
             Variables_Molino[4].set(Carac_Molino_5[j])
             Variables_Molino[5].set(Carac_Molino_6[j])
             break
-    
+
+"Calculos iniciales"    
 if __name__== "__main__":
     Helvfont = font.Font(family="Helvetica", size=18, weight="bold")
     Label(root, text="SISTEMA EXPERTO", font=Helvfont).pack()
@@ -83,7 +88,7 @@ if __name__== "__main__":
     Paneles.add(Panel_4, text='Datos de salida 2')
     Paneles.add(Panel_5, text='Datos de salida 3')
     Paneles.add(Panel_6, text='Diseño geometrico inicial')
-    
+    "Crear interfaz grafica y calculos iniciales"
     k=0
     #Llenado panel 1 Parte 1
     for i in range(0, len(Carac_Area)):
