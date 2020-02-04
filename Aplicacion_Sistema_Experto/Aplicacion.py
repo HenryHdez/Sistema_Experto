@@ -57,6 +57,19 @@ Cantidad_Etapas=" "
 "Funciones para realizar los calculos de la geometria de la hornilla"
 root = Tk()
 
+#Estimar volumen de las pailas
+def Precalentadora_Plana(H_f1,H_fn,Ang,A,L):
+    #Parametros fijos para calcular el TCC
+    #N_Aletas	
+    #h_Aletas	
+    =(D67*D68+2*D67*D65+2*D65*D68)
+    Area=(A*L+2*A*H_fn+2*H_fn*L)	
+    Volumen_Fon=H_fn*A*L	
+    Volumen_total	
+	
+
+
+
 def Mostrar_molino(self):
     p=h1.get()
     for j in range(len(Carac_Molino_1)):
