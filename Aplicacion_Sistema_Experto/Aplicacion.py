@@ -58,18 +58,43 @@ Cantidad_Etapas=" "
 root = Tk()
 
 #Estimar volumen de las pailas
-def Precalentadora_Plana(H_f1,H_fn,Ang,A,L):
+def Precalentadora_Plana(H_fl,H_fn,Ang,A,L):
     #Parametros fijos para calcular el TCC
     #N_Aletas	
     #h_Aletas	
-    =(D67*D68+2*D67*D65+2*D65*D68)
-    Area=(A*L+2*A*H_fn+2*H_fn*L)	
-    Volumen_Fon=H_fn*A*L	
-    Volumen_total	
+    Area=(A*L)+(2*A*H_fn)+(2*H_fn*L)	
+    Volumen_Fon=(H_fn*A*L)	
+    Volumen_total=(A*H_fn*L)+(A+H_fl/math.tan(Ang))*H_fl*L
+    return Volumen_Fon
 	
+def Pirtubular_Circular_Aleteada_Clarificadora(H_fl,H_fn,A,L,dT,nT):
+    Ang=68*math.pi/180
+    Volumen_Fon=((H_fn*A)-(((math.pi/4)*(dT**2))*nT))*L
+    Volumen_total=Volumen_Fon+(L*H_fl*(A+H_fl/math.tan(Ang)))
+    return Volumen_total
 
+def Semicilindrica_pequeña(H_fn,A,H_fa):
+    R=((A/2)**2+H_fn**2)/(2*H_fn)	
+    Ang=68*math.pi/180
+    VTJ=(math.pi*H_fn**2*(3*R-H_fn))/3
+    A1=math.pi*((A/2)**2)
+    x=A+2*(H_fa/math.tan(Ang))
+    A2=x**2
+    VFA=(H_fa*(A1+A2+math.sqrt(A1*A2)))/3
+    VTPA=VFA+VTJ	
+    return VTJ
 
-
+#Crear ventana para mostrar partes de la hornilla
+def Mostrar_hornilla():
+    raiz = Tk() 
+    raiz.title("Hornilla") #Cambiar el nombre de la ventana 
+    raiz.geometry("520x480") #Configurar tamaño 
+    raiz.config(bg="red") #Cambiar color de fondo
+    raiz.mainloop() 
+    print(Precalentadora_Plana(0.59,0.1,1.87,0.8,1.2))
+    print(Pirtubular_Circular_Aleteada_Clarificadora(0.5,0.3,0.96,0.8,0.17,3))
+    print(Semicilindrica_pequeña(0.52,1.1,0.2))
+    
 def Mostrar_molino(self):
     p=h1.get()
     for j in range(len(Carac_Molino_1)):
@@ -84,7 +109,10 @@ def Mostrar_molino(self):
             break
 
 def Actualizar_Valores():
-
+ #Mostrar hornilla
+    Mostrar_hornilla()
+    
+    
     #Llenado panel 3
     G19=float(Variables_datos_entrada[0].get())
     G20=float(Variables_datos_entrada[1].get())
@@ -355,7 +383,8 @@ def Actualizar_Valores():
     for i in range (13):
         for j in range (Etapas):
             Label(Panel_6, text=" "+str(round(Lista_Contenido[j][i],3))).grid(row=i+2, column=j+1)
-
+    
+   
 
 "Calculos iniciales"    
 if __name__== "__main__":
@@ -438,7 +467,7 @@ if __name__== "__main__":
     Entry(Panel_6, width=20, textvariable=Cantidad_Etapas).grid(padx=5, row=0, column=1)     
     #Función para publicar
     Button(Panel_2, text="Actualizar", command=Actualizar_Valores).grid(pady=5, row=i+1, column=1)     
-        
+    
     #Expansión panel
     Paneles.pack(expand=1, fill='both')
     root.mainloop()
