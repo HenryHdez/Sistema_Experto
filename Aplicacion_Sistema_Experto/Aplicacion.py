@@ -6,6 +6,7 @@ from tkinter import *
 import tkinter.ttk as ttk
 from tkinter import font
 import math
+import random
 
 "Variables globales"
 "Etiquetas"
@@ -58,10 +59,11 @@ Cantidad_Etapas=" "
 root = Tk()
 
 #Estimar volumen de las pailas
-def Precalentadora_Plana(H_fl,H_fn,Ang,A,L):
+def Precalentadora_Plana(H_fl,H_fn,A,L):
     #Parametros fijos para calcular el TCC
     #N_Aletas	
     #h_Aletas	
+    Ang=68*math.pi/180
     Area=(A*L)+(2*A*H_fn)+(2*H_fn*L)	
     Volumen_Fon=(H_fn*A*L)	
     Volumen_total=(A*H_fn*L)+(A+H_fl/math.tan(Ang))*H_fl*L
@@ -73,27 +75,85 @@ def Pirtubular_Circular_Aleteada_Clarificadora(H_fl,H_fn,A,L,dT,nT):
     Volumen_total=Volumen_Fon+(L*H_fl*(A+H_fl/math.tan(Ang)))
     return Volumen_total
 
-def Semicilindrica_pequeña(H_fn,A,H_fa):
+def Semicilindrica_pequena(H_fn,A,H_fl):
     R=((A/2)**2+H_fn**2)/(2*H_fn)	
     Ang=68*math.pi/180
     VTJ=(math.pi*H_fn**2*(3*R-H_fn))/3
     A1=math.pi*((A/2)**2)
-    x=A+2*(H_fa/math.tan(Ang))
+    x=A+2*(H_fl/math.tan(Ang))
     A2=x**2
-    VFA=(H_fa*(A1+A2+math.sqrt(A1*A2)))/3
+    VFA=(H_fl*(A1+A2+math.sqrt(A1*A2)))/3
     VTPA=VFA+VTJ	
     return VTJ
 
 #Crear ventana para mostrar partes de la hornilla
-def Mostrar_hornilla():
+def Mostrar_hornilla(Lista_Contenido, Etapas):
+    Tipo_paila=[]
+    Numero_maximo_geometrias=3
+    for i in range(Etapas):
+        Tipo_paila.append(random.randint(1,Numero_maximo_geometrias))
+    #Ascenso a la colina
+    for i in range(Etapas-1,-1,-1):
+        f_1=1000
+        iteraciones=0
+        H_fl = random.uniform(0, 1)
+        H_fn = random.uniform(0, 0.3)
+        A = random.uniform(0, 1)
+        L = random.uniform(0, 4)
+        dT = random.uniform(0, 1)
+        nT  = random.uniform(0, 1)       
+        if Tipo_paila[i]==1:
+            f=abs(Lista_Contenido[i][6]-Precalentadora_Plana(H_fl,H_fn,A,L))
+        elif Tipo_paila[i]==2:
+            f=abs(Lista_Contenido[i][6]-Pirtubular_Circular_Aleteada_Clarificadora(H_fl,H_fn,A,L,dT,nT))
+        else:
+            f=abs(Lista_Contenido[i][6]-Semicilindrica_pequena(H_fn,A,H_fl))
+        paso=0.5
+        while (iteraciones<5000):
+            if(f_1<f):
+                H_fl = H_fl_1
+                H_fn = H_fn_1
+                A = A_1
+                L = L_1
+                if Tipo_paila[i]==1:
+                    f=abs(Lista_Contenido[i][6]-Precalentadora_Plana(H_fl,H_fn,A,L))
+                elif Tipo_paila[i]==2:
+                    f=abs(Lista_Contenido[i][6]-Pirtubular_Circular_Aleteada_Clarificadora(H_fl,H_fn,A,L,dT,nT))
+                else:
+                    f=abs(Lista_Contenido[i][6]-Semicilindrica_pequena(H_fn,A,H_fl))
+            H_fl_1 = H_fl+random.uniform(-1*paso, paso)
+            H_fn_1 = H_fn+random.uniform(-1*paso, paso)
+            A_1 = A+random.uniform(-1*paso, paso)
+            L_1 = L+random.uniform(-1*paso, paso)
+            A_1 = A+random.uniform(-1*paso, paso)
+            dT_1 = L+random.uniform(-1*paso, paso)
+            nT_1=abs(Lista_Contenido[i][6]-Precalentadora_Plana(H_fl_1,H_fn_1,A_1,L_1))
+            if Tipo_paila[i]==1:
+                f_1=abs(Lista_Contenido[i][6]-Precalentadora_Plana(H_fl_1,H_fn_1,A_1,L_1))
+            elif Tipo_paila[i]==2:
+                f_1=abs(Lista_Contenido[i][6]-Pirtubular_Circular_Aleteada_Clarificadora(H_fl_1,H_fn_1,A_1,L_1,dT_1,nT_1))
+            else:
+                f_1=abs(Lista_Contenido[i][6]-Semicilindrica_pequena(H_fn_1,A_1,H_fl_1))            
+            iteraciones=iteraciones+1 
+        
+            if Tipo_paila[i]==1:
+                f_1=abs(Lista_Contenido[i][6]-Precalentadora_Plana(H_fl_1,H_fn_1,A_1,L_1))
+            elif Tipo_paila[i]==2:
+                f_1=abs(Lista_Contenido[i][6]-Pirtubular_Circular_Aleteada_Clarificadora(H_fl_1,H_fn_1,A_1,L_1,dT_1,nT_1))
+            else:
+                f_1=abs(Lista_Contenido[i][6]-Semicilindrica_pequena(H_fn_1,A_1,H_fl_1))        
+    
+    #Interface
     raiz = Tk() 
     raiz.title("Hornilla") #Cambiar el nombre de la ventana 
-    raiz.geometry("520x480") #Configurar tamaño 
-    raiz.config(bg="red") #Cambiar color de fondo
+    #raiz.geometry("520x480") #Configurar tamaño 
+    img0 = PhotoImage(master = raiz, file = 'Semicilindrica_pequena.png')
+    Label(raiz, image = img0).grid(pady=5, row=0, column=1)  
+    img1 = PhotoImage(master = raiz, file = 'Precalentadora_Plana.png')
+    Label(raiz, image = img1).grid(pady=5, row=1, column=1) 
+    img2 = PhotoImage(master = raiz, file = 'Pirtubular_Circular_Aleteada_Clarificadora.png')
+    Label(raiz, image = img2).grid(pady=5, row=2, column=1) 
     raiz.mainloop() 
-    print(Precalentadora_Plana(0.59,0.1,1.87,0.8,1.2))
-    print(Pirtubular_Circular_Aleteada_Clarificadora(0.5,0.3,0.96,0.8,0.17,3))
-    print(Semicilindrica_pequeña(0.52,1.1,0.2))
     
 def Mostrar_molino(self):
     p=h1.get()
@@ -109,10 +169,7 @@ def Mostrar_molino(self):
             break
 
 def Actualizar_Valores():
- #Mostrar hornilla
-    Mostrar_hornilla()
-    
-    
+
     #Llenado panel 3
     G19=float(Variables_datos_entrada[0].get())
     G20=float(Variables_datos_entrada[1].get())
@@ -128,7 +185,6 @@ def Actualizar_Valores():
     G37=float(Variables_datos_entrada[18].get())
     #G40=float(Variables_datos_entrada[21].get())
 
-            
     #Calculos_Molino_2.append(str())
     for i in range (0, len(Calculos_Molino_1)):
         Calculos_Molino_2.append(StringVar(value=str(i)))
@@ -187,7 +243,6 @@ def Actualizar_Valores():
     Calculos_Masas[11].set(Bag_Humedo)  
     Calculos_Masas[12].set(Bag_Seco)    
     
-    
     #Contenido del panel 4
     Label(Panel_4, text="PROPIEDADES DE LOS JUGOS").grid(row=0, column=0)
     Label(Panel_4, text="Densidad").grid(row=1, column=0)
@@ -237,7 +292,6 @@ def Actualizar_Valores():
     Calor_Suministrado=(G20*G19)*Poder_Calorifico_bagazo/3.6	
     Area_de_Parrilla=Calor_Suministrado/1000	
 
-    
     Variables_propiedades_jugos[0].set(Inicial_Clf)
     Variables_propiedades_jugos[1].set(Inicial_Eva)
     Variables_propiedades_jugos[2].set(Inicial_Con)
@@ -383,7 +437,9 @@ def Actualizar_Valores():
     for i in range (13):
         for j in range (Etapas):
             Label(Panel_6, text=" "+str(round(Lista_Contenido[j][i],3))).grid(row=i+2, column=j+1)
-    
+
+    #Mostrar hornilla
+    Mostrar_hornilla(Lista_Contenido, Etapas)    
    
 
 "Calculos iniciales"    
