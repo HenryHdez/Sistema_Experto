@@ -87,6 +87,7 @@ def Semicilindrica_pequena(H_fn,A,H_fl):
     return VTJ
 
 #Crear ventana para mostrar partes de la hornilla
+#Dimensiones de la lamina 4*10 pies
 def Mostrar_hornilla(Lista_Contenido, Etapas):
     Tipo_paila=[]
     Numero_maximo_geometrias=3
