@@ -98,50 +98,84 @@ def Mostrar_hornilla(Lista_Contenido, Etapas):
         iteraciones=0
         H_fl = random.uniform(0, 1)
         H_fn = random.uniform(0, 0.3)
-        A = random.uniform(0, 1)
-        L = random.uniform(0, 4)
-        dT = random.uniform(0, 1)
-        nT  = random.uniform(0, 1)       
+        A    = random.uniform(0, 1)
+        L    = random.uniform(0, 4)
+        dT   = random.uniform(0, 2)
+        nT   = random.randint(1,20)       
         if Tipo_paila[i]==1:
             f=abs(Lista_Contenido[i][6]-Precalentadora_Plana(H_fl,H_fn,A,L))
+            f=(f/Lista_Contenido[i][6])*100.0
         elif Tipo_paila[i]==2:
             f=abs(Lista_Contenido[i][6]-Pirtubular_Circular_Aleteada_Clarificadora(H_fl,H_fn,A,L,dT,nT))
+            f=(f/Lista_Contenido[i][6])*100.0
         else:
             f=abs(Lista_Contenido[i][6]-Semicilindrica_pequena(H_fn,A,H_fl))
-        paso=0.5
-        while (iteraciones<5000):
+            f=(f/Lista_Contenido[i][6])*100.0
+        paso=1
+        while (0.2<f):
             if(f_1<f):
                 H_fl = H_fl_1
                 H_fn = H_fn_1
-                A = A_1
-                L = L_1
+                A    = A_1
+                L    = L_1
+                dT   = dT_1
+                nT   = nT_1
                 if Tipo_paila[i]==1:
                     f=abs(Lista_Contenido[i][6]-Precalentadora_Plana(H_fl,H_fn,A,L))
+                    f=(f/Lista_Contenido[i][6])*100.0
                 elif Tipo_paila[i]==2:
                     f=abs(Lista_Contenido[i][6]-Pirtubular_Circular_Aleteada_Clarificadora(H_fl,H_fn,A,L,dT,nT))
+                    f=(f/Lista_Contenido[i][6])*100.0
                 else:
                     f=abs(Lista_Contenido[i][6]-Semicilindrica_pequena(H_fn,A,H_fl))
-            H_fl_1 = H_fl+random.uniform(-1*paso, paso)
-            H_fn_1 = H_fn+random.uniform(-1*paso, paso)
-            A_1 = A+random.uniform(-1*paso, paso)
-            L_1 = L+random.uniform(-1*paso, paso)
-            A_1 = A+random.uniform(-1*paso, paso)
-            dT_1 = L+random.uniform(-1*paso, paso)
-            nT_1=abs(Lista_Contenido[i][6]-Precalentadora_Plana(H_fl_1,H_fn_1,A_1,L_1))
+                    f=(f/Lista_Contenido[i][6])*100.0
+            H_fl_1 = abs(H_fl+random.uniform(-1*paso, paso))
+            H_fn_1 = abs(H_fn+random.uniform(-1*paso, paso))
+            A_1    = abs(A+random.uniform(-1*paso, paso))
+            L_1    = abs(L+random.uniform(-1*paso, paso))
+            dT_1   = random.uniform(0, 2)
+            nT_1   = random.randint(1,20)
             if Tipo_paila[i]==1:
                 f_1=abs(Lista_Contenido[i][6]-Precalentadora_Plana(H_fl_1,H_fn_1,A_1,L_1))
+                f_1=(f_1/Lista_Contenido[i][6])*100.0
             elif Tipo_paila[i]==2:
                 f_1=abs(Lista_Contenido[i][6]-Pirtubular_Circular_Aleteada_Clarificadora(H_fl_1,H_fn_1,A_1,L_1,dT_1,nT_1))
+                f_1=(f_1/Lista_Contenido[i][6])*100.0
             else:
                 f_1=abs(Lista_Contenido[i][6]-Semicilindrica_pequena(H_fn_1,A_1,H_fl_1))            
-            iteraciones=iteraciones+1 
-        
-            if Tipo_paila[i]==1:
-                f_1=abs(Lista_Contenido[i][6]-Precalentadora_Plana(H_fl_1,H_fn_1,A_1,L_1))
-            elif Tipo_paila[i]==2:
-                f_1=abs(Lista_Contenido[i][6]-Pirtubular_Circular_Aleteada_Clarificadora(H_fl_1,H_fn_1,A_1,L_1,dT_1,nT_1))
-            else:
-                f_1=abs(Lista_Contenido[i][6]-Semicilindrica_pequena(H_fn_1,A_1,H_fl_1))        
+                f_1=(f_1/Lista_Contenido[i][6])*100.0
+            iteraciones=iteraciones+1    
+        if Tipo_paila[i]==1:
+            print("Etapa: "+str(i+1))
+            print("Cantidad en Litros esperada: "+str(Lista_Contenido[i][6]))
+            print("Cantidad en Litros estimada: "+str(Precalentadora_Plana(H_fl,H_fn,A,L)))
+            print("Tipo seleccionado: Precalentadora plana")
+            print("H_fl: "+str(H_fl))
+            print("H_fn: "+str(H_fn))
+            print("A: "+str(A))
+            print("L: "+str(L))
+        elif Tipo_paila[i]==2:
+            print("Etapa: "+str(i+1))
+            print("Cantidad en Litros esperada: "+str(Lista_Contenido[i][6]))
+            print("Cantidad en Litros estimada: "+str(Pirtubular_Circular_Aleteada_Clarificadora(H_fl,H_fn,A,L,dT,nT)))
+            print("Tipo seleccionado: Pirotubular circular aleteada")
+            print("H_fl: "+str(H_fl))
+            print("H_fn: "+str(H_fn))
+            print("A: "+str(A))
+            print("L: "+str(L))
+            print("Diametro de la tuberia: "+str(dT))
+            print("Numero de tubos: "+str(nT))
+        else:
+            print("Etapa: "+str(i+1))
+            print("Cantidad en Litros esperada: "+str(Lista_Contenido[i][6]))
+            print("Cantidad en Litros estimada: "+str(Semicilindrica_pequena(H_fn,A,H_fl)))
+            print("Tipo seleccionado: Semicilindrica pequeña")
+            print("H_fl: "+str(H_fl))
+            print("H_fn: "+str(H_fn))
+            print("A: "+str(A)) 
+        print("________>>>>>>>>>>>>>____________")
+        print(str(iteraciones))
+        print(str(f))    
     
     #Interface
     raiz = Tk() 
