@@ -7,6 +7,9 @@ import tkinter.ttk as ttk
 from tkinter import font
 import math
 import random
+from Modulo1 import *
+from Modulo2 import *
+from Modulo21 import *
 
 "Variables globales"
 "Etiquetas"
@@ -15,7 +18,7 @@ Etiquetas_datos_entrada=["Capacidad Estimada de la hornilla [mp]", "Factor Consu
 
 Unidades_datos_entrada=["Kg/h","Kg/Kg","%","%","%","°Bx","°Bx","°Bx","°Bx"," ","%"," ","%","%","m","°C","%","mmHG","°C"]
 
-Valores_iniciales_datos_entrada=["102.633","2.111","31.87","2","4","17.000","18.000","75.000","93.500","ward","15","1.80","60","14","1.610","25","30","630.732","99.019"]
+Valores_iniciales_datos_entrada=["102.633","2.111","31.87","2","4","17.000","18.000","75.000","93.500","ward","15","1.80","60","14","1610","25","30","630.732","99.019"]
 
 #Tabla 2
 Titulos_Accionamiento=["Producto", "Alimentación de Bagazo", "Alimentación de Caña", "Cosecha", "Transporte"]	
@@ -35,7 +38,7 @@ Carac_Molino_5=["Gasolina","8","-","16","-","-","-","-","-","-","-","-","-"]
 
 Carac_Molino_6=["Relación i","20.5","25.8","11","11.2","33.8","22.75","14.5","51","24.7","28.4","-","27.7"]
 
-Carac_Area=["Area de Caña Sembrada al rededor [Ha]","Area de Caña Sembrada Propia [Ha]","Area de Caña Sembrada Para Calculo [Ha]","Periodo vegetatio [Meses]",	"Caña por Hectarea Esperada [T/Ha]","CSS de la Caña [°Bx]","Jornada de Trabajo [sem]",	"Dias de Trabajo [Dias]", "Horas al Dia [h]"]
+Carac_Area=["Area de Caña Sembrada al rededor [Ha]","Area de Caña Sembrada Propia [Ha]","Area de Caña Sembrada Para Calculo [Ha]","Periodo vegetatio [Meses]",	"Caña por Hectarea Esperada [T/Ha]","CSS de la Caña [°Bx]","Numero de Moliendas",	"Dias de Trabajo [Dias]", "Horas al Dia [h]"]
 
 Carac_Area_i=["18", "18", "18", "15", "120", "17", "2", "6", "12"]
 
@@ -204,7 +207,89 @@ def Mostrar_molino(self):
             break
 
 def Actualizar_Valores():
-
+    #Area de Caña sembrada al rededor   (Variables_Area[0])
+    #Area de Caña sembrada Propia       (Variables_Area[1])
+    #Area de caña sembrada para calculo (Variables_Area[2])    
+    #Periodo vegetativo                 (Variables_Area[3])
+    #Caña por hectarea esperada         (Variables_Area[4])
+    #CSS de la caña                     (Variables_Area[5])
+    #Numero de Moliendas                (Variables_Area[6])
+    #Dias de trabajo                    (Variables_Area[7])
+    #Horas al dia                       (Variables_Area[8])
+    
+    #Caña molida al mes=Area sembrada de caña para calculo*Caña esperada por hectarea/Periodo vegetativo
+    Cana_molida_mes=float(Variables_Area[2].get())*float(Variables_Area[4].get())/float(Variables_Area[3].get())
+    print(Cana_molida_mes)
+    # Area cosechada al mes=Caña esperada por hectarea/Caña molida al mes
+    Area_Cosechada_mes=Cana_molida_mes/float(Variables_Area[4].get())
+    print(Area_Cosechada_mes)
+    #Caña molida a la semana=Caña molida al mes/numero de moliendas
+    Cana_molida_semana=Cana_molida_mes/float(Variables_Area[6].get())
+    print(Cana_molida_semana)
+    Cana_molida_hora=Cana_molida_semana/(float(Variables_Area[7].get())*float(Variables_Area[8].get()))
+    print(Cana_molida_hora)
+    Jugo_Crudo=(float(Valores_iniciales_datos_entrada[12])/100.0)*Cana_molida_hora
+    print(Jugo_Crudo)
+    Jugo_Clarificado=Jugo_Crudo-((Jugo_Crudo*(float(Valores_iniciales_datos_entrada[3])/100.0))+((Jugo_Crudo-(Jugo_Crudo*(float(Valores_iniciales_datos_entrada[3])/100.0)))*(float(Valores_iniciales_datos_entrada[4])/100.0)))
+    print(Jugo_Clarificado)
+    Masa_panela=((Jugo_Clarificado*float(Valores_iniciales_datos_entrada[5]))/float(Valores_iniciales_datos_entrada[8]))*1000
+    print(Masa_panela)
+    Capacidad_molino=Cana_molida_hora*1.3*1000
+    print(Capacidad_molino)
+    
+    # #Llenado panel 1 Parte 2
+    # j=k
+    # for i in range(k, k+len(Titulos_Accionamiento)):
+    #     Label(Panel_1, text=Titulos_Accionamiento[j-i]).grid(pady=5, row=i, column=0)
+    #     Variables_Accionamiento.append(StringVar(value=Contenido_Accionamiento[j-i]))
+    #     Entry(Panel_1, width=20, textvariable=Variables_Accionamiento[j-i]).grid(padx=5, row=i, column=1)
+    #     k=k+1
+        
+    # #Llenado panel 1 Parte 3
+    # Variables_Molino.append(StringVar(value=Carac_Molino_1[1]))
+    # Variables_Molino.append(StringVar(value=Carac_Molino_2[1]))
+    # Variables_Molino.append(StringVar(value=Carac_Molino_3[1]))
+    # Variables_Molino.append(StringVar(value=Carac_Molino_4[1]))
+    # Variables_Molino.append(StringVar(value=Carac_Molino_5[1]))
+    # Variables_Molino.append(StringVar(value=Carac_Molino_6[1]))
+        
+    # offset_fila_1=k+len(Titulos_Accionamiento)
+    # h1=StringVar(value="Modelo_Molino")
+    # b1=ttk.Combobox(Panel_1,width=25,values=Carac_Molino_1[1:], textvariable=h1)
+    # b1.bind("<<ComboboxSelected>>", Mostrar_molino)
+    # h1.set("R 2-S")
+    # b1.grid(pady=5, row=offset_fila_1, column=0)
+    
+    # Label(Panel_1, text=Carac_Molino_1[0]).grid(pady=5, row=offset_fila_1+1, column=0)
+    # Label(Panel_1, text=Carac_Molino_2[0]).grid(pady=5, row=offset_fila_1+2, column=0)
+    # Label(Panel_1, text=Carac_Molino_3[0]).grid(pady=5, row=offset_fila_1+3, column=0)
+    # Label(Panel_1, text=Carac_Molino_4[0]).grid(pady=5, row=offset_fila_1+4, column=0)
+    # Label(Panel_1, text=Carac_Molino_5[0]).grid(pady=5, row=offset_fila_1+5, column=0)
+    # Label(Panel_1, text=Carac_Molino_6[0]).grid(pady=5, row=offset_fila_1+6, column=0)    
+    
+    # Entry(Panel_1, width=20, textvariable=Variables_Molino[0]).grid(padx=5, row=offset_fila_1+1, column=1) 
+    # Entry(Panel_1, width=20, textvariable=Variables_Molino[1]).grid(padx=5, row=offset_fila_1+2, column=1)
+    # Entry(Panel_1, width=20, textvariable=Variables_Molino[2]).grid(padx=5, row=offset_fila_1+3, column=1)
+    # Entry(Panel_1, width=20, textvariable=Variables_Molino[3]).grid(padx=5, row=offset_fila_1+4, column=1)
+    # Entry(Panel_1, width=20, textvariable=Variables_Molino[4]).grid(padx=5, row=offset_fila_1+5, column=1)
+    # Entry(Panel_1, width=20, textvariable=Variables_Molino[5]).grid(padx=5, row=offset_fila_1+6, column=1)    
+       
+    #Llenado panel 2
+    for i in range(0, len(Etiquetas_datos_entrada)):
+        Label(Panel_2, text=Etiquetas_datos_entrada[i]).grid(pady=5, row=i, column=0)
+        if (i!=9):
+            Variables_datos_entrada.append(StringVar(value=Valores_iniciales_datos_entrada[i]))
+            Entry(Panel_2, width=20, textvariable=Variables_datos_entrada[i]).grid(padx=5, row=i, column=1)  
+            Label(Panel_2, text=Unidades_datos_entrada[i]).grid(pady=5, row=i, column=2)
+        else:
+            Variables_datos_entrada.append(StringVar(value="Camara"))
+            ttk.Combobox(Panel_2,width=17,values=["Tpcam", "Ward", "Ad"], textvariable=Variables_datos_entrada[i]).grid(pady=5, row=i, column=1)
+            Variables_datos_entrada[i].set("Tpcam")
+            
+    Cantidad_Etapas=StringVar(value="7")
+    Label(Panel_6, text="Cantidad de etapas: ").grid(row=0, column=0)
+    Entry(Panel_6, width=20, textvariable=Cantidad_Etapas).grid(padx=5, row=0, column=1)   
+    
     #Llenado panel 3
     G19=float(Variables_datos_entrada[0].get())
     G20=float(Variables_datos_entrada[1].get())
@@ -473,8 +558,32 @@ def Actualizar_Valores():
         for j in range (Etapas):
             Label(Panel_6, text=" "+str(round(Lista_Contenido[j][i],3))).grid(row=i+2, column=j+1)
 
+    #Datos de entrada
+    Capacidad_Estimada_hornilla=Masa_panela
+    Factor_Consumo_Bagazo=Bag_Seco/Capacidad_Estimada_hornilla
+    CSS_del_Jugo_De_Cana=float(Variables_Area[5].get())
+    G31=float(Valores_iniciales_datos_entrada[12])/100.0
+    G32=float(Valores_iniciales_datos_entrada[13])/100.0
+    G24=CSS_del_Jugo_De_Cana
+    Humedad_inicial_bagazo=((Jugo-(Jugo*(G31+G32)))-(Jugo-(Jugo*(G31+G32)))*(G24/100))/(Jugo*(1-G31))
+    Humedad_inicial_bagazo=Humedad_inicial_bagazo*100.0
+    Presion_Atmosferica=760*math.exp(-0.0001158*float(Valores_iniciales_datos_entrada[14]))
+    Temperatura_Ebullición_Agua=-227.03+3816.44/(18.3036-math.log(7.5*(Presion_Atmosferica*133.3224/1000)))
+    print(Humedad_inicial_bagazo)
+    print(Presion_Atmosferica)
+    print(Temperatura_Ebullición_Agua)
+    Eficiencia_Calculada=(Total_Etapa/Calor_Suministrado)*100;
+    print(Eficiencia_Calculada)
+    print(Total_Etapa)
+    print(Calor_Suministrado)
+    A=DH_KJKmol(25,1160.357,466.402/1000,8.861,66.958,8.147,13.492)/3600
+    B=CalorCl_sensible(10.0, 20.0, 0.1, 2.0, 3.0, 3.0)
+    print(B)
+    C=Tadiabatica(1.2,2.3,0.0,4.5)
+    print(C)
+    D=resolver_concentracion(0.9, 1.2, 4.3, 9.1, 2.2, 1)
     #Mostrar hornilla
-    Mostrar_hornilla(Lista_Contenido, Etapas)    
+    #Mostrar_hornilla(Lista_Contenido, Etapas)    
    
 
 "Calculos iniciales"    
@@ -503,62 +612,10 @@ if __name__== "__main__":
         Label(Panel_1, text=Carac_Area[i]).grid(pady=5, row=i, column=0)
         Entry(Panel_1, width=20, textvariable=Variables_Area[i]).grid(padx=5, row=i, column=1)    
         k=k+1
-    
-    #Llenado panel 1 Parte 2
-    j=k
-    for i in range(k, k+len(Titulos_Accionamiento)):
-        Label(Panel_1, text=Titulos_Accionamiento[j-i]).grid(pady=5, row=i, column=0)
-        Variables_Accionamiento.append(StringVar(value=Contenido_Accionamiento[j-i]))
-        Entry(Panel_1, width=20, textvariable=Variables_Accionamiento[j-i]).grid(padx=5, row=i, column=1)
-        k=k+1
-        
-    #Llenado panel 1 Parte 3
-    Variables_Molino.append(StringVar(value=Carac_Molino_1[1]))
-    Variables_Molino.append(StringVar(value=Carac_Molino_2[1]))
-    Variables_Molino.append(StringVar(value=Carac_Molino_3[1]))
-    Variables_Molino.append(StringVar(value=Carac_Molino_4[1]))
-    Variables_Molino.append(StringVar(value=Carac_Molino_5[1]))
-    Variables_Molino.append(StringVar(value=Carac_Molino_6[1]))
-        
-    offset_fila_1=k+len(Titulos_Accionamiento)
-    h1=StringVar(value="Modelo_Molino")
-    b1=ttk.Combobox(Panel_1,width=25,values=Carac_Molino_1[1:], textvariable=h1)
-    b1.bind("<<ComboboxSelected>>", Mostrar_molino)
-    h1.set("R 2-S")
-    b1.grid(pady=5, row=offset_fila_1, column=0)
-    
-    Label(Panel_1, text=Carac_Molino_1[0]).grid(pady=5, row=offset_fila_1+1, column=0)
-    Label(Panel_1, text=Carac_Molino_2[0]).grid(pady=5, row=offset_fila_1+2, column=0)
-    Label(Panel_1, text=Carac_Molino_3[0]).grid(pady=5, row=offset_fila_1+3, column=0)
-    Label(Panel_1, text=Carac_Molino_4[0]).grid(pady=5, row=offset_fila_1+4, column=0)
-    Label(Panel_1, text=Carac_Molino_5[0]).grid(pady=5, row=offset_fila_1+5, column=0)
-    Label(Panel_1, text=Carac_Molino_6[0]).grid(pady=5, row=offset_fila_1+6, column=0)    
-    
-    Entry(Panel_1, width=20, textvariable=Variables_Molino[0]).grid(padx=5, row=offset_fila_1+1, column=1) 
-    Entry(Panel_1, width=20, textvariable=Variables_Molino[1]).grid(padx=5, row=offset_fila_1+2, column=1)
-    Entry(Panel_1, width=20, textvariable=Variables_Molino[2]).grid(padx=5, row=offset_fila_1+3, column=1)
-    Entry(Panel_1, width=20, textvariable=Variables_Molino[3]).grid(padx=5, row=offset_fila_1+4, column=1)
-    Entry(Panel_1, width=20, textvariable=Variables_Molino[4]).grid(padx=5, row=offset_fila_1+5, column=1)
-    Entry(Panel_1, width=20, textvariable=Variables_Molino[5]).grid(padx=5, row=offset_fila_1+6, column=1)    
-       
-    #Llenado panel 2
-    for i in range(0, len(Etiquetas_datos_entrada)):
-        Label(Panel_2, text=Etiquetas_datos_entrada[i]).grid(pady=5, row=i, column=0)
-        if (i!=9):
-            Variables_datos_entrada.append(StringVar(value=Valores_iniciales_datos_entrada[i]))
-            Entry(Panel_2, width=20, textvariable=Variables_datos_entrada[i]).grid(padx=5, row=i, column=1)  
-            Label(Panel_2, text=Unidades_datos_entrada[i]).grid(pady=5, row=i, column=2)
-        else:
-            Variables_datos_entrada.append(StringVar(value="Camara"))
-            ttk.Combobox(Panel_2,width=17,values=["Tpcam", "Ward", "Ad"], textvariable=Variables_datos_entrada[i]).grid(pady=5, row=i, column=1)
-            Variables_datos_entrada[i].set("Tpcam")
-            
-    Cantidad_Etapas=StringVar(value="7")
-    Label(Panel_6, text="Cantidad de etapas: ").grid(row=0, column=0)
-    Entry(Panel_6, width=20, textvariable=Cantidad_Etapas).grid(padx=5, row=0, column=1)     
+
     #Función para publicar
-    Button(Panel_2, text="Actualizar", command=Actualizar_Valores).grid(pady=5, row=i+1, column=1)     
-    
-    #Expansión panel
+    Button(Panel_1, text="Actualizar", command=Actualizar_Valores).grid(pady=5, row=i+1, column=0)  
+     
+    #Principal
     Paneles.pack(expand=1, fill='both')
     root.mainloop()
