@@ -1,6 +1,6 @@
 import math
 
-def effal(hcnv, Al_an, Al_lon, Al_al)
+def effal(hcnv, Al_an, Al_lon, Al_al):
     k = 0.0215 #'kW/m-K
     perimetro_base_aleta = 2 * Al_an + 2 * Al_lon
     area_base_aleta = Al_an * Al_lon
@@ -8,7 +8,7 @@ def effal(hcnv, Al_an, Al_lon, Al_al)
     effal = tanh(m * Al_al) / (m * Al_al)
     return effal
 
-def hcnvi(hcnv As Double, Al_an As Double, Al_lon As Double, Al_al As Double, Arl As Double, Art As Double, Ari As Double)
+def hcnvi(hcnv, Al_an, Al_lon, Al_al, Arl, Art, Ari):
     hcnvi = (effal(hcnv, Al_an, Al_lon, Al_al) * Art + Arl) * hcnv / Ari
     return hcnvi
 

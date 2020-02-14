@@ -10,6 +10,8 @@ import random
 from Modulo1 import *
 from Modulo2 import *
 from Modulo21 import *
+#from Modulo3 import *
+from Modulo4 import *
 
 "Variables globales"
 "Etiquetas"
@@ -18,7 +20,7 @@ Etiquetas_datos_entrada=["Capacidad Estimada de la hornilla [mp]", "Factor Consu
 
 Unidades_datos_entrada=["Kg/h","Kg/Kg","%","%","%","°Bx","°Bx","°Bx","°Bx"," ","%"," ","%","%","m","°C","%","mmHG","°C"]
 
-Valores_iniciales_datos_entrada=["102.633","2.111","31.87","2","4","17.000","18.000","75.000","93.500","ward","15","1.80","60","14","1610","25","30","630.732","99.019"]
+Valores_iniciales_datos_entrada=["102.633","3.31800658442545","31.87","2","4","17.000","18.000","75.000","93.500","ward","30","1.80","60","14","1610","25","54","734.051","99.019"]
 
 #Tabla 2
 Titulos_Accionamiento=["Producto", "Alimentación de Bagazo", "Alimentación de Caña", "Cosecha", "Transporte"]	
@@ -219,23 +221,23 @@ def Actualizar_Valores():
     
     #Caña molida al mes=Area sembrada de caña para calculo*Caña esperada por hectarea/Periodo vegetativo
     Cana_molida_mes=float(Variables_Area[2].get())*float(Variables_Area[4].get())/float(Variables_Area[3].get())
-    print(Cana_molida_mes)
+    #print(Cana_molida_mes)
     # Area cosechada al mes=Caña esperada por hectarea/Caña molida al mes
     Area_Cosechada_mes=Cana_molida_mes/float(Variables_Area[4].get())
-    print(Area_Cosechada_mes)
+    #print(Area_Cosechada_mes)
     #Caña molida a la semana=Caña molida al mes/numero de moliendas
     Cana_molida_semana=Cana_molida_mes/float(Variables_Area[6].get())
-    print(Cana_molida_semana)
+    #print(Cana_molida_semana)
     Cana_molida_hora=Cana_molida_semana/(float(Variables_Area[7].get())*float(Variables_Area[8].get()))
-    print(Cana_molida_hora)
+    #print(Cana_molida_hora)
     Jugo_Crudo=(float(Valores_iniciales_datos_entrada[12])/100.0)*Cana_molida_hora
-    print(Jugo_Crudo)
+    #print(Jugo_Crudo)
     Jugo_Clarificado=Jugo_Crudo-((Jugo_Crudo*(float(Valores_iniciales_datos_entrada[3])/100.0))+((Jugo_Crudo-(Jugo_Crudo*(float(Valores_iniciales_datos_entrada[3])/100.0)))*(float(Valores_iniciales_datos_entrada[4])/100.0)))
-    print(Jugo_Clarificado)
+    #print(Jugo_Clarificado)
     Masa_panela=((Jugo_Clarificado*float(Valores_iniciales_datos_entrada[5]))/float(Valores_iniciales_datos_entrada[8]))*1000
-    print(Masa_panela)
+    #print(Masa_panela)
     Capacidad_molino=Cana_molida_hora*1.3*1000
-    print(Capacidad_molino)
+    #print(Capacidad_molino)
     
     # #Llenado panel 1 Parte 2
     # j=k
@@ -299,9 +301,11 @@ def Actualizar_Valores():
     G25=float(Variables_datos_entrada[6].get())
     G26=float(Variables_datos_entrada[7].get())
     G27=float(Variables_datos_entrada[8].get())/100.0
-    G29=float(Variables_datos_entrada[10].get())/100 
+    G29=float(Variables_datos_entrada[10].get())/100.0
+    Exceso_Aire=float(Variables_datos_entrada[11].get())
     G34=float(Variables_datos_entrada[15].get())
-    G35=float(Variables_datos_entrada[16].get())
+    G35=float(Variables_datos_entrada[16].get())/100.0
+    Presion_atm=float(Variables_datos_entrada[17].get())
     G37=float(Variables_datos_entrada[18].get())
     #G40=float(Variables_datos_entrada[21].get())
 
@@ -569,22 +573,113 @@ def Actualizar_Valores():
     Humedad_inicial_bagazo=Humedad_inicial_bagazo*100.0
     Presion_Atmosferica=760*math.exp(-0.0001158*float(Valores_iniciales_datos_entrada[14]))
     Temperatura_Ebullición_Agua=-227.03+3816.44/(18.3036-math.log(7.5*(Presion_Atmosferica*133.3224/1000)))
-    print(Humedad_inicial_bagazo)
-    print(Presion_Atmosferica)
-    print(Temperatura_Ebullición_Agua)
+    
+    # print(Presion_Atmosferica)
+    # print(Temperatura_Ebullición_Agua)
     Eficiencia_Calculada=(Total_Etapa/Calor_Suministrado)*100;
-    print(Eficiencia_Calculada)
-    print(Total_Etapa)
-    print(Calor_Suministrado)
-    A=DH_KJKmol(25,1160.357,466.402/1000,8.861,66.958,8.147,13.492)/3600
-    B=CalorCl_sensible(10.0, 20.0, 0.1, 2.0, 3.0, 3.0)
-    print(B)
-    C=Tadiabatica(1.2,2.3,0.0,4.5)
-    print(C)
-    D=resolver_concentracion(0.9, 1.2, 4.3, 9.1, 2.2, 1)
+    # print(Eficiencia_Calculada)
+    # print(Total_Etapa)
+    # print(Calor_Suministrado)
+    # A=DH_KJKmol(25,1160.357,466.402/1000,8.861,66.958,8.147,13.492)/3600
+    # B=CalorCl_sensible(10.0, 20.0, 0.1, 2.0, 3.0, 3.0)
+    # print(B)
+    # C=Tadiabatica(1.2,2.3,0.0,4.5)
+    # print(C)
+    # D=resolver_concentracion(0.9, 1.2, 4.3, 9.1, 2.2, 1)
     #Mostrar hornilla
     #Mostrar_hornilla(Lista_Contenido, Etapas)    
-   
+    """---------------->>>>>>>>Propiedades de los gases<<<<<<<<<..........."""
+    #Valores iniciales
+    #Masa_Bagazo=Capacidad_Estimada_hornilla*Factor_Consumo_Bagazo
+    Masa_Bagazo=340.536
+    Cantidad_Pailas=Cantidad_Etapas   
+    Eficiencia_Combustion=0.95
+    Humedad_bagazo=G29
+    #Exceso_Aire
+    Humedad_aire=0.001
+    Temperatura_ambiente=(G27*100.0)+273.0
+    Carbono=0.470
+    Hidrogeno=0.065
+    Oxigeno=0.440
+    Escorias=0.025
+    Masa_Bagazo_Seco=Masa_Bagazo*(1-(Humedad_bagazo))
+    
+    C=12.011
+    H2=2.016
+    CO2=44.010
+    CO=28.010
+    H2O=18.015
+    O2=31.999
+    N2=28.013
+    C_bagazo=Masa_Bagazo_Seco*Carbono/C
+    H2_bagazo=Masa_Bagazo_Seco*Hidrogeno/H2
+    O2_bagazo=Masa_Bagazo_Seco*Oxigeno/O2
+    H2O_bagazo=Humedad_bagazo*Masa_Bagazo/H2O
+    O2_req=(C_bagazo+(H2_bagazo/2))-O2_bagazo
+    O2_sum=O2_req*Exceso_Aire
+    N2_sum=O2_sum*3.76
+    H2O_aire=(((N2_sum*N2)+(O2_sum*O2))*Humedad_aire)/H2O
+    #Salida
+    CO2_producidos=Eficiencia_Combustion*C_bagazo*1000.0
+    CO_producidos=(C_bagazo*1000)-CO2_producidos
+    H2O_producidos=H2_bagazo*1000.0
+    H2O_Totales=H2O_producidos+((H2O_aire+H2O_bagazo)*1000.0)
+    O2_producidos=((O2_sum-O2_req)*1000.0)+(CO_producidos/2)
+    N2_producidos=N2_sum*1000.0
+    Gases_Totales=CO2_producidos+CO_producidos+H2O_Totales+O2_producidos+N2_producidos
+    Temperatura_llama= 1180.0 + 273.15
+    masa_Gases_Total= (CO2_producidos*CO2)+(CO_producidos*CO)+(H2O_Totales*H2O)+(O2_producidos*O2)+(N2_producidos*N2)
+    Potencia_Inicial_Gas=Calor_Suministrado
+    
+    CO2_producidos_2=CO2*CO2_producidos/1000.0
+    CO_producidos_2=CO*CO_producidos/1000.0
+    H2O_Totales_2=(H2O*H2O_Totales)/1000.0
+    O2_producidos_2=(O2*O2_producidos)/1000.0
+    N2_producidos_2=(N2*N2_producidos)/1000.0
+    Gas_Total=CO2_producidos_2+CO_producidos_2+H2O_Totales_2+O2_producidos_2+N2_producidos_2
+    Flujo_Masico=Gas_Total/3600.0
+    
+    CO2_producidos_3=CO2_producidos/Gases_Totales
+    CO_producidos_3=CO_producidos/Gases_Totales
+    H2O_Totales_3=H2O_Totales/Gases_Totales
+    O2_producidos_3=O2_producidos/Gases_Totales
+    N2_producidos_3=N2_producidos/Gases_Totales
+    Gas_Total_2=CO2_producidos_3+CO_producidos_3+H2O_Totales_3+O2_producidos_3+N2_producidos_3  
+        
+    Presion=Presion_atm/760.0
+    #print(Presion)
+    Temperatura_Flama_Ad=Tadiabatica(Exceso_Aire,Eficiencia_Combustion,Humedad_bagazo,Humedad_aire)
+    #print(Temperatura_Flama_Ad)
+    Velocidad_I=(Flujo_Masico/Densidad_kgm3(CO_producidos_3,CO2_producidos_3,N2_producidos_3,O2_producidos_3,H2O_Totales_3,Presion*101.325,Temperatura_Flama_Ad))/0.32
+    #print(Velocidad_I)
+    Energia_inicial_Gas=DH_KJKmol(25,Temperatura_Flama_Ad,CO_producidos/1000,CO2_producidos/1000,N2_producidos/1000,O2_producidos/1000,H2O_Totales/1000)/3600
+    
+    Perdida_total=Energia_inicial_Gas*0.14
+    Area_Chimenea=53.327
+    Area_Total=105.964	#Supuesto
+    
+    Calores_Transferidos_Qtt=[]
+    for i in range(Etapas):
+        Calores_Transferidos_Qtt.append(random.uniform(45, 70))
+    print(Calores_Transferidos_Qtt)
+    
+    Lista_Contenido_Qtt=[]
+    Lista_columnas_Qtt=[]  
+    #Caracteristicas de las celdas de cada columna
+    #Fila 0 Calor del Gas antes de Paila
+    #Fila 1 Calor Gas despues paila
+    #Fila 2 Temperarura antes de Paila
+    #Fila 3 Temperatura despues de Paila
+    #Fila 4 Temperatura Bajo la Paila
+    #Fila 5 Perdidas
+    #Fila 6 Pedidas según 14%
+
+    for i in range(Etapas):
+        for j in range (7):
+            Lista_columnas_Qtt.append(float(i+j))
+        Lista_Contenido_Qtt.append(Lista_columnas_Qtt)
+        Lista_columnas_Qtt=[]    
+     print(Lista_Contenido_Qtt)
 
 "Calculos iniciales"    
 if __name__== "__main__":
