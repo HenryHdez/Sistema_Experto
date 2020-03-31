@@ -679,7 +679,7 @@ def Actualizar_Valores():
             Lista_columnas_Qtt.append(float(i+j))
         Lista_Contenido_Qtt.append(Lista_columnas_Qtt)
         Lista_columnas_Qtt=[]    
-     print(Lista_Contenido_Qtt)
+    print(Lista_Contenido_Qtt)
 
 "Calculos iniciales"    
 if __name__== "__main__":
