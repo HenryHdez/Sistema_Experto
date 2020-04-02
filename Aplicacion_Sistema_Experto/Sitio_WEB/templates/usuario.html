@@ -1,0 +1,86 @@
+{% extends "layout.html" %} 
+<!-- block permite abreviar la cantidad de codigo y enlazarlo con el layout-->
+{% block lista %}
+      <li class="nav-item">
+    <a class="nav-link" href="/">Principal</a>
+      </li>
+      <li class="nav-item active">
+    <a class="nav-link" href="usuario">Datos de usuario <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+    <a class="nav-link" href="informe">Informe</a>
+      </li>
+      <li class="nav-item">
+    <a class="nav-link" href="nosotros">Sobre nosotros</a>
+      </li>
+      <li class="nav-item">
+    <a class="nav-link" href="contacto">Contacto</a>
+      </li>
+{% endblock %}
+        
+{% block content %}
+    <form action = "http://127.0.0.1:5000/informe" method = "POST">
+        <p>Nombre de usuario o entidad: <input type = "text" name = "Nombre de usuario" placeholder="Nombre" /></p>  
+        
+        <label for="Departamento">Departamento:</label>
+        <select id="Deptos" name=Departamento onchange="SeleccionarDepto()">
+            {% for i, valor in departamentos.items() %}
+                {% if i == 4 %}
+                    <option value= "Bogotá D.C." selected>Bogotá D.C.</option>"
+                {% else %}
+                    <option value= "{{valor}}">{{valor}}</option>"
+                {% endif %}
+            {% endfor %}
+        </select>                     
+
+        <label for="Ciudad">Ciudad:</label>
+        <select id="Ciudad" name= Ciudad>
+            <option value= "Bogotá D.C.">Bogotá D.C.</option>"
+        </select> 
+                
+        <!--Rotulo oculto para almacenar las ciudades temporalmente-->
+        <select id="CiudadOculto" style="visibility:hidden">
+            {% for j, valor in provincia.items() %}
+                {% if j == 4 %}
+                    <option value= "Bogotá D.C." selected>Bogotá D.C.</option>"
+                {% else %}
+                    <option value= "{{valor}}">{{valor}}</option>"
+                {% endif %}
+            {% endfor %}
+        </select>         
+        <!--Termina el combo oculto-->
+        
+        <!--Botón de ejecución-->
+        <p><input type = "submit" value = "Generar informe" /></p>
+    </form>  
+    
+    <!--Forma de llamar un script desarrollado en javascript-->
+    <script type="text/javascript">
+    function SeleccionarDepto() {
+    /*Este es un script en lenguaje javascript para actualizar el select de
+    la pagina usuario*/
+    /*getElementById permite tomar objetos de la pagina con un nombre exactamente
+    igual al escrito entre las comillas dobles*/
+      var depto = document.getElementById("Deptos");
+      var prov  = document.getElementById("CiudadOculto");
+      var pos1  = depto.options[depto.selectedIndex].value;
+      var texto  = prov.options[depto.selectedIndex].value;
+      texto  = texto.replace("[", " ");
+      texto  = texto.replace("]", " ");
+      texto  = texto.replace("'", "");
+      texto  = texto.replace(" ", "");
+      var vector = texto.split(",");
+      var sel = document.getElementById("Ciudad");
+      /*Esta es una forma de borrar el select Ciudad y reiniciarlo cada vez 
+      que se actualicen los departamentos*/
+      document.getElementById("Ciudad").innerHTML="";
+      /*Con el for se actualizan los valores del archivo .json*/
+      for(var k=0; k<vector.length; k++){
+          option = document.createElement("OPTION");
+          option.value = vector[k];
+          option.text  = vector[k];
+          sel.add(option);}     
+    }
+    </script>      
+{% endblock %}
+

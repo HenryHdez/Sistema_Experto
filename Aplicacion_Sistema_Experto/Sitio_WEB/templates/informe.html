@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block lista %}
+      <li class="nav-item">
+    <a class="nav-link" href="/">Principal</a>
+      </li>
+      <li class="nav-item">
+    <a class="nav-link" href="usuario">Datos de usuario</a>
+      </li>
+      <li class="nav-item active">
+    <a class="nav-link" href="informe">Informe <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+    <a class="nav-link" href="nosotros">Sobre nosotros</a>
+      </li>
+      <li class="nav-item">
+    <a class="nav-link" href="contacto">Contacto</a>
+      </li>
+{% endblock %}
+
+{% block content %}
+         {% for key, value in result.items() %}
+            <tr>
+               <th> {{ key }} </th>
+               <td> {{ value }} </td>
+            </tr>
+         {% endfor %}
+{% endblock %}
+
+

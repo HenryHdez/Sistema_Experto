@@ -1,12 +1,32 @@
-from flask import Flask
+from flask import Flask, redirect, url_for, request, render_template
+import json, pandas as pd
 app = Flask(__name__)
 
-def factors(num):
-  return [x for x in range(1, num+1) if num%x==0]
+@app.route('/')
+def index():
+   return render_template('principal.html')
 
-@app.route('/factors/<int:num>')
-def factors_route(num):
-    return "The factors of {} are {}".format(num, factors(num))
+@app.route('/usuario')
+def usua():
+    df = pd.read_json("Colombia.json")
+    #print(df.departamento)
+    #print(df.ciudades)
+    return render_template('usuario.html', departamentos=df.departamento, provincia=df.ciudades)      
+
+@app.route('/informe', methods = ['POST','GET'])
+def infor():
+   if request.method == 'POST':
+      result = request.form
+      print(result)
+      return render_template('informe.html', result = result)    
+
+@app.route('/nosotros')
+def nosot():
+   return render_template('nosotros.html')
+
+@app.route('/contacto')
+def contac():
+   return render_template('contacto.html')
 
 if __name__ == '__main__':
-    app.run()
+   app.run()
