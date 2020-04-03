@@ -2,47 +2,64 @@
 <!-- block permite abreviar la cantidad de codigo y enlazarlo con el layout-->
 {% block lista %}
       <li class="nav-item">
-    <a class="nav-link" href="/">Principal</a>
+        <a class="nav-link" href="/">Principal</a>
       </li>
       <li class="nav-item active">
-    <a class="nav-link" href="usuario">Datos de usuario <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="usuario">Aplicación<span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
-    <a class="nav-link" href="informe">Informe</a>
+        <a class="nav-link disabled" href="informe" aria-disabled="true">Informe</a>
       </li>
       <li class="nav-item">
-    <a class="nav-link" href="nosotros">Sobre nosotros</a>
+        <a class="nav-link" href="contacto">Contacto</a>
       </li>
       <li class="nav-item">
-    <a class="nav-link" href="contacto">Contacto</a>
+        <a class="nav-link" href="referencias">Bibliografía</a>
+      </li>  
+      <li class="nav-item">
+        <a class="nav-link" href="nosotros">Acerca de...</a>
       </li>
 {% endblock %}
         
 {% block content %}
+    <h1 class="display-4">FORMULARIO</h1>
     <form action = "http://127.0.0.1:5000/informe" method = "POST">
-        <p>Nombre de usuario o entidad: <input type = "text" name = "Nombre de usuario" placeholder="Nombre" /></p>  
-        
-        <label for="Departamento">Departamento:</label>
-        <select id="Deptos" name=Departamento onchange="SeleccionarDepto()">
-            {% for i, valor in departamentos.items() %}
-                {% if i == 4 %}
-                    <option value= "Bogotá D.C." selected>Bogotá D.C.</option>"
-                {% else %}
-                    <option value= "{{valor}}">{{valor}}</option>"
-                {% endif %}
-            {% endfor %}
-        </select>                     
-
-        <label for="Ciudad">Ciudad:</label>
-        <select id="Ciudad" name= Ciudad>
-            <option value= "Bogotá D.C.">Bogotá D.C.</option>"
-        </select> 
+        <table align="center">
+            <tr>
+               <td style="width:350px"> <b>Nombre de usuario o entidad:</b> </td>
+               <td style="width:350px"> <input type = "text" name = "Nombre de usuario" placeholder="Nombre" /> </td>
+            </tr>
+            
+            <tr>
+                <td style="width:350px"> <b>Departamento:</b> </td>
+                <td style="width:350px"> 
+                    <select id="Deptos" name=Departamento onchange="SeleccionarDepto()">
+                        {% for i, valor in departamentos.items() %}
+                            {% if i == 4 %}
+                                <option value= "Bogotá D.C." selected>Bogotá D.C.</option>"
+                            {% else %}
+                                <option value= "{{valor}}">{{valor}}</option>"
+                            {% endif %}
+                        {% endfor %}
+                    </select>                 
+                </td>
+            </tr> 
+             
+            <tr>
+                <td style="width:350px"> <b>Ciudad:</b> </td>
+                <td style="width:350px"> 
+                    <select id="Ciudad" name= Ciudad>
+                        <option value= "Bogotá">Bogotá</option>"
+                    </select>                  
+                </td>
+            </tr>        
+        </table>                    
                 
         <!--Rotulo oculto para almacenar las ciudades temporalmente-->
         <select id="CiudadOculto" style="visibility:hidden">
             {% for j, valor in provincia.items() %}
                 {% if j == 4 %}
-                    <option value= "Bogotá D.C." selected>Bogotá D.C.</option>"
+                    <option value= "Bogotá" selected>Bogotá</option>"
                 {% else %}
                     <option value= "{{valor}}">{{valor}}</option>"
                 {% endif %}

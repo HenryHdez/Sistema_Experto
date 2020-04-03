@@ -2,6 +2,8 @@
     {  
         "id":0,
         "departamento":"Amazonas",
+	"altura":"97",
+	"aguasubterranea": "30 a 70 m",
         "ciudades":[  
             "Leticia",
             "Puerto Nari\u00f1o"
@@ -10,6 +12,8 @@
     {  
         "id":1,
         "departamento":"Antioquia",
+	"altura":"2099",
+	"aguasubterranea": "82 a 155 m",
         "ciudades":[  
             "Abejorral",
             "Abriaqu\u00ed",
@@ -141,6 +145,8 @@
     {  
         "id":2,
         "departamento":"Arauca",
+	"altura":"125",
+	"aguasubterranea": "280 a 900 m",
         "ciudades":[  
             "Arauca",
             "Arauquita",
@@ -154,6 +160,8 @@
     {  
         "id":3,
         "departamento":"Atl\u00e1ntico",
+	"altura":"123",
+	"aguasubterranea": "463 a 1132 m", 
         "ciudades":[  
             "Baranoa",
             "Barranquilla",
@@ -183,6 +191,8 @@
     {  
         "id":4,
         "departamento":"Bogot\u00e1 D.C.",
+	"altura":"2625",
+	"aguasubterranea": "10 a 130 m", 
         "ciudades":[  
             "Bogot\u00e1 D.C."
         ]
@@ -190,6 +200,8 @@
     {  
         "id":5,
         "departamento":"Bol\u00edvar",
+	"altura":"120",
+	"aguasubterranea": "10 a 660 m",
         "ciudades":[  
             "Ach\u00ed",
             "Altos del Rosario",
@@ -243,6 +255,8 @@
     {  
         "id":6,
         "departamento":"Boyac\u00e1",
+	"altura":"2420",
+	"aguasubterranea": "100 a 480 m",
         "ciudades":[  
             "Almeida",
             "Aquitania",
@@ -372,6 +386,8 @@
     {  
         "id":7,
         "departamento":"Caldas",
+	"altura":"1750",
+	"aguasubterranea": "82 a 155 m",
         "ciudades":[  
             "Aguadas",
             "Anserma",
@@ -405,6 +421,8 @@
     {  
         "id":8,
         "departamento":"Caquet\u00e1",
+	"altura":"242",
+	"aguasubterranea": "40 a 80 m",
         "ciudades":[  
             "Albania",
             "Bel\u00e9n de los Andaqu\u00edes",
@@ -427,6 +445,8 @@
     {  
         "id":9,
         "departamento":"Casanare",
+	"altura":"420",
+	"aguasubterranea": "80 a 230 m",
         "ciudades":[  
             "Aguazul",
             "Ch\u00e1meza",
@@ -452,6 +472,8 @@
     {  
         "id":10,
         "departamento":"Cauca",
+	"altura":"1693",
+	"aguasubterranea": "600 a 1000 m",
         "ciudades":[  
             "Almaguer",
             "Argelia",
@@ -500,6 +522,8 @@
     {  
         "id":11,
         "departamento":"Cesar",
+	"altura":"50",
+	"aguasubterranea": "190 a 1280 m",
         "ciudades":[  
             "Aguachica",
             "Agust\u00edn Codazzi",
@@ -531,6 +555,8 @@
     {  
         "id":12,
         "departamento":"Choc\u00f3",
+	"altura":"167",
+	"aguasubterranea": "40 a 80 m",
         "ciudades":[  
             "Acand\u00ed",
             "Alto Baud\u00f3",
@@ -567,6 +593,8 @@
     {  
         "id":13,
         "departamento":"Cundinamarca",
+	"altura":"3341",
+	"aguasubterranea": "350 a >1000 m",
         "ciudades":[  
             "Agua de Dios",
             "Alb\u00e1n",
@@ -689,6 +717,8 @@
     {  
         "id":14,
         "departamento":"C\u00f3rdoba",
+	"altura":"63",
+	"aguasubterranea": "<250 m",
         "ciudades":[  
             "Ayapel",
             "Buenavista",
@@ -725,6 +755,8 @@
     {  
         "id":15,
         "departamento":"Guain\u00eda",
+	"altura":"177",
+	"aguasubterranea": "250 a 2500 m",
         "ciudades":[  
             "In\u00edrida"
         ]
@@ -732,6 +764,8 @@
     {  
         "id":16,
         "departamento":"Guaviare",
+	"altura":"175",
+	"aguasubterranea": "250 a 2500 m",
         "ciudades":[  
             "Calamar",
             "El Retorno",
@@ -742,6 +776,8 @@
     {  
         "id":17,
         "departamento":"Huila",
+	"altura":"610",
+	"aguasubterranea": "600 a 800 m",
         "ciudades":[  
             "Acevedo",
             "Agrado",
@@ -785,6 +821,8 @@
     {  
         "id":18,
         "departamento":"La Guajira",
+	"altura":"200",
+	"aguasubterranea": "10 a 600 m",
         "ciudades":[  
             "Albania",
             "Barrancas",
@@ -806,6 +844,8 @@
     {  
         "id":19,
         "departamento":"Magdalena",
+	"altura":"110",
+	"aguasubterranea": ">1000 m",
         "ciudades":[  
             "Algarrobo",
             "Aracataca",
@@ -843,6 +883,8 @@
     {  
         "id":20,
         "departamento":"Meta",
+	"altura":"238",
+	"aguasubterranea": "80 a 230 m",
         "ciudades":[  
             "Acac\u00edas",
             "Barranca de Up\u00eda",
@@ -878,6 +920,8 @@
     {  
         "id":21,
         "departamento":"Nari\u00f1o",
+	"altura":"1650",
+	"aguasubterranea": "40 a 80 m",
         "ciudades":[  
             "Aldana",
             "Ancuy\u00e1",
@@ -948,6 +992,8 @@
     {  
         "id":22,
         "departamento":"Norte de Santander",
+	"altura":"2283",
+	"aguasubterranea": ">600 m",
         "ciudades":[  
             "\u00c1brego",
             "Arboledas",
@@ -994,6 +1040,8 @@
     {  
         "id":23,
         "departamento":"Putumayo",
+	"altura":"254",
+	"aguasubterranea": "30 a 70 m",
         "ciudades":[  
             "Col\u00f3n",
             "Mocoa",
@@ -1013,6 +1061,8 @@
     {  
         "id":24,
         "departamento":"Quind\u00edo",
+	"altura":"1458",
+	"aguasubterranea": ">300 m",
         "ciudades":[  
             "Armenia",
             "Buenavista",
@@ -1031,6 +1081,8 @@
     {  
         "id":25,
         "departamento":"Risaralda",
+	"altura":"1516",
+	"aguasubterranea": ">156 m",
         "ciudades":[  
             "Ap\u00eda",
             "Balboa",
@@ -1051,6 +1103,8 @@
     {  
         "id":26,
         "departamento":"San Andr\u00e9s y Providencia",
+	"altura":"37",
+	"aguasubterranea": "20 a 200 m",
         "ciudades":[  
             "Providencia y Santa Catalina Islas",
             "San Andr\u00e9s"
@@ -1059,6 +1113,8 @@
     {  
         "id":27,
         "departamento":"Santander",
+	"altura":"200",
+	"aguasubterranea": ">100 m",
         "ciudades":[  
             "Aguada",
             "Albania",
@@ -1152,6 +1208,8 @@
     {  
         "id":28,
         "departamento":"Sucre",
+	"altura":"2810",
+	"aguasubterranea": "45 a 410 m",
         "ciudades":[  
             "Buenavista",
             "Caimito",
@@ -1184,6 +1242,8 @@
     {  
         "id":29,
         "departamento":"Tolima",
+	"altura":"710",
+	"aguasubterranea": ">300 m",
         "ciudades":[  
             "Alpujarra",
             "Alvarado",
@@ -1237,6 +1297,8 @@
     {  
         "id":30,
         "departamento":"Valle del Cauca",
+	"altura":"1561",
+	"aguasubterranea": "20 a 60 m",
         "ciudades":[  
             "Alcal\u00e1",
             "Andaluc\u00eda",
@@ -1285,6 +1347,8 @@
     {  
         "id":31,
         "departamento":"Vaup\u00e9s",
+	"altura":"293",
+	"aguasubterranea": "30 a 70 m",
         "ciudades":[  
             "Carur\u00fa",
             "Mit\u00fa",
@@ -1294,6 +1358,8 @@
     {  
         "id":32,
         "departamento":"Vichada",
+	"altura":"160",
+	"aguasubterranea": "<250 m",
         "ciudades":[  
             "Cumaribo",
             "La Primavera",

@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+{% block lista %}
+      <li class="nav-item">
+       <a class="nav-link" href="/">Principal</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="usuario">Aplicación</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="informe" aria-disabled="true">Informe</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="contacto">Contacto</a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="referencias">Bibliografía<span class="sr-only">(current)</span></a>
+      </li>    
+      <li class="nav-item">
+        <a class="nav-link" href="nosotros">Acerca de...</a>
+      </li>
+{% endblock %}
+
+{% block content %}
+      <h1 class="display-4">BIBLIOGRAFÍA</h1>
+      <hr class="my-4">
+          <p>Las imágenes cartográficas y altura sobre el nivel del mar se basa en:
+              <ol>
+                  <li><a href="https://www.google.com/maps">Google maps.</a></li>
+                  <li><a href="https://www.google.com/intl/es/earth/">Google earth.</a></li>
+              </ol>
+          </p>
+          <p>El establecimiento del nivel freático se basa en los siguientes documentos:
+              <ol start=1>
+                  <li>
+                      <a href="http://www.andi.com.co/Uploads/ENA_2018-comprimido.pdf">
+                       IDEAM (2019). Estudio Nacional del Agua 2018. Bogotá: Ideam: 452 pp.
+                      </a>
+                  </li>
+                  <li>
+                      <a href="http://documentacion.ideam.gov.co/openbiblio/bvirtual/023080/ENA_2014.pdf">
+                       IDEAM (2015). Estudio Nacional del Agua 2014. Bogotá: Ideam: 493 pp.
+                      </a>
+                  </li>
+                  <li>
+                      <a href="http://science.sciencemag.org/content/339/6122/940.abstract">
+                       Miguez-Macho, G. (2013). Global Patterns of Groundwater Table Depth. DOI: 10.1126/science.1229881.
+                      </a>
+                  </li>
+              </ol>
+          </p>    
+{% endblock %}
+
+

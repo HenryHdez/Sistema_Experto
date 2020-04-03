@@ -1,34 +1,36 @@
 {% extends "layout.html" %}
 {% block lista %}
       <li class="nav-item active">
-    <a class="nav-link" href="/">Principal <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="/">Principal<span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
-    <a class="nav-link" href="usuario">Iniciar aplicación</a>
+        <a class="nav-link" href="usuario">Aplicación</a>
       </li>
       <li class="nav-item">
-    <a class="nav-link" href="informe">Informe</a>
+        <a class="nav-link disabled" href="informe" aria-disabled="true">Informe</a>
       </li>
       <li class="nav-item">
-    <a class="nav-link" href="nosotros">Sobre nosotros</a>
+        <a class="nav-link" href="contacto">Contacto</a>
       </li>
       <li class="nav-item">
-    <a class="nav-link" href="contacto">Contacto</a>
+        <a class="nav-link" href="referencias">Bibliografía</a>
+      </li>   
+      <li class="nav-item">
+        <a class="nav-link" href="nosotros">Acerca de...</a>
       </li>
 {% endblock %}
 
 {% block content %}
-    <div class="jumbotron">
-      <h1 class="display-4">APP SISTEMA EXPERTO</h1>
-      <p class="lead">La APP Sistema experto es una aplicación desarrollada para estimar las dimensiones de una hornilla
-      para la producción de panela, a partir de ciertos parámetros proporcionados por el usuario.</p>
+      <h1 class="display-4">PRESENTACIÓN</h1>
+      <p align="justify" class="lead">La APP Sistema experto es una aplicación desarrollada que de forma automática estima las dimensiones de una hornilla
+      para la producción de panela y genera una propuesta de valor para su implementación con un alto nivel de confianza.</p>
       <hr class="my-4">
-      <p>El objetivo principal de esta aplicación es facilitar al usuario una herramienta que de forma automática genera una
-      propuesta de valor para la implementación de una hornilla, sin que se requiera de un conocimiento de ingeniería especializado.
-      Además, cuenta con un formulario de contacto con un especialista en el área, el cual solucionara las dudas tenga frente al diseño
-      o generara una nueva propuesta si hay parámetros que no se contemplan en el diseño previo.</p>
+      <a href="nosotros"> Haga clic en este enlace para conocer más detalles de está aplicación.</a>
+      <br>
+      <br>
+      <br>
+      <br>
       <a class="btn btn-primary btn-lg" href="usuario" role="button">Iniciar aplicación</a>
-    </div> 
 {% endblock %}
 
 

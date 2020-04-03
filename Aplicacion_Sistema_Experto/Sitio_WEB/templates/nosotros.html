@@ -1,24 +1,40 @@
 {% extends "layout.html" %}
 {% block lista %}
       <li class="nav-item">
-    <a class="nav-link" href="/">Principal</a>
+       <a class="nav-link" href="/">Principal</a>
       </li>
       <li class="nav-item">
-    <a class="nav-link" href="usuario">Datos de usuario</a>
+        <a class="nav-link" href="usuario">Aplicación</a>
       </li>
       <li class="nav-item">
-    <a class="nav-link" href="informe">Informe</a>
+        <a class="nav-link disabled" href="informe" aria-disabled="true">Informe</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="contacto">Contacto</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="referencias">Bibliografía</a>
+      </li>   
       <li class="nav-item active">
-    <a class="nav-link" href="nosotros">Sobre nosotros <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-    <a class="nav-link" href="contacto">Contacto</a>
+        <a class="nav-link" href="nosotros">Acerca de...<span class="sr-only">(current)</span></a>
       </li>
 {% endblock %}
 
 {% block content %}
-    nosotros.
+    <h1 class="display-4">ACERCA DE NOSOTROS</h1>
+        <p class="lead">
+            <ul>
+                <li><p align="justify">La APP Sistema Experto es un proyecto colaborativo desarrollado por varios investigadores de AGROSAVIA.</p></li>
+                <li><p align="justify">El objetivo principal de este proyecto es proporcionar al sector agricola una herramienta basada en software intuitiva y abierta, con el fin de que un gran número de personas que tengan la intención de modificar, actualizar o construir una hornilla para la producción de panela lo consigan sin un conocimiento de ingeniería especializado.</p></li> 
+                <li><p align="justify">El objetivo de esta página es proporcionar al usuario el acceso a la aplicación, información acerca de su funcionamiento y soporte técnico especializado.</p></li>    
+            </ul>
+        </p>
+        <hr class="my-4">
+        <p><b>Colaboradores:</b></p>
+            <ul>
+                <li>Luz Esperanza Prada Forero.</li>
+                <li>Jader Rodríguez Cortina.</li> 
+                <li>John Javier Espitia.</li>   
+                <li>Henry Hernández Martínez.</li> 
+            </ul>
 {% endblock %}
-
-

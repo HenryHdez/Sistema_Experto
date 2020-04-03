@@ -1,24 +1,54 @@
 {% extends "layout.html" %}
 {% block lista %}
       <li class="nav-item">
-    <a class="nav-link" href="principal">Principal</a>
+        <a class="nav-link" href="/">Principal</a>
       </li>
       <li class="nav-item">
-    <a class="nav-link" href="usuario">Datos de usuario</a>
+        <a class="nav-link" href="usuario">Aplicación</a>
       </li>
       <li class="nav-item">
-    <a class="nav-link" href="informe">Informe</a>
-      </li>
-      <li class="nav-item">
-    <a class="nav-link" href="nosotros">Sobre nosotros</a>
+        <a class="nav-link disabled" href="informe" aria-disabled="true">Informe</a>
       </li>
       <li class="nav-item active">
-    <a class="nav-link" href="contacto">Contacto <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="contacto">Contacto<span class="sr-only">(current)</span></a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="referencias">Bibliografía</a>
+      </li>   
+      <li class="nav-item">
+        <a class="nav-link" href="nosotros">Acerca de...</a>
+      </li>         
 {% endblock %}
 
 {% block content %}
-    contacto.
+    <h1 class="display-4">CONTACTO</h1>
+    <form action = "http://127.0.0.1:5000/contacto" method = "POST" enctype="multipart/form-data">
+        <table align="center">
+                <tr>
+                    <td style="width:400px"> <b> <label>Nombre:</label> </b> </td>
+                    <td style="width:400px"> <input style="width:600px" type="text" name="nombre" size="30" maxlength="200"> </td>
+                </tr>
+                <tr>
+                    <td style="width:400px"> <b> <label>Correo electrónico:</label> </b> </td>
+                    <td style="width:400px"> <input style="width:600px" type="email" name="correo_electronico" maxlength="200" value="@"> </td>
+                </tr>
+                <tr>
+                    <td style="width:400px"> <b> <label>Mensaje:</label> </b> </td>
+                    <td style="width:400px"> <textarea style="width:600px" name="mensaje_usuario" rows="10" cols="50" maxlength="2000" placeholder="Máximo 2000 carácteres"></textarea> </td>
+                </tr>
+                <tr>
+                    <td style="width:400px"> <b> <label>Adjuntar archivo</label> </b> </td>
+                    <td style="width:400px"> 
+                        <input type="file" name="adjunto" accept=".pdf, .png, .jpg, .doc, .docx" value="Seleccionar archivo"> 
+                        <label><i><u>"El nombre del archivo no debe contener carácteres especiales o espacios"</i></u></label>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:400px"> <input type="submit" value="Enviar formulario"> </td>
+                    <td style="width:400px"> <input type="Reset" value="Borrar todo"> </td> 
+                </tr> 
+        </table>  
+    </form>
 {% endblock %}
 
 
