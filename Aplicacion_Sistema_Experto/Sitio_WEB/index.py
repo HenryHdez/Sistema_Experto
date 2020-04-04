@@ -5,13 +5,12 @@ from email.mime.application import MIMEApplication
 from email.mime.text import MIMEText
 import smtplib
 import os
-from werkzeug import secure_filename
-
+from werkzeug.utils import secure_filename
+         
 app = Flask(__name__)
 uploads_dir = os.path.join(app.instance_path, 'uploads')
 try:
     os.makedirs(uploads_dir, True)
-    print('Directorio Creado')
 except OSError: 
     print('Directorio existente')
 
@@ -21,11 +20,26 @@ def index():
 
 @app.route('/usuario')
 def usua():
-    global df
+    global df   
     df = pd.read_json("Colombia.json")
-    #print(df.departamento)
-    #print(df.ciudades)
-    return render_template('usuario.html', departamentos=df.departamento, provincia=df.ciudades)      
+    cana=pd.read_excel('Variedades.xlsx')
+    Deptos_cana = cana['Depto'].values
+    Ciudad_cana = cana['Ciudad'].values
+    Tipo_cana   = cana['Tipo'].values
+    Grados_Bx   = cana['Br'].values
+    Variedad_cana=[]
+    for i in range(0,len(Deptos_cana)):
+        if(i==0):
+            Variedad_cana.append(Tipo_cana[i]+" (Valor por defecto)")
+        else:
+            Variedad_cana.append(Tipo_cana[i]+" (Disponible en: "+Deptos_cana[i]+"-"+Ciudad_cana[i]+")")
+    return render_template('usuario.html', 
+                           departamentos=df.departamento, 
+                           provincia=df.ciudades,
+                           Ciudad_cana_1=Ciudad_cana,
+                           Variedad_cana_1=Variedad_cana,
+                           Grados_Bx_1=Grados_Bx
+                           )      
 
 @app.route('/informe', methods = ['POST','GET'])
 def infor():
@@ -85,13 +99,12 @@ def contac_rta():
                 archivo.save(nombre_archivo_pdf)            
                 archivo_pdf = MIMEApplication(open(nombre_archivo_pdf,"rb").read())
                 archivo_pdf.add_header('Content-Disposition', 'attachment', filename=nombre_archivo_pdf)
-                mensaje.attach(archivo_pdf)            
+                mensaje.attach(archivo_pdf) 
+                os.remove(nombre_archivo_pdf)
             # parámetros fijos de la cuenta de correo
             usuario   ='agropru1'
-            contrasena='Agrosavia123'
-            #msg.attach(MIMEImage(file("google.jpg").read()))
-            
-            
+            contrasena='Agrosavia123'          
+            #Iniciación del servidor de gmail
             servidor = smtplib.SMTP('smtp.gmail.com:587')
             servidor.starttls()
             servidor.login(usuario, contrasena)

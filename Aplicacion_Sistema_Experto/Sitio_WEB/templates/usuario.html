@@ -23,17 +23,19 @@
         
 {% block content %}
     <h1 class="display-4">FORMULARIO</h1>
+    <p align="justify" class="lead">Por favor, complete los siguientes campos.</p>
+    <hr class="my-4">
     <form action = "http://127.0.0.1:5000/informe" method = "POST">
         <table align="center">
             <tr>
-               <td style="width:350px"> <b>Nombre de usuario o entidad:</b> </td>
-               <td style="width:350px"> <input type = "text" name = "Nombre de usuario" placeholder="Nombre" /> </td>
+               <td style="width:450px"> <b>Nombre de usuario o entidad:</b> </td>
+               <td style="width:450px"> <input type = "text" name = "Nombre de usuario" placeholder="AGROSAVIA" /> </td>
             </tr>
-            
+                                                                        
             <tr>
-                <td style="width:350px"> <b>Departamento:</b> </td>
-                <td style="width:350px"> 
-                    <select id="Deptos" name=Departamento onchange="SeleccionarDepto()">
+                <td style="width:450px"> <b>Departamento:</b> </td>
+                <td style="width:450px"> 
+                    <select id="Deptos" name="Departamento" onchange="SeleccionarDepto();">
                         {% for i, valor in departamentos.items() %}
                             {% if i == 4 %}
                                 <option value= "Bogotá D.C." selected>Bogotá D.C.</option>"
@@ -46,13 +48,65 @@
             </tr> 
              
             <tr>
-                <td style="width:350px"> <b>Ciudad:</b> </td>
-                <td style="width:350px"> 
-                    <select id="Ciudad" name= Ciudad>
+                <td style="width:450px"> <b>Ciudad:</b> </td>
+                <td style="width:450px"> 
+                    <select id="Ciudad" name= "Ciudad" onchange="Seleccionarvariedad();">
                         <option value= "Bogotá">Bogotá</option>"
                     </select>                  
                 </td>
-            </tr>        
+            </tr> 
+            
+            <tr>
+               <td style="width:450px"> <b>Área de caña sembrada al rededor (Hectáreas):</b> </td>
+               <td style="width:450px"> <input type = "text" name = "Área caña sembrada alrededor" value="18" /> </td>
+            </tr>
+
+            <tr>
+               <td style="width:450px"> <b>Área de caña sembrada propia (Hectáreas):</b> </td>
+               <td style="width:450px"> <input type = "text" name = "Área caña sembrada propia" value="18" /> </td>
+            </tr>
+
+            <tr>
+               <td style="width:450px"> <b>Periodo vegetativo (meses):</b> </td>
+               <td style="width:450px"> <input type = "text" name = "Periodo vegetativo" value="8" /> </td>
+            </tr>
+
+            <tr>
+               <td style="width:450px"> <b>Caña por hectárea esperada (Toneladas/Hectarea):</b> </td>
+               <td style="width:450px"> <input type = "text" name = "Caña por hectárea esperada" value="120" /> </td>
+            </tr>
+            
+            <tr>
+               <td style="width:450px"> <b>Número de moliendas:</b> </td>
+               <td style="width:450px"> <input type = "text" name = "Número de moliendas" value="2" /> </td>
+            </tr>
+
+            <tr>
+               <td style="width:450px"> <b>Días de trabajo a la semana:</b> </td>
+               <td style="width:450px"> <input type = "text" name = "Días de trabajo a la semana" value="6" /> </td>
+            </tr>
+
+            <tr>
+               <td style="width:450px"> <b>Horas de trabajo al día:</b> </td>
+               <td style="width:450px"> <input type = "text" name = "Horas de trabajo al día" value="12" /> </td>
+            </tr>
+
+            <tr>
+                <td style="width:450px"> <b>Variedad de Caña:</b> </td>
+                <td style="width:450px"> 
+                    <select id="Cana" name="Variedad de Caña">
+                        {% for l in Variedad_cana_1 %}
+                            <option value= {{loop.index}}>{{l}}</option>"
+                        {% endfor %}
+                    </select>                 
+                </td>
+            </tr> 
+
+            <tr>
+               <td style="width:450px"> <b>CSS de la caña (°Bx):</b> </td>
+               <td style="width:450px"> <input id="CSS de la caña" type = "text" name = "CSS de la caña" value="17.1" /> </td>
+            </tr>
+       
         </table>                    
                 
         <!--Rotulo oculto para almacenar las ciudades temporalmente-->
@@ -64,40 +118,80 @@
                     <option value= "{{valor}}">{{valor}}</option>"
                 {% endif %}
             {% endfor %}
-        </select>         
+        </select> 
+                
+        <select id="CanaOculto" style="visibility:hidden">
+            {% for l in Ciudad_cana_1 %}
+                <option value= {{loop.index}}>{{l}}</option>"
+            {% endfor %}
+        </select> 
+                
+        <select id="Bxoculto" style="visibility:hidden">
+            {% for l in Grados_Bx_1 %}
+                <option value= {{loop.index}}>{{l}}</option>"
+            {% endfor %}
+        </select> 
         <!--Termina el combo oculto-->
         
         <!--Botón de ejecución-->
-        <p><input type = "submit" value = "Generar informe" /></p>
+        <p><input class="btn btn-success" type = "submit" value = "Generar informe" /></p>
     </form>  
     
     <!--Forma de llamar un script desarrollado en javascript-->
     <script type="text/javascript">
-    function SeleccionarDepto() {
-    /*Este es un script en lenguaje javascript para actualizar el select de
-    la pagina usuario*/
-    /*getElementById permite tomar objetos de la pagina con un nombre exactamente
-    igual al escrito entre las comillas dobles*/
-      var depto = document.getElementById("Deptos");
-      var prov  = document.getElementById("CiudadOculto");
-      var pos1  = depto.options[depto.selectedIndex].value;
-      var texto  = prov.options[depto.selectedIndex].value;
-      texto  = texto.replace("[", " ");
-      texto  = texto.replace("]", " ");
-      texto  = texto.replace("'", "");
-      texto  = texto.replace(" ", "");
-      var vector = texto.split(",");
-      var sel = document.getElementById("Ciudad");
-      /*Esta es una forma de borrar el select Ciudad y reiniciarlo cada vez 
-      que se actualicen los departamentos*/
-      document.getElementById("Ciudad").innerHTML="";
-      /*Con el for se actualizan los valores del archivo .json*/
-      for(var k=0; k<vector.length; k++){
-          option = document.createElement("OPTION");
-          option.value = vector[k];
-          option.text  = vector[k];
-          sel.add(option);}     
-    }
-    </script>      
+        function SeleccionarDepto() {
+        /*Este es un script en lenguaje javascript para actualizar el select de
+        la pagina usuario*/
+        /*getElementById permite tomar objetos de la pagina con un nombre exactamente
+        igual al escrito entre las comillas dobles*/
+          var depto = document.getElementById("Deptos");
+          var prov  = document.getElementById("CiudadOculto");
+          var pos1  = depto.options[depto.selectedIndex].value;
+          var texto  = prov.options[depto.selectedIndex].value;
+          texto  = texto.replace("[", " ");
+          texto  = texto.replace("]", " ");
+          texto  = texto.replace("'", "");
+          texto  = texto.replace(" ", "");
+          var vector = texto.split(",");
+          var sel = document.getElementById("Ciudad");
+          /*Esta es una forma de borrar el select Ciudad y reiniciarlo cada vez 
+          que se actualicen los departamentos*/
+          document.getElementById("Ciudad").innerHTML="";
+          /*Con el for se actualizan los valores del archivo .json*/
+          for(var k=0; k<vector.length; k++){
+              option = document.createElement("OPTION");
+              option.value = vector[k];
+              option.text  = vector[k];
+              sel.add(option);}   
+           sel.onchange = function() {Seleccionarvariedad()};
+           }
+         </script>  
+          
+         <script type="text/javascript">
+         function Seleccionarvariedad() {
+             var city   = document.getElementById("Ciudad");
+             var city2  = document.getElementById("CanaOculto");
+             var texto  = city.options[city.selectedIndex].value;
+             texto  = texto.replace("'", "");
+             texto  = texto.replace("'", "");
+             texto  = texto.replace(" ", "");
+             for (var m=0;m<city2.length;m++){
+                 var a=document.getElementById("CanaOculto").options.item(m).text;
+                 if(a==texto){
+                     document.getElementById("CanaOculto").value=m+1;
+                     document.getElementById("Cana").value=m+1;
+                     var b = document.getElementById("Bxoculto").options.item(m+1).text;
+                     document.getElementById("CSS de la caña").value=b;
+                     break;
+                 }
+                 else{
+                     document.getElementById("CanaOculto").value=1;
+                     document.getElementById("Cana").value=1;
+                     var b = document.getElementById("Bxoculto").options.item(1).text;
+                     document.getElementById("CSS de la caña").value=b;
+                 }   
+             }               
+             }
+        </script>     
 {% endblock %}
 

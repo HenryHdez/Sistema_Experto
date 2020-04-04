@@ -22,6 +22,8 @@
 
 {% block content %}
     <h1 class="display-4">CONTACTO</h1>
+    <p align="justify" class="lead">Llene los siguientes campos (recibirá una respuesta a su inquietud vía correo electrónico).</p>
+    <hr class="my-4">
     <form action = "http://127.0.0.1:5000/contacto" method = "POST" enctype="multipart/form-data">
         <table align="center">
                 <tr>
@@ -29,7 +31,7 @@
                     <td style="width:400px"> <input style="width:600px" type="text" name="nombre" size="30" maxlength="200"> </td>
                 </tr>
                 <tr>
-                    <td style="width:400px"> <b> <label>Correo electrónico:</label> </b> </td>
+                    <td style="width:400px"> <b> <label>Correo electrónico (de contacto):</label> </b> </td>
                     <td style="width:400px"> <input style="width:600px" type="email" name="correo_electronico" maxlength="200" value="@"> </td>
                 </tr>
                 <tr>
@@ -44,8 +46,8 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="width:400px"> <input type="submit" value="Enviar formulario"> </td>
-                    <td style="width:400px"> <input type="Reset" value="Borrar todo"> </td> 
+                    <td style="width:400px"> <input class="btn btn-info"   type="submit" value="Enviar"> </td>
+                    <td style="width:400px"> <input class="btn btn-danger" type="Reset" value="Borrar formulario"> </td> 
                 </tr> 
         </table>  
     </form>

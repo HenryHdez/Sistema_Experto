@@ -22,20 +22,22 @@
 
 {% block content %}
         <h1 class="display-4">INFORME</h1>
+        <p align="justify" class="lead">Esta es una vista preliminar del informe, utilice los números para ver más información o el botón de descarga para guardar el documento (si requiere generar un nuevo informe vuelva a iniciar la aplicación).</p>
+        <hr class="my-4">
         <table align="center">
         {% for id, item in result.items() %}
             <tr>
-               <td style="width:350px"> <b>{{ id }}</b> </td>
-               <td style="width:350px"> {{ item }} </td>
+               <td style="width:450px"> <b>{{ id }}</b> </td>
+               <td style="width:450px"> {{ item }} </td>
             </tr>
         {% endfor %}
             <tr>
-               <td style="width:350px"> <b> Altura media sobre el nivel del mar</b> </td>
-               <td style="width:350px"> {{altu}} m</td>
+               <td style="width:450px"> <b> Altura media sobre el nivel del mar</b> </td>
+               <td style="width:450px"> {{altu}} m</td>
             </tr>
             <tr>
-               <td style="width:350px"> <b> Nivel freático</b> </td>
-               <td style="width:350px"> {{Freatico}} </td>
+               <td style="width:450px"> <b> Nivel freático</b> </td>
+               <td style="width:450px"> {{Freatico}} </td>
             </tr>
         </table>
         <br>
