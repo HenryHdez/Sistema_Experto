@@ -30,15 +30,14 @@ def usua():
     Variedad_cana=[]
     for i in range(0,len(Deptos_cana)):
         if(i==0):
-            Variedad_cana.append(Tipo_cana[i]+" (Valor por defecto)")
+            Variedad_cana.append(Tipo_cana[i]+", -Valor por defecto-, °Brix= "+str(Grados_Bx[i]))
         else:
-            Variedad_cana.append(Tipo_cana[i]+" (Disponible en: "+Deptos_cana[i]+"-"+Ciudad_cana[i]+")")
+            Variedad_cana.append(Tipo_cana[i]+", Disponible en: "+Deptos_cana[i]+"-"+Ciudad_cana[i]+", °Brix= "+str(Grados_Bx[i]))
     return render_template('usuario.html', 
                            departamentos=df.departamento, 
                            provincia=df.ciudades,
                            Ciudad_cana_1=Ciudad_cana,
                            Variedad_cana_1=Variedad_cana,
-                           Grados_Bx_1=Grados_Bx
                            )      
 
 @app.route('/informe', methods = ['POST','GET'])

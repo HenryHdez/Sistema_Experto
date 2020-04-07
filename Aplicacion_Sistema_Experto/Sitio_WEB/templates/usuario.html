@@ -94,22 +94,31 @@
             <tr>
                 <td style="width:450px"> <b>Variedad de Caña:</b> </td>
                 <td style="width:450px"> 
-                    <select id="Cana" name="Variedad de Caña">
-                        {% for l in Variedad_cana_1 %}
-                            <option value= {{loop.index}}>{{l}}</option>"
+                    <select id="Cana" name="Variedad de Caña" onchange="ActualizarCSS();">
+                        {% for u in Variedad_cana_1 %}
+                            <option value= "{{loop.index}}">"{{u}}"</option>"
                         {% endfor %}
-                    </select>                 
+                    </select>  
+                    <p><i>Nota: si no conoce la variedad de caña seleccione: -Valor por defecto-.</i></p> 
+            </tr>
+            
+            <tr>
+                <td style="width:450px"><b>Vista previa:</b></td>
+                <td>
+                    <OBJECT id="Foto">
+                        <img src="{{url_for('static', filename='Cana/POJ2878.png')}}" width="200" height="250">
+                    </OBJECT>         
                 </td>
             </tr> 
 
             <tr>
-               <td style="width:450px"> <b>CSS de la caña (°Bx):</b> </td>
-               <td style="width:450px"> <input id="CSS de la caña" type = "text" name = "CSS de la caña" value="17.1" /> </td>
+               <td style="width:450px"> <b>Concentración de Solidos Solubles (CSS) [°Brix]:</b> </td>
+               <td style="width:450px"> <input id="CSS de la caña" type = "text" name = "CSS de la caña" value="17.1" disabled/> </td>
             </tr>
-       
         </table>                    
-                
-        <!--Rotulo oculto para almacenar las ciudades temporalmente-->
+        
+        <!--Rotulo oculto para almacenar las ciudades y las 
+        variedades de caña temporalmente-->
         <select id="CiudadOculto" style="visibility:hidden">
             {% for j, valor in provincia.items() %}
                 {% if j == 4 %}
@@ -121,14 +130,8 @@
         </select> 
                 
         <select id="CanaOculto" style="visibility:hidden">
-            {% for l in Ciudad_cana_1 %}
-                <option value= {{loop.index}}>{{l}}</option>"
-            {% endfor %}
-        </select> 
-                
-        <select id="Bxoculto" style="visibility:hidden">
-            {% for l in Grados_Bx_1 %}
-                <option value= {{loop.index}}>{{l}}</option>"
+            {% for k in Ciudad_cana_1 %}
+                <option value= {{loop.index}}>{{k}}</option>"
             {% endfor %}
         </select> 
         <!--Termina el combo oculto-->
@@ -164,6 +167,7 @@
               option.text  = vector[k];
               sel.add(option);}   
            sel.onchange = function() {Seleccionarvariedad()};
+           Seleccionarvariedad();
            }
          </script>  
           
@@ -178,20 +182,44 @@
              for (var m=0;m<city2.length;m++){
                  var a=document.getElementById("CanaOculto").options.item(m).text;
                  if(a==texto){
-                     document.getElementById("CanaOculto").value=m+1;
                      document.getElementById("Cana").value=m+1;
-                     var b = document.getElementById("Bxoculto").options.item(m+1).text;
-                     document.getElementById("CSS de la caña").value=b;
                      break;
                  }
                  else{
-                     document.getElementById("CanaOculto").value=1;
                      document.getElementById("Cana").value=1;
-                     var b = document.getElementById("Bxoculto").options.item(1).text;
-                     document.getElementById("CSS de la caña").value=b;
                  }   
-             }               
+             }
+             ActualizarCSS();              
              }
         </script>     
+        
+        <script type="text/javascript">
+         function ActualizarCSS() {
+                 var ACSS      = document.getElementById("Cana");
+                 var ITEM      = ACSS.options[ACSS.selectedIndex].value;
+                 var texto     = ACSS.options[ACSS.selectedIndex].innerText;
+                 var vector1   = texto.split(",");
+                 var Var_cana  = vector1[0].substring(1);
+                 var Gr_Br1    = vector1[2].replace('\"', ''); 
+                 var vector2   = Gr_Br1.split(" ");
+                 var Gr_Br2    = vector2[2].replace(' ', ''); 
+                 document.getElementById("CSS de la caña").value=Gr_Br2; 
+                 Abririmagen(Var_cana+".png");          
+             }
+        </script> 
+
+        <script type="text/javascript">
+         function Abririmagen(Nombre_Foto){
+              //Seleccionar el objeto Foto para eliminar su contenido
+              var element = document.getElementById("Foto");
+              while (element.firstChild){element.removeChild(element.firstChild);} 
+              //Crear contenido del objeto Foto
+              var x = document.createElement("IMG");
+              x.setAttribute("src", "static/Cana/"+Nombre_Foto);
+              x.setAttribute('height', '250px');
+              x.setAttribute('width', '200px');    	
+              document.getElementById("Foto").appendChild(x);
+			}     
+        </script>			  
 {% endblock %}
 
