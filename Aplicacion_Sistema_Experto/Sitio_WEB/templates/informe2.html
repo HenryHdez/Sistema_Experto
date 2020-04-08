@@ -1,0 +1,27 @@
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <div class="jumbotron jumbotron-fluid">
+      <div class="container">
+
+        <p class="lead"><b>DATOS DE LA VARIEDAD DE CAÑA SELECCIONADA</b></p>
+        <table align="center" cellpadding="5" cellspacing="0">
+        {% for id in Etiquetas %}
+            <tr>
+               <td style="width:450px"> <b>{{ id }}</b> </td>
+               <td style="width:450px"> {{ Valores[loop.index-1] }} </td>
+            </tr>
+        {% endfor %}
+
+            <tr>
+                <td style="width:450px"><b>Foto:</b></td>
+                <td>
+                    <OBJECT id="Foto2">
+                        <img src={{url_for('static', filename=Dir)}} width="200" height="250">
+                    </OBJECT>         
+                </td>
+            </tr> 
+            
+      </div>
+    </div>
+
+

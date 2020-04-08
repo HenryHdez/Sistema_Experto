@@ -1,0 +1,27 @@
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <div class="jumbotron jumbotron-fluid">
+      <div class="container">
+
+        <p class="lead"><b>DATOS DEL ÁREA</b></p>
+        <table align="center">
+        {% for id, item in result.items() %}
+            <tr>
+               <td style="width:450px"> <b>{{ id }}</b> </td>
+               <td style="width:450px"> {{ item }} </td>
+            </tr>
+        {% endfor %}
+            <tr>
+               <td style="width:450px"> <b> Altura media sobre el nivel del mar</b> </td>
+               <td style="width:450px"> {{altu}} m</td>
+            </tr>
+            <tr>
+               <td style="width:450px"> <b> Nivel freático</b> </td>
+               <td style="width:450px"> {{Freatico}} </td>
+            </tr>
+        </table>
+
+      </div>
+    </div>
+
+

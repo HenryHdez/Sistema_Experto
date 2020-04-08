@@ -6,28 +6,50 @@ from email.mime.text import MIMEText
 import smtplib
 import os
 from werkzeug.utils import secure_filename
-         
+#from fpdf import FPDF, HTMLMixin
+#config = pdfkit.configuration(wkhtmltopdf='C:/Users/hahernandez/.conda/envs/experto/Lib/site-packages/wkhtmltopdf')
+
 app = Flask(__name__)
 uploads_dir = os.path.join(app.instance_path, 'uploads')
 try:
     os.makedirs(uploads_dir, True)
 except OSError: 
     print('Directorio existente')
+    
+class MyFPDF(FPDF, HTMLMixin):
+    pass
 
 @app.route('/')
 def index():
    return render_template('principal.html')
 
+#Está función permite llamar al esquema de generar dotas de usuario
 @app.route('/usuario')
 def usua():
-    global df   
+    global df  
+    global Deptos_cana
+    global Ciudad_cana
+    global Tipo_cana
+    global Grados_Bx
+    global Nivel_pH
+    global Nivel_azucar
+    global Nivel_Sacarosa
+    global Nivel_pureza
+    global Nivel_Fosforo
+    global Nivel_Calidad
     df = pd.read_json("Colombia.json")
     cana=pd.read_excel('Variedades.xlsx')
-    Deptos_cana = cana['Depto'].values
-    Ciudad_cana = cana['Ciudad'].values
-    Tipo_cana   = cana['Tipo'].values
-    Grados_Bx   = cana['Br'].values
-    Variedad_cana=[]
+    Deptos_cana   = cana['Depto'].values
+    Ciudad_cana   = cana['Ciudad'].values
+    Tipo_cana     = cana['Tipo'].values
+    Grados_Bx     = cana['Br'].values
+    Nivel_pH      = cana['pH'].values
+    Nivel_azucar  = cana['Azucares'].values
+    Nivel_Sacarosa= cana['Sacarosa'].values
+    Nivel_pureza  = cana['Pureza'].values
+    Nivel_Fosforo = cana['Forforo'].values
+    Nivel_Calidad = cana['Calidad'].values    
+    Variedad_cana =[]
     for i in range(0,len(Deptos_cana)):
         if(i==0):
             Variedad_cana.append(Tipo_cana[i]+", -Valor por defecto-, °Brix= "+str(Grados_Bx[i]))
@@ -40,9 +62,104 @@ def usua():
                            Variedad_cana_1=Variedad_cana,
                            )      
 
+#Estas funciones permiten la generación del informe
+@app.route('/informe4')
+def infor4():
+    global df
+    global result
+    global Dept
+    global altura_media
+    global NivelFre
+    return render_template('informe4.html', result = result, value=Dept, altu=altura_media, Freatico=NivelFre) 
+
+@app.route('/informe3')
+def infor3():
+    global df
+    global result
+    global Dept
+    global altura_media
+    global NivelFre
+    return render_template('informe3.html', result = result, value=Dept, altu=altura_media, Freatico=NivelFre) 
+
+@app.route('/informe2')
+def infor2():
+    global df  
+    global Deptos_cana
+    global Ciudad_cana
+    global Tipo_cana
+    global Grados_Bx
+    global Nivel_pH
+    global Nivel_azucar
+    global Nivel_Sacarosa
+    global Nivel_pureza
+    global Nivel_Fosforo
+    global Nivel_Calidad
+    a=result.to_dict()
+    index=int(a['Variedad de Caña'])-1
+    Formulario_2_Etiquetas=[]
+    Formulario_2_Valores=[]  
+    Formulario_2_Etiquetas.append('Variedad de Caña')
+    Formulario_2_Valores.append(Tipo_cana[index])    
+    Formulario_2_Etiquetas.append('Grados Brix')
+    Formulario_2_Valores.append(Grados_Bx[index]) 
+    Formulario_2_Etiquetas.append('pH')
+    Formulario_2_Valores.append(Nivel_pH[index])    
+    Formulario_2_Etiquetas.append('Azúcares reductores (%)')
+    Formulario_2_Valores.append(Nivel_azucar[index]) 
+    Formulario_2_Etiquetas.append('Sacarosa (%)')
+    Formulario_2_Valores.append(Nivel_Sacarosa[index])    
+    Formulario_2_Etiquetas.append('Pureza (%)')
+    Formulario_2_Valores.append(Nivel_pureza[index])  
+    Formulario_2_Etiquetas.append('Fósforo (ppm)')
+    Formulario_2_Valores.append(Nivel_Fosforo[index])    
+    Formulario_2_Etiquetas.append('Calidad de la panela')
+    Formulario_2_Valores.append(Nivel_Calidad[index])  
+    Formulario_2_Etiquetas.append('Posible ubicación')
+    Formulario_2_Valores.append(Deptos_cana[index]+', '+Ciudad_cana[index])    
+    Directorio = 'Cana/'+Tipo_cana[index]+'.png'   
+    pagina = render_template('informe2.html', 
+                           Etiquetas = Formulario_2_Etiquetas, 
+                           Valores = Formulario_2_Valores,
+                           Dir = Directorio)
+#    pdf = MyFPDF()
+#    pdf.add_page()
+#    pdf.write_html(pagina)
+#    pdf.output('html.pdf','F')
+    return pagina  
+
+@app.route('/informe1')
+def infor1():
+    global df
+    global result
+    global altura_media
+    global NivelFre
+    vector=['Nombre de usuario','Departamento','Ciudad','Área caña sembrada alrededor',
+            'Área caña sembrada propia','Periodo vegetativo','Caña por hectárea esperada',
+            'Periodo vegetativo','Caña por hectárea esperada','Número de moliendas',
+            'Días de trabajo a la semana','Horas de trabajo al día','Variedad de Caña']
+    Formulario_1_Etiquetas=[]
+    Formulario_1_Valores=[]
+    a=result.to_dict()
+    for i in a:
+        Formulario_1_Etiquetas.append(i)
+        Formulario_1_Valores.append(a[i])
+    r=len(a)
+    del(Formulario_1_Etiquetas[r-1])
+    del(Formulario_1_Valores[r-1])
+    Formulario_1_Etiquetas.append('Altura media sobre el nivel del mar')
+    Formulario_1_Valores.append(str(altura_media)+' m')
+    Formulario_1_Etiquetas.append('Nivel freático')
+    Formulario_1_Valores.append(str(NivelFre))    
+    return render_template('informe1.html', 
+                           Etiquetas = Formulario_1_Etiquetas, 
+                           Valores = Formulario_1_Valores)     
+
 @app.route('/informe', methods = ['POST','GET'])
 def infor():
     global df
+    global result
+    global altura_media
+    global NivelFre
     if request.method == 'POST':
         result = request.form
         Dept=result.get('Departamento')
@@ -54,8 +171,9 @@ def infor():
         H2O=H2O.tolist()
         altura_media=amsnm[D_aux.index(Dept)]
         NivelFre=H2O[D_aux.index(Dept)]
-        return render_template('informe.html', result = result, value=Dept, altu=altura_media, Freatico=NivelFre)    
-
+        return render_template('informe.html') 
+#Aquí termina la generación del informe.
+        
 @app.route('/referencias')
 def refe():
    return render_template('referencias.html')
