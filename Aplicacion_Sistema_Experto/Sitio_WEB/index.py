@@ -6,6 +6,9 @@ from email.mime.text import MIMEText
 import smtplib
 import os
 from werkzeug.utils import secure_filename
+import Diseno_inicial
+#from libraries import Aplicacion
+
 #from fpdf import FPDF, HTMLMixin
 #config = pdfkit.configuration(wkhtmltopdf='C:/Users/hahernandez/.conda/envs/experto/Lib/site-packages/wkhtmltopdf')
 
@@ -16,8 +19,8 @@ try:
 except OSError: 
     print('Directorio existente')
     
-class MyFPDF(FPDF, HTMLMixin):
-    pass
+#class MyFPDF(FPDF, HTMLMixin):
+#    pass
 
 @app.route('/')
 def index():
@@ -37,6 +40,7 @@ def usua():
     global Nivel_pureza
     global Nivel_Fosforo
     global Nivel_Calidad
+    global Nivel_brpane
     df = pd.read_json("Colombia.json")
     cana=pd.read_excel('Variedades.xlsx')
     Deptos_cana   = cana['Depto'].values
@@ -48,7 +52,8 @@ def usua():
     Nivel_Sacarosa= cana['Sacarosa'].values
     Nivel_pureza  = cana['Pureza'].values
     Nivel_Fosforo = cana['Forforo'].values
-    Nivel_Calidad = cana['Calidad'].values    
+    Nivel_Calidad = cana['Calidad'].values 
+    Nivel_brpane  = cana['BrPanela'].values
     Variedad_cana =[]
     for i in range(0,len(Deptos_cana)):
         if(i==0):
@@ -65,21 +70,13 @@ def usua():
 #Estas funciones permiten la generación del informe
 @app.route('/informe4')
 def infor4():
-    global df
-    global result
-    global Dept
-    global altura_media
-    global NivelFre
-    return render_template('informe4.html', result = result, value=Dept, altu=altura_media, Freatico=NivelFre) 
+    return render_template('informe4.html') 
 
 @app.route('/informe3')
 def infor3():
-    global df
-    global result
-    global Dept
-    global altura_media
-    global NivelFre
-    return render_template('informe3.html', result = result, value=Dept, altu=altura_media, Freatico=NivelFre) 
+    global Diccionario
+    Diseno_inicial.datos_entrada(Diccionario)
+    return render_template('informe3.html',result=Diccionario) 
 
 @app.route('/informe2')
 def infor2():
@@ -94,13 +91,17 @@ def infor2():
     global Nivel_pureza
     global Nivel_Fosforo
     global Nivel_Calidad
+    global Nivel_brpane
+    global Formulario_2_Etiquetas
+    global Formulario_2_Valores
+    global Diccionario
     a=result.to_dict()
     index=int(a['Variedad de Caña'])-1
     Formulario_2_Etiquetas=[]
     Formulario_2_Valores=[]  
     Formulario_2_Etiquetas.append('Variedad de Caña')
     Formulario_2_Valores.append(Tipo_cana[index])    
-    Formulario_2_Etiquetas.append('Grados Brix')
+    Formulario_2_Etiquetas.append('Grados Brix de la caña')
     Formulario_2_Valores.append(Grados_Bx[index]) 
     Formulario_2_Etiquetas.append('pH')
     Formulario_2_Valores.append(Nivel_pH[index])    
@@ -114,8 +115,12 @@ def infor2():
     Formulario_2_Valores.append(Nivel_Fosforo[index])    
     Formulario_2_Etiquetas.append('Calidad de la panela')
     Formulario_2_Valores.append(Nivel_Calidad[index])  
+    Formulario_2_Etiquetas.append('Grados Brix de la panela')
+    Formulario_2_Valores.append(Nivel_brpane[index])
     Formulario_2_Etiquetas.append('Posible ubicación')
-    Formulario_2_Valores.append(Deptos_cana[index]+', '+Ciudad_cana[index])    
+    Formulario_2_Valores.append(Deptos_cana[index]+', '+Ciudad_cana[index]) 
+    Dict_aux=dict(zip(Formulario_2_Etiquetas,Formulario_2_Valores))
+    Diccionario.update(Dict_aux)
     Directorio = 'Cana/'+Tipo_cana[index]+'.png'   
     pagina = render_template('informe2.html', 
                            Etiquetas = Formulario_2_Etiquetas, 
@@ -133,8 +138,9 @@ def infor1():
     global result
     global altura_media
     global NivelFre
+    global Diccionario
     vector=['Nombre de usuario','Departamento','Ciudad','Área caña sembrada alrededor',
-            'Área caña sembrada propia','Periodo vegetativo','Caña por hectárea esperada',
+            'Área caña sembrada propia','Periodo vegetativo','Caña por esperada hectárea',
             'Periodo vegetativo','Caña por hectárea esperada','Número de moliendas',
             'Días de trabajo a la semana','Horas de trabajo al día','Variedad de Caña']
     Formulario_1_Etiquetas=[]
@@ -149,7 +155,8 @@ def infor1():
     Formulario_1_Etiquetas.append('Altura media sobre el nivel del mar')
     Formulario_1_Valores.append(str(altura_media)+' m')
     Formulario_1_Etiquetas.append('Nivel freático')
-    Formulario_1_Valores.append(str(NivelFre))    
+    Formulario_1_Valores.append(str(NivelFre)) 
+    Diccionario=dict(zip(Formulario_1_Etiquetas,Formulario_1_Valores))
     return render_template('informe1.html', 
                            Etiquetas = Formulario_1_Etiquetas, 
                            Valores = Formulario_1_Valores)     
