@@ -67,20 +67,18 @@ def usua():
                            Variedad_cana_1=Variedad_cana,
                            )      
 
-#Estas funciones permiten la generación del informe
-@app.route('/informe4')
-def infor4():
-    return render_template('informe4.html') 
-
-@app.route('/informe3')
-def infor3():
+def generar_valores_informe():
+    """Está función genera los rotulos de las páginas 1 y 2 del informe en HTML"""
+    global df
+    global result
+    global altura_media
+    global NivelFre
     global Diccionario
-    Diseno_inicial.datos_entrada(Diccionario)
-    return render_template('informe3.html',result=Diccionario) 
-
-@app.route('/informe2')
-def infor2():
-    global df  
+    global Formulario_1_Etiquetas
+    global Formulario_1_Valores
+    global Formulario_2_Etiquetas
+    global Formulario_2_Valores
+    global Directorio
     global Deptos_cana
     global Ciudad_cana
     global Tipo_cana
@@ -94,7 +92,37 @@ def infor2():
     global Nivel_brpane
     global Formulario_2_Etiquetas
     global Formulario_2_Valores
-    global Diccionario
+    global Diccionario    
+    """Creación de la primer parte del diccionario"""
+    Dept=result.get('Departamento')
+    D_aux=df.departamento
+    D_aux=D_aux.tolist()
+    amsnm=df.altura
+    amsnm=amsnm.tolist()
+    H2O=df.aguasubterranea
+    H2O=H2O.tolist()
+    altura_media=amsnm[D_aux.index(Dept)]
+    NivelFre=H2O[D_aux.index(Dept)]
+    vector=['Nombre de usuario','Departamento','Ciudad','Área caña sembrada alrededor',
+            'Área caña sembrada propia','Periodo vegetativo','Caña por esperada hectárea',
+            'Periodo vegetativo','Caña por hectárea esperada','Número de moliendas',
+            'Días de trabajo a la semana','Horas de trabajo al día','Variedad de Caña']
+    Formulario_1_Etiquetas=[]
+    Formulario_1_Valores=[]
+    a=result.to_dict()
+    for i in a:
+        Formulario_1_Etiquetas.append(i)
+        Formulario_1_Valores.append(a[i])
+    r=len(a)
+    del(Formulario_1_Etiquetas[r-1])
+    del(Formulario_1_Valores[r-1])
+    Formulario_1_Etiquetas.append('Altura media sobre el nivel del mar')
+    Formulario_1_Valores.append(str(altura_media)+' m')
+    Formulario_1_Etiquetas.append('Nivel freático')
+    Formulario_1_Valores.append(str(NivelFre)) 
+    Diccionario=dict(zip(Formulario_1_Etiquetas,Formulario_1_Valores))  
+    
+    """Creación de la segunda parte del diccionario"""
     a=result.to_dict()
     index=int(a['Variedad de Caña'])-1
     Formulario_2_Etiquetas=[]
@@ -121,66 +149,55 @@ def infor2():
     Formulario_2_Valores.append(Deptos_cana[index]+', '+Ciudad_cana[index]) 
     Dict_aux=dict(zip(Formulario_2_Etiquetas,Formulario_2_Valores))
     Diccionario.update(Dict_aux)
-    Directorio = 'Cana/'+Tipo_cana[index]+'.png'   
-    pagina = render_template('informe2.html', 
-                           Etiquetas = Formulario_2_Etiquetas, 
-                           Valores = Formulario_2_Valores,
-                           Dir = Directorio)
+    Directorio = 'Cana/'+Tipo_cana[index]+'.png'     
+    """Calculo de la hornilla"""
+    Diccionario=Diseno_inicial.datos_entrada(Diccionario)
+    """Creación del pdf"""
+#    pagina = 
 #    pdf = MyFPDF()
 #    pdf.add_page()
 #    pdf.write_html(pagina)
 #    pdf.output('html.pdf','F')
-    return pagina  
+
+    
+#Enlaces para la generación del informe
+@app.route('/informe4')
+def infor4():
+    global Diccionario
+    return render_template('informe4.html',result=Diccionario) 
+
+@app.route('/informe3')
+def infor3():
+    global Diccionario
+    return render_template('informe3.html',result=Diccionario) 
+
+@app.route('/informe2')
+def infor2():
+    global Formulario_2_Etiquetas
+    global Formulario_2_Valores
+    global Directorio
+    return render_template('informe2.html', 
+                           Etiquetas = Formulario_2_Etiquetas, 
+                           Valores = Formulario_2_Valores,
+                           Dir = Directorio)  
 
 @app.route('/informe1')
 def infor1():
-    global df
-    global result
-    global altura_media
-    global NivelFre
-    global Diccionario
-    vector=['Nombre de usuario','Departamento','Ciudad','Área caña sembrada alrededor',
-            'Área caña sembrada propia','Periodo vegetativo','Caña por esperada hectárea',
-            'Periodo vegetativo','Caña por hectárea esperada','Número de moliendas',
-            'Días de trabajo a la semana','Horas de trabajo al día','Variedad de Caña']
-    Formulario_1_Etiquetas=[]
-    Formulario_1_Valores=[]
-    a=result.to_dict()
-    for i in a:
-        Formulario_1_Etiquetas.append(i)
-        Formulario_1_Valores.append(a[i])
-    r=len(a)
-    del(Formulario_1_Etiquetas[r-1])
-    del(Formulario_1_Valores[r-1])
-    Formulario_1_Etiquetas.append('Altura media sobre el nivel del mar')
-    Formulario_1_Valores.append(str(altura_media)+' m')
-    Formulario_1_Etiquetas.append('Nivel freático')
-    Formulario_1_Valores.append(str(NivelFre)) 
-    Diccionario=dict(zip(Formulario_1_Etiquetas,Formulario_1_Valores))
+    global Formulario_1_Etiquetas
+    global Formulario_1_Valores
     return render_template('informe1.html', 
                            Etiquetas = Formulario_1_Etiquetas, 
                            Valores = Formulario_1_Valores)     
-
+    
 @app.route('/informe', methods = ['POST','GET'])
 def infor():
-    global df
     global result
-    global altura_media
-    global NivelFre
     if request.method == 'POST':
         result = request.form
-        Dept=result.get('Departamento')
-        D_aux=df.departamento
-        D_aux=D_aux.tolist()
-        amsnm=df.altura
-        amsnm=amsnm.tolist()
-        H2O=df.aguasubterranea
-        H2O=H2O.tolist()
-        altura_media=amsnm[D_aux.index(Dept)]
-        NivelFre=H2O[D_aux.index(Dept)]
+        generar_valores_informe()
         return render_template('informe.html') 
-#Aquí termina la generación del informe.
-        
+
+#Enlaces para las otras páginas referencias, nosotros, presentación, etc.        
 @app.route('/referencias')
 def refe():
    return render_template('referencias.html')
@@ -193,6 +210,7 @@ def nosot():
 def contac_form():
    return render_template('contacto.html')
 
+#Página de contacto.
 @app.route('/contacto', methods = ['POST'])
 def contac_rta():
     try:
@@ -238,6 +256,5 @@ def contac_rta():
     except:
         return render_template('respuesta.html',rta="ERROR AL ENVIAR EL MENSAJE (INTENTE NUEVAMENTE).")
     
-
 if __name__ == '__main__':
    app.run()
