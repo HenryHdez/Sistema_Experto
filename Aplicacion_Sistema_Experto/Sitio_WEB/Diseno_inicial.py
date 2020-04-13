@@ -20,7 +20,7 @@ def datos_entrada(Diccionario):
     #CSS Panela	
     #Altura del Sitio	
     
-    """Ojo es un supuestos (Estas son otras variables de entrada)"""
+    """Nota: los valores de estas variables son supuestos (Estas son otras variables de entrada)"""
     Porcentaje_extraccion=0.6 #60%
     Bagazillo_Prelimpiador=0.02 #2%
     Cachaza=0.04 #4%    
@@ -108,7 +108,14 @@ def datos_entrada(Diccionario):
     Poder_Calorifico_bagazo=17.85-20.35*Humedad_bagazo
     Calor_Suministrado=(Capacidad_Hornilla*Factor_consumo_bagazo)*Poder_Calorifico_bagazo/3.6	
     Area_de_Parrilla=Calor_Suministrado/1000	    
-    
+
+    """Calculos de calor requerido por etapa"""   
+    Q_Etapa_Clarificacion=((Masa_A_clarificacion*Q_Especifico_Inicial*(Ebullicion_Clarificacion-Temperatura_Ambiente))+((Masa_A_clarificacion-Masa_A_Evaporacion)*Entalpia_Clarificacion))/3600   
+    Q_Etapa_Evaporacion=(Masa_A_Evaporacion*Q_Especifico_Clarificado*(Ebullicion_Evaporacion-Ebullicion_Clarificacion)+(Masa_A_Evaporacion-Masa_A_Concentracion)*Entalpia_Evaporacion)/3600
+    Q_Etapa_Concentracion=(Masa_A_Concentracion*Q_Especifico_Eva*(Ebullicion_Concentracion-Ebullicion_Evaporacion)+(Masa_A_Concentracion-Capacidad_Hornilla)*Entalpia_Concentracion)/3600
+    Total_Etapa=Q_Etapa_Clarificacion+Q_Etapa_Evaporacion+Q_Etapa_Concentracion
+    Total_Etapa_F_L=(Masa_Jugo*(Ebullicion_Concentracion-Temperatura_Ambiente)*Q_Especifico_Inicial+Masa_Agua_Evaporar*((Entalpia_Clarificacion+Entalpia_Concentracion)/2))/3600
+       
     """Ampliación del diccionario"""
     Etiquetas=['DATOS DE ENTRADA',
                'Capacidad Estimada de la hornilla',			
@@ -170,7 +177,13 @@ def datos_entrada(Diccionario):
                'Otros datos',
                'Poder Calorifico Vagazo',
                'Calor Suministrado',
-               'Area de Parrilla'               
+               'Area de Parrilla',
+               'CALOR REQUERIDO POR ETAPA',
+               'Clarificación [KW]',
+               'Evaporación [KW]',
+               'Concentración',
+               'Total [KW]',
+               'Total(F.L.) [KW]'
                ]
     
     Valores=['DATOS DE ENTRADA',
@@ -233,9 +246,122 @@ def datos_entrada(Diccionario):
              'Otros datos',
              Poder_Calorifico_bagazo,
              Calor_Suministrado,
-             Area_de_Parrilla
+             Area_de_Parrilla,
+             'CALOR REQUERIDO POR ETAPA',
+             Q_Etapa_Clarificacion,
+             Q_Etapa_Evaporacion,
+             Q_Etapa_Concentracion,
+             Total_Etapa,
+             Total_Etapa_F_L
             ]
     
     Dict_aux=dict(zip(Etiquetas,Valores))
     Diccionario.update(Dict_aux)
     return Diccionario
+
+def Calculo_por_etapas(Diccionario):
+    """Calculo de la hornilla por etapas"""   
+    Lista_Contenido=[]
+    Lista_columnas=[]
+    #Etapas es un supuesto de cuantas pailas debe tener la hornilla
+    Etapas=12
+    #Saturador "minimo son dos etapas"
+    if (Etapas>2):
+        Factor_Division=Etapas-2
+    else:
+        Factor_Division=2     
+    #Caracteristicas de las celdas de cada columna (Lista_columnas)
+    #Fila 0 concentración de solidos inicial
+    #Fila 1 Concentración de solidos final
+    #Fila 2 Concentración promedio
+    #Fila 3 Masa de jugo de entrada
+    #Fila 4 Calor Especifico P Cte jugo
+    #Fila 5 Densidad del Jugo
+    #Fila 6 Volumen de jugo kg
+    #Fila 7 Volumen de jugo en L
+    #Fila 8 Temperatura de Entrada
+    #Fila 9 Temperatura de Salida
+    #Fila 10 Entalpia de Vaporización
+    #Fila 11 Masa de Agua a Evaporar
+    #Fila 12 Calor Nece Calc por Etapa
+    for i in range(13):
+        for j in range (Etapas):
+            Lista_columnas.append(float(i+j))
+        Lista_Contenido.append(Lista_columnas)
+        Lista_columnas=[]
+        
+    Lista_Contenido[0][0]=float(Diccionario['CSS del jugo posevaporación'])         #Concentracion_solidos_inicial (CSS02)
+    Lista_Contenido[1][0]=float(Diccionario['CSS panela'])                          #Concentracion_solidos_final   (CSSF1)
+    Lista_Contenido[0][Etapas-1]=float(Diccionario['CSS del jugo de Caña'])         #Concentracion_solidos_inicial (CSS01)
+    Lista_Contenido[1][Etapas-1]=float(Diccionario['CSS del jugo clarificado'])     #Concentracion_solidos_final   (CSSF1)
+    
+    ite=0
+    for i in range(Etapas-2,0,-1):
+        Lista_Contenido[0][i]=Lista_Contenido[1][1+i]
+        if(ite==0):
+            Lista_Contenido[1][i]=((Lista_Contenido[0][0]-Lista_Contenido[0][i])/Factor_Division)+Lista_Contenido[0][i]
+            ite=ite+1
+        else:
+            Lista_Contenido[1][i]=((Lista_Contenido[0][0]-Lista_Contenido[0][Etapas-2])/Factor_Division)+Lista_Contenido[0][i]
+            
+    for i in range((Etapas-1),-1,-1):
+        #Concentración promedio=(Concentracion_solidos_inicial+Concentracion_solidos_final)/2
+        Lista_Contenido[2][i]=(Lista_Contenido[0][i]+Lista_Contenido[1][i])/2
+        if(i==Etapas-1):
+            #Masa de jugo de entrada
+            Lista_Contenido[3][i]=float(Diccionario['A clarificación'])
+        else:
+            #Masa de jugo de entrada=(Masa de jugo etapa anterior*CCS inicial etapa anterior)/CCS Final etapa anterior
+            Lista_Contenido[3][i]=Lista_Contenido[3][i+1]*Lista_Contenido[0][i+1]/Lista_Contenido[1][i+1]    
+        #Calor_Especifico_P_Cte_jugo=4.18*(1-(0.006*Concetracion_promedio))
+        Lista_Contenido[4][i]=4.18*(1-(0.006*Lista_Contenido[2][i]))
+        #Densidad_del_Jugo=997.39+(4.46*Concetracion_promedio)
+        Lista_Contenido[5][i]=997.39+(4.46*Lista_Contenido[2][i])
+        #Volumen_jugo=Masa_jugo_de_entrada/Densidad_del_Jugo
+        Lista_Contenido[6][i]=Lista_Contenido[3][i]/Lista_Contenido[5][i]
+        #Volumen_jugo_L=Volumen_jugo*1000
+        Lista_Contenido[7][i]=Lista_Contenido[6][i]*1000.0
+        if(i==0):
+            #Temperatura_Entrada=Temperatura ambiente
+            Lista_Contenido[8][i]=float(Diccionario['Temperatura Ambiente'])        
+        else:
+            #Temperatura_Entrada=Temperatura_ebullición_agua+0.2209*math.exp(0.0557*Concentracion_solidos_inicial)
+            Lista_Contenido[8][i]=float(Diccionario['Temperatura Ebullición Agua'])+0.2209*math.exp(0.0557*Lista_Contenido[0][i])
+        if(i==0):    
+            #Temperatura_Salida=Supuesta
+            Lista_Contenido[9][i]=60.0        
+        else:    
+            #Temperatura_Salida=G37+0.2209*math.exp(0.0557*Concentracion_solidos_final)
+            Lista_Contenido[9][i]=float(Diccionario['Temperatura Ebullición Agua'])+0.2209*math.exp(0.0557*Lista_Contenido[1][i])    
+        #Entalpia_Vaporizacion=(2492.9-(2.0523*Temperatura_Entrada))-(0.0030752*(Temperatura_Entrada**2))
+        Lista_Contenido[10][i]=(2492.9-(2.0523*Lista_Contenido[8][i]))-(0.0030752*(Lista_Contenido[8][i]**2))
+        #Masa_Agua_Evaporar=Masa_jugo_de_entrada-(Masa_jugo_de_entrada*Concentracion_solidos_inicial/Concentracion_solidos_final)
+        Lista_Contenido[11][i]=Lista_Contenido[3][i]-(Lista_Contenido[i][3]*Lista_Contenido[0][i]/Lista_Contenido[1][i])
+        #Calor_por_Etapa=(Masa_jugo_de_entrada*Calor_Especifico_P_Cte_jugo*(Temperatura_Salida-Temperatura_Entrada)+Masa_Agua_Evaporar*Entalpia_Vaporizacion)/3600
+        Lista_Contenido[12][i]=(Lista_Contenido[3][i]*Lista_Contenido[4][i]*(Lista_Contenido[9][i]-Lista_Contenido[8][i])+Lista_Contenido[i][11]*Lista_Contenido[i][10])/3600.0
+
+#    for i in range (13):
+#        texto=""
+#        for j in range (Etapas):
+#            texto=texto+" "+str(round(Lista_Contenido[j][i],3))
+#        print(texto+"\n")
+        
+    Etiquetas=[
+               'Concentracion de Solidos Inicial [ºBrix]',
+               'Concentracion de Solidos Final [ºBrix]',
+               'Concentracion de Solidos Promedio [ºBrix]',
+               'Masa de Jugo Entrada [Kg]',
+               'Calor Especifico P Cte jugo [KJ/Kg °C]',
+               'Densidad del Jugo [kg/m3]',
+               'Volumen de jugo [m^3/kg]',
+               'Volumen de jugo [L]',
+               'Temperatura de Entrada [ºC]',
+               'Temperatura de Salida [ºC]',
+               'Entalpia de Vaporización [KJ/kg]',
+               'Masa de Agua a Evaporar [Kg]',
+               'Calor Nece Calc por Etapa [KW]']
+    
+    Dict_aux=dict(zip(Etiquetas,Lista_Contenido))    
+    Dict_aux_2=dict(zip(['Etapas'],[Etapas]))  
+    Dict_aux.update(Dict_aux_2)
+    return Dict_aux

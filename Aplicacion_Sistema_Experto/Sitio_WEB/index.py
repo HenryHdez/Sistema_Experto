@@ -7,7 +7,7 @@ import smtplib
 import os
 from werkzeug.utils import secure_filename
 import Diseno_inicial
-#from libraries import Aplicacion
+import Pailas
 
 #from fpdf import FPDF, HTMLMixin
 #config = pdfkit.configuration(wkhtmltopdf='C:/Users/hahernandez/.conda/envs/experto/Lib/site-packages/wkhtmltopdf')
@@ -92,7 +92,8 @@ def generar_valores_informe():
     global Nivel_brpane
     global Formulario_2_Etiquetas
     global Formulario_2_Valores
-    global Diccionario    
+    global Diccionario 
+    global Diccionario_2
     """Creación de la primer parte del diccionario"""
     Dept=result.get('Departamento')
     D_aux=df.departamento
@@ -151,7 +152,12 @@ def generar_valores_informe():
     Diccionario.update(Dict_aux)
     Directorio = 'Cana/'+Tipo_cana[index]+'.png'     
     """Calculo de la hornilla"""
-    Diccionario=Diseno_inicial.datos_entrada(Diccionario)
+    Diccionario   = Diseno_inicial.datos_entrada(Diccionario)
+    Diccionario_2 = Diseno_inicial.Calculo_por_etapas(Diccionario)
+    Pailas.Mostrar_pailas(
+            Diccionario_2['Volumen de jugo [m^3/kg]'],
+            int(Diccionario_2['Etapas'])
+            )
     """Creación del pdf"""
 #    pagina = 
 #    pdf = MyFPDF()
@@ -164,7 +170,7 @@ def generar_valores_informe():
 @app.route('/informe4')
 def infor4():
     global Diccionario
-    return render_template('informe4.html',result=Diccionario) 
+    return render_template('informe4.html',result=Diccionario_2) 
 
 @app.route('/informe3')
 def infor3():
