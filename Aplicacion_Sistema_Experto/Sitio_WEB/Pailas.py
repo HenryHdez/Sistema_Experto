@@ -134,15 +134,126 @@ def Generar_reporte(D1,D2):
             puntero_h=puntero_h-80
     #Gruardas informe en pdf
     canvas.save()
-
-#Funciones para estimar el volumen de cada paila, donde
+#    fl=0
+#    Dibujar_plano("Hola"+str(fl),6,1,2,3,4,5,6,7,8,9,10,11,12,13,14,fl)
+    
+"""Funciones para estimar el volumen de cada paila, donde"""
     #Hfn        Altura de fondo
-    #Hfa o hfl  Alftura falca
+    #Hfa o hfl  Altura falca
     #hal        Altura aletas
     #An o A     Ancho de paila
     #Hc         Altura de casco
     #H          Altura total
+#Funciones para dibujar planos acotados
+    
+def Crear_plano_pdf(directorio_imagen, Nombre_archivo, Nombre_Usuario, Nombre_Paila, Valores_plano, valores_eliminar):
+    from reportlab.lib.pagesizes import letter
+    from reportlab.pdfgen import canvas
+    Etiquetas=['Altura de la falca','Altura del fondo','Ancho', 'Ancho', 'Longitud',
+               'Longitud', 'Angulo', 'Altura aletas', 'Separación entre aletas', 
+               'Número de aletas', 'Altura del casco', 'Ancho del casco',
+               'Cantidad de tubos', 'Diametro del tubo', 'Longitud del tubo',
+               'Longitud canal', 'Cantidad de canales']
+    Conv=['A','B','C','D','E','G','I','F','H','J','K','L','M','N','O','P','Q']
+    for i in range(len(valores_eliminar)-1,-1,-1):
+        Valores_plano.pop(valores_eliminar[i])
+        Etiquetas.pop(valores_eliminar[i])
+        Conv.pop(valores_eliminar[i])
 
+        
+    canvas = canvas.Canvas(Nombre_archivo+".pdf", pagesize=letter)
+    canvas.drawImage(directorio_imagen, 0, 0, width=610, height=790)
+    canvas.setLineWidth(0.5)
+    canvas.line(55,128,300,128)
+    for i in range(len(Etiquetas)):
+        Puntero=120-(i*9)
+        canvas.setFont('Helvetica-Bold', 9)
+        canvas.drawString(57, Puntero, Etiquetas[i])
+        canvas.setFont('Helvetica-Bold', 9)
+        canvas.drawString(195, Puntero, Conv[i])
+        canvas.setFont('Helvetica', 9)
+        canvas.drawString(250, Puntero, str(round(Valores_plano[i],3)))
+        canvas.line(55,Puntero-2,300,Puntero-2)
+    canvas.setFont('Helvetica-Bold', 9)
+    canvas.drawString(150, 130, 'CONVENCIONES') 
+    canvas.setFont('Helvetica-Bold', 7)
+    canvas.drawString(370, 76, Nombre_Usuario)   
+    canvas.drawString(370, 67, Nombre_Paila)  
+    canvas.drawString(370, 60, 'AGROSAVIA') 
+    canvas.setFont('Helvetica-Bold', 5)
+    tiempo = time.asctime(time.localtime(time.time()))
+    canvas.drawString(460,35,str(tiempo))
+    canvas.line(55,128,55,Puntero-2)
+    canvas.line(180,128,180,Puntero-2)
+    canvas.line(220,128,220,Puntero-2)
+    canvas.line(300,128,300,Puntero-2)
+    canvas.save()
+            
+def Dibujar_plano(Nombre_Sitio,Nombre_archivo,Tipo_paila,H_fl,H_fn,Ancho,L,Ho,Hc,N_Aletas,h_Aletas,Angulo,nT,dT,lT,lC,Cantidad_canales,Activar_Aletas):
+    #Convertir medidas en milimetros
+    A=H_fl*1000                             #0
+    B=H_fn*1000                             #1
+    C=Ancho*1000                            #2
+    G=L*1000                                #3
+    E=(L*1000)+100                          #4
+    D=2*(math.sin(90-Angulo)*H_fl)+Ancho    #5
+    I=Angulo                                #6
+    F=h_Aletas                              #7
+    H=0.07*1000                             #8- 0.07 es la separación entre aletas
+    J=N_Aletas                              #9
+    K=Ho                                    #10
+    L=Hc                                    #11 ACDIK
+    M=nT                                    #12
+    N=dT                                    #13
+    O=lT                                    #14
+    P=lC                                    #15
+    Q=Cantidad_canales                      #16
+    Valores_plano=[A,B,C,D,E,G,I,F,H,J,K,L,M,N,O,P,Q]
+    
+    if Tipo_paila==1:
+        if Activar_Aletas==1:
+            Crear_plano_pdf('static/Pailas/Plana_con_aletas.png', Nombre_archivo,
+                            Nombre_Sitio, 'Diagrama de una paila plana con aletas', Valores_plano, [10,11,12,13,14,15,16])
+        else:
+            Crear_plano_pdf('static/Pailas/Plana_sin_aletas.png', Nombre_archivo,
+                            Nombre_Sitio, 'Diagrama de una paila plana sin aletas', Valores_plano, [7,8,9,10,11,12,13,14,15,16])
+    
+    elif Tipo_paila==2: #sin plano
+        if Activar_Aletas==1:
+            Crear_plano_pdf('static/Pailas/Pirotubular_circular_con_aletas.png', Nombre_archivo,
+                            Nombre_Sitio, 'Diagrama de una paila pirotubular circular con aletas', Valores_plano, [10,11,14,15,16])
+        else:
+            Crear_plano_pdf('static/Pailas/Pirotubular_circular_sin_aletas.png', Nombre_archivo,
+                            Nombre_Sitio, 'Diagrama de una paila pirotubular circular sin aletas', Valores_plano, [7,8,9,10,11,14,15,16])
+    
+    elif Tipo_paila==3:
+        Crear_plano_pdf('static/Pailas/Semiesferica.png', Nombre_archivo,
+                        Nombre_Sitio, 'Diagrama de una paila semiesférica', Valores_plano, [1,4,5,7,8,9,11,12,13,14,15,16])   
+        
+    elif Tipo_paila==4:
+        if Activar_Aletas==1:
+            Crear_plano_pdf('static/Pailas/Semicilindrica_con_aletas.png', Nombre_archivo,
+                            Nombre_Sitio, 'Diagrama de una paila semicilindrica con aletas', Valores_plano, [1,12,13,14,15,16])
+        else:
+            Crear_plano_pdf('static/Pailas/Semicilindrica_sin_aletas.png', Nombre_archivo,
+                            Nombre_Sitio, 'Diagrama de una paila semicilindrica sin aletas', Valores_plano, [1,7,8,9,12,13,14,15,16])
+
+    elif Tipo_paila==5: #sin plano
+        if Activar_Aletas==1:
+            Crear_plano_pdf('static/Pailas/Pirotubular_cuadrada_con_aletas.png', Nombre_archivo,
+                            Nombre_Sitio, 'Diagrama de una paila pirotubular cuadrada con aletas', Valores_plano, [10,11,13,15,16])
+        else:
+            Crear_plano_pdf('static/Pailas/Pirotubular_cuadrada_sin_aletas.png', Nombre_archivo,
+                            Nombre_Sitio, 'Diagrama de una paila pirotubular cuadrada sin aletas', Valores_plano, [7,8,9,10,11,13,15,16])    
+
+    elif Tipo_paila==6: #Sin plano
+        if Activar_Aletas==1:
+            Crear_plano_pdf('static/Pailas/Cuadrada_acanalada_con_aletas.png', Nombre_archivo,
+                            Nombre, 'Diagrama de una paila cuadrada acanalada con aletas', Valores_plano, [10,11,12,13,14])
+        else:
+            Crear_plano_pdf('static/Pailas/Cuadrada_acanalada_sin_aletas.png', Nombre_archivo,
+                            Nombre_Sitio, 'Diagrama de una paila cuadrada acanalada sin aletas', Valores_plano, [7,8,9,10,11,12,13,14])     
+    
 def Cantidad_Aletas(A,B_Aletas):
     #El numero de aletas es un parámetro que varia en función del 
     #ancho de la paila.Lla separación minima entre ellas es de 7cm
@@ -401,6 +512,7 @@ def Mostrar_pailas(Vol_aux, Etapas):
             f_1    = Valor_Aptitud(Volumen,int(Tipo_paila[0][i]),H_fl_1,H_fn_1,A_1,L_1,H_1,Hc_1,bool(Tipo_paila[1][i]))
             iteraciones=iteraciones+1    
         
+        Dibujar_plano("Lugar del diccionario",str(i)+"_Etapa",int(Tipo_paila[0][i]),H_fl,H_fn,0,L,0,Hc,0,0,0,0,0,0,0,100,int(Tipo_paila[1][i]))
         Dibujar_paila(Volumen,i,Tipo_paila[0][i],H_fl,H_fn,A,L,H,Hc,Tipo_paila[1][i])
         print("________>>>>>>>>>>>>>____________")
         print(str(iteraciones))
