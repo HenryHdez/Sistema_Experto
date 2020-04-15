@@ -8,6 +8,7 @@ import os
 from werkzeug.utils import secure_filename
 import Diseno_inicial
 import Pailas
+#from libraries import Pailas
 
 #from fpdf import FPDF, HTMLMixin
 #config = pdfkit.configuration(wkhtmltopdf='C:/Users/hahernandez/.conda/envs/experto/Lib/site-packages/wkhtmltopdf')
@@ -154,11 +155,12 @@ def generar_valores_informe():
     """Calculo de la hornilla"""
     Diccionario   = Diseno_inicial.datos_entrada(Diccionario)
     Diccionario_2 = Diseno_inicial.Calculo_por_etapas(Diccionario)
-    Pailas.Mostrar_pailas(
-            Diccionario_2['Volumen de jugo [m^3/kg]'],
-            int(Diccionario_2['Etapas'])
-            )
+    #Pailas.Mostrar_pailas(
+    #        Diccionario_2['Volumen de jugo [m^3/kg]'],
+    #        int(Diccionario_2['Etapas'])
+    #        )
     """Creación del pdf"""
+    Pailas.Generar_reporte(Diccionario,Diccionario_2)
 #    pagina = 
 #    pdf = MyFPDF()
 #    pdf.add_page()

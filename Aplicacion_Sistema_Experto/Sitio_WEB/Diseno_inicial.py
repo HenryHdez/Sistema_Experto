@@ -130,8 +130,7 @@ def datos_entrada(Diccionario):
                'Humedad del bagazo	',		
                'Exceso de Aire',			
                'Extraccion',			
-               'Porcentaje de Fibra',			
-               'Altura del Sitio',			
+               'Porcentaje de Fibra',					
                'Temperatura Ambiente',			
                'Humedad inicial bagazo',			
                'Presion Atmosferica',			
@@ -200,7 +199,6 @@ def datos_entrada(Diccionario):
              Exceso_Aire,
              Extraccion,
              Porcentaje_Fibra,
-             Diccionario['Altura media sobre el nivel del mar'],
              Temperatura_Ambiente,
              Humedad_inicial_bagazo,
              Presion_atmosferica,
@@ -264,7 +262,7 @@ def Calculo_por_etapas(Diccionario):
     Lista_Contenido=[]
     Lista_columnas=[]
     #Etapas es un supuesto de cuantas pailas debe tener la hornilla
-    Etapas=12
+    Etapas=5
     #Saturador "minimo son dos etapas"
     if (Etapas>2):
         Factor_Division=Etapas-2
@@ -296,15 +294,16 @@ def Calculo_por_etapas(Diccionario):
     Lista_Contenido[1][Etapas-1]=float(Diccionario['CSS del jugo clarificado'])     #Concentracion_solidos_final   (CSSF1)
     
     ite=0
-    for i in range(Etapas-2,0,-1):
-        Lista_Contenido[0][i]=Lista_Contenido[1][1+i]
+    for i in range(Etapas-2,-1,-1):
+        Lista_Contenido[0][i]=Lista_Contenido[1][i+1]
         if(ite==0):
             Lista_Contenido[1][i]=((Lista_Contenido[0][0]-Lista_Contenido[0][i])/Factor_Division)+Lista_Contenido[0][i]
             ite=ite+1
         else:
             Lista_Contenido[1][i]=((Lista_Contenido[0][0]-Lista_Contenido[0][Etapas-2])/Factor_Division)+Lista_Contenido[0][i]
-            
-    for i in range((Etapas-1),-1,-1):
+    
+    
+    for i in range(Etapas-1,-1,-1):
         #Concentración promedio=(Concentracion_solidos_inicial+Concentracion_solidos_final)/2
         Lista_Contenido[2][i]=(Lista_Contenido[0][i]+Lista_Contenido[1][i])/2
         if(i==Etapas-1):
@@ -336,15 +335,14 @@ def Calculo_por_etapas(Diccionario):
         #Entalpia_Vaporizacion=(2492.9-(2.0523*Temperatura_Entrada))-(0.0030752*(Temperatura_Entrada**2))
         Lista_Contenido[10][i]=(2492.9-(2.0523*Lista_Contenido[8][i]))-(0.0030752*(Lista_Contenido[8][i]**2))
         #Masa_Agua_Evaporar=Masa_jugo_de_entrada-(Masa_jugo_de_entrada*Concentracion_solidos_inicial/Concentracion_solidos_final)
-        Lista_Contenido[11][i]=Lista_Contenido[3][i]-(Lista_Contenido[i][3]*Lista_Contenido[0][i]/Lista_Contenido[1][i])
+        Lista_Contenido[11][i]=Lista_Contenido[3][i]-(Lista_Contenido[3][i]*Lista_Contenido[0][i]/Lista_Contenido[1][i])
         #Calor_por_Etapa=(Masa_jugo_de_entrada*Calor_Especifico_P_Cte_jugo*(Temperatura_Salida-Temperatura_Entrada)+Masa_Agua_Evaporar*Entalpia_Vaporizacion)/3600
-        Lista_Contenido[12][i]=(Lista_Contenido[3][i]*Lista_Contenido[4][i]*(Lista_Contenido[9][i]-Lista_Contenido[8][i])+Lista_Contenido[i][11]*Lista_Contenido[i][10])/3600.0
-
-#    for i in range (13):
-#        texto=""
-#        for j in range (Etapas):
-#            texto=texto+" "+str(round(Lista_Contenido[j][i],3))
-#        print(texto+"\n")
+        Lista_Contenido[12][i]=(Lista_Contenido[3][i]*Lista_Contenido[4][i]*(Lista_Contenido[9][i]-Lista_Contenido[8][i])+Lista_Contenido[11][i]*Lista_Contenido[10][i])/3600.0
+        
+    #Fijar decimales en 3
+    for j in range (13):
+        for i in range (Etapas):
+            Lista_Contenido[j][i]=round(Lista_Contenido[j][i],3)
         
     Etiquetas=[
                'Concentracion de Solidos Inicial [ºBrix]',

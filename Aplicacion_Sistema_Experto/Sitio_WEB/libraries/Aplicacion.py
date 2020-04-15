@@ -490,8 +490,9 @@ def Actualizar_Valores():
     Lista_Contenido[0][1]=G27*100.0  #Concentracion_solidos_final   (CSSF1)
     Lista_Contenido[Etapas-1][0]=G24 #Concentracion_solidos_inicial (CSS01)
     Lista_Contenido[Etapas-1][1]=G25 #Concentracion_solidos_final   (CSSF1)
+    
     ite=0
-    for i in range(Etapas-2,0,-1):
+    for i in range(Etapas-1):
         Lista_Contenido[i][0]=Lista_Contenido[i+1][1]
         if(ite==0):
             Lista_Contenido[i][1]=((Lista_Contenido[0][0]-Lista_Contenido[i][0])/Factor_Division)+Lista_Contenido[i][0]

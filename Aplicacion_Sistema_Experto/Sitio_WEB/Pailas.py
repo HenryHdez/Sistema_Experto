@@ -6,7 +6,134 @@ Created on Mon Apr 13 08:53:50 2020
 """
 import math
 import random
+import time
 "Librería que realiza los calculos de la geometría de la hornilla"
+
+
+def Fondo(canvas, Hoja):
+    from reportlab.lib import utils
+    from reportlab.lib.pagesizes import letter
+    #Dibujar logo y membrete de AGROSAVIA
+    
+    canvas.drawImage('static/Iconos/Agrosavia.jpg', 240, 720, width=150, height=40)
+    canvas.drawImage('static/Iconos/Membrete.png' , 0, 0, width=650, height=15)
+    canvas.drawImage('static/Iconos/Membrete2.png', 0, 650, width=150, height=150)   
+    canvas.setLineWidth(.3)
+    canvas.setFont('Helvetica-Bold', 20)
+    if(Hoja==1):
+        canvas.drawString(275,700,"INFORME")
+        canvas.drawString(135,678,"DISEÑO PRELIMINAR DE LA HORNILLA")
+        canvas.line(0,670,680,670)
+        canvas.line(0,665,680,665)
+        canvas.setFont('Helvetica-Bold', 14)
+        canvas.drawString(200,650,'--->>>DATOS DEL USUARIO<<<---')
+    tiempo = time.asctime(time.localtime(time.time()))
+    canvas.setFont('Helvetica-Bold', 7)
+    canvas.drawString(520,5,str(tiempo))
+    canvas.drawString(10,5,"Hoja: "+str(Hoja))
+    return canvas
+    
+def Generar_reporte(D1,D2):
+    from reportlab.lib import utils
+    from reportlab.lib.pagesizes import letter
+    from reportlab.pdfgen import canvas
+    canvas = canvas.Canvas("Informe.pdf", pagesize=letter)
+    #Espacio de traajo disponible desde 20 hasta 650
+    puntero=630
+    Hoja=1
+    Fondo(canvas,Hoja)
+    for i in D1:
+        if(str(i)=='DATOS DE ENTRADA' or str(i)=='CAPACIDAD MOLINO' or 
+           str(i)=='DATOS DE LA MASA' or str(i)=='PROPIEDADES DE LOS JUGOS'):
+            if(str(i)=='DATOS DE ENTRADA'):
+                canvas.setFont('Helvetica-Bold', 12)
+                canvas.drawString(50,puntero,'Vista de la caña')
+                canvas.drawImage('static/Cana/'+D1['Variedad de Caña']+'.png', 350, puntero-150, width=150, height=150)
+                canvas.showPage() #Salto de página
+                Hoja=Hoja+1
+                Fondo(canvas,Hoja)
+                puntero=650
+                canvas.setFont('Helvetica-Bold', 14)
+                canvas.drawString(90,puntero,'--->>>DATOS USADOS PARA EL CÁLCULO DE LA HORNILLA<<<---')
+            elif(str(i)=='CAPACIDAD MOLINO'):
+                canvas.showPage() #Salto de página
+                Hoja=Hoja+1
+                Fondo(canvas,Hoja)
+                puntero=650
+                canvas.setFont('Helvetica-Bold', 14)
+                canvas.drawString(200,puntero,'--->>>MOLINO SELECCIONADO<<<---')                
+            elif(str(i)=='DATOS DE LA MASA'):
+                canvas.showPage()
+                Hoja=Hoja+1
+                Fondo(canvas,Hoja)
+                puntero=650
+                canvas.setFont('Helvetica-Bold', 12)
+                canvas.drawString(200,puntero,'--->>>PROPIEDADES DE LA MASA<<<---')
+            else:
+                canvas.setFont('Helvetica-Bold', 12)
+                canvas.drawString(200,puntero,'--->>>PROPIEDADES DE LOS JUGOS<<<---')                
+        else:
+            canvas.setFont('Helvetica-Bold', 12)
+            canvas.drawString(50,puntero,str(i))
+            canvas.setFont('Helvetica', 12)
+            canvas.drawString(350,puntero,str(D1[i]))  
+            
+        if(puntero<=30):
+            canvas.showPage()
+            Hoja=Hoja+1
+            Fondo(canvas,Hoja)
+            puntero=650            
+        else:          
+            puntero=puntero-20
+    #Guarda pdf en la carpeta raíz del proyecto
+    
+    """----------->>>>>>> Publicar Calculos por etapa<<<<<<<<<<<------------"""
+    #Estructura para imprimir los calculos por Etapa
+    canvas.showPage()
+    Hoja=Hoja+1
+    Fondo(canvas,Hoja)
+    puntero_v=450
+    canvas.setFont('Helvetica-Bold', 12)
+    canvas.drawString(200,700,'--->>>PARÁMETROS DE DISEÑO<<<---')  
+    Etiquetas=list(dict.keys(D2))
+    Etiquetas.insert(0,'Orden de las pailas según el flujo del gas')
+    for i in range(len(Etiquetas)-1):
+        canvas.saveState()
+        canvas.translate(puntero_v, 680)
+        canvas.rotate(-90)
+        canvas.setFont('Helvetica-Bold', 12)
+        canvas.drawString(0, 0, str(Etiquetas[i]))
+        puntero_v=puntero_v-25
+        canvas.restoreState()     
+    #Función para dibujar los valores de la Tabla    
+    Valores=list(dict.values(D2))
+    puntero_h=400
+    for i in range(int(D2['Etapas'])): #Etapas
+        puntero_v=450
+        canvas.saveState()
+        canvas.translate(puntero_v, puntero_h)
+        canvas.rotate(-90)
+        canvas.setFont('Helvetica-Bold', 12)
+        canvas.drawString(0, 0, str(int(D2['Etapas'])-i)) #orden segun el flujo
+        puntero_v=puntero_v-25
+        canvas.restoreState()
+        for j in range(13):#Literales de la tabla
+            canvas.saveState()
+            canvas.translate(puntero_v, puntero_h)
+            canvas.rotate(-90)
+            canvas.drawString(0, 0, str(Valores[j][i]))
+            puntero_v=puntero_v-25
+            canvas.restoreState()
+        if(puntero_h<200):
+            puntero_h=700
+            canvas.showPage()
+            Hoja=Hoja+1
+            Fondo(canvas,Hoja)
+            canvas.setFont('Helvetica-Bold', 12)
+        else:
+            puntero_h=puntero_h-80
+    #Gruardas informe en pdf
+    canvas.save()
 
 #Funciones para estimar el volumen de cada paila, donde
     #Hfn        Altura de fondo
