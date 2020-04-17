@@ -12,7 +12,7 @@ import os
 
 """--->>>Generar informe en pdf<<<<---"""
 #Función para unir el informe generado en varias funciones
-def Unir_Informe():
+def Unir_Informe(nombre):
     from PyPDF2 import PdfFileMerger, PdfFileReader
     from shutil import rmtree
     listaPdfs = os.listdir('pdf')
@@ -21,7 +21,7 @@ def Unir_Informe():
     
     for file in listaPdfs:
         merger.append(PdfFileReader('pdf/'+file))
-    merger.write('static/Informe.pdf')
+    merger.write('static/'+nombre+'.pdf')
     "Borrar datos cargados temporalmente"
 #    rmtree('pdf')
 #    os.mkdir('pdf')
@@ -76,7 +76,6 @@ def Generar_portada():
     canvas.drawString(20,450,'                         SECCIÓN 1:     ') 
     canvas.drawString(20,415,'              DATOS DEL USUARIO E   ') 
     canvas.drawString(20,380,'          INFORMACIÓN FINANCIERA  ') 
-    canvas.drawString(20,345,'                   DE LA HORNILLA  ')
     canvas.showPage() #Salto de página    
     canvas.save()
     #Sección 2
@@ -100,14 +99,14 @@ def Generar_portada():
     canvas.showPage() #Salto de página    
     canvas.save()
 
-def Dibujar_Molino(canvas, puntero):
+def Dibujar_Molino(canvas, puntero, Hoja):
     import pandas as pd
     #Estructura para publicar el molino seleccionado
     canvas.setFont('Helvetica-Bold', 14)
     canvas.drawString(200,puntero,'   ')
     canvas.drawString(200,puntero-20,'   ')
-    canvas.drawString(180,puntero-20,'>>>MOLINOS DISPONIBLES<<<')
-    Molino=pd.read_excel('static/Molinosel.xlsx',skipcolumn = 0,)
+    canvas.drawString(190,puntero-20,'>>>MOLINOS DISPONIBLES<<<')
+    Molino=pd.read_excel('static/Temp.xlsx',skipcolumn = 0,)
     
     Marca=Molino['Marca'].values
     Modelo=Molino['Modelo'].values
@@ -117,7 +116,6 @@ def Dibujar_Molino(canvas, puntero):
     Gas=Molino['Gasolina'].values
     Relacion=Molino['Relación i'].values
     Valor=Molino['Precio'].values
-    
     canvas.setFont('Helvetica-Bold', 11)
     canvas.drawString(50,puntero-50,'MARCA')
     canvas.drawString(120,puntero-50,'MODELO')
@@ -129,8 +127,8 @@ def Dibujar_Molino(canvas, puntero):
     canvas.drawString(520,puntero-50,'PRECIO')
     canvas.setFont('Helvetica', 11)
     OF=65
-    for  i in range(len(Marca)):
-        canvas.drawString(49,puntero-OF, str(Marca[i]))
+    for i in range(len(Marca)):
+        canvas.drawString( 49,puntero-OF, str(Marca[i]))
         canvas.drawString(127,puntero-OF, str(Modelo[i]))
         canvas.drawString(189,puntero-OF, str(Kilos[i]))
         canvas.drawString(255,puntero-OF, str(Diesel[i]))
@@ -139,8 +137,26 @@ def Dibujar_Molino(canvas, puntero):
         canvas.drawString(454,puntero-OF, str(Relacion[i]))
         canvas.drawString(519,puntero-OF, str(Valor[i]))  
         OF=OF+15
+    OF=(puntero-OF)-240
+    for i in range(len(Modelo)):
+        if((OF<50)or(i==0)):
+            canvas.setFont('Helvetica-Bold', 11)
+            canvas.drawString(300,OF+230,str(Modelo[i]))    
+            canvas.drawImage('static/Molinos/'+str(Modelo[i]+'.jpg'), 150, OF, width=320, height=220)
+            canvas.showPage() #Salto de página
+            Hoja=Hoja+1
+            Fondo(canvas,Hoja)
+            OF=450
+        else:
+            canvas.setFont('Helvetica-Bold', 11)
+            canvas.drawString(300,OF+230,str(Modelo[i]))    
+            canvas.drawImage('static/Molinos/'+str(Modelo[i]+'.jpg'), 150, OF, width=320, height=220)  
+            OF=OF-(320)
+    return canvas, Hoja
+    
 #Función para generar la parte escrita del informe
 def Generar_reporte(D1,D2):
+    #Genera la vista previa
     from reportlab.lib.pagesizes import letter
     from reportlab.pdfgen import canvas
     import pandas as pd
@@ -180,10 +196,9 @@ def Generar_reporte(D1,D2):
                 Fondo(canvas,Hoja)
                 puntero=650
                 canvas.setFont('Helvetica-Bold', 14)
-                canvas.drawString(200,puntero,'--->>>MOLINO SELECCIONADO<<<---')                
+                canvas.drawString(180,puntero,'--->>>MOLINO PRE-SELECCIONADO<<<---')                
             elif(str(i)=='DATOS DE LA MASA'):
-                Dibujar_Molino(canvas, puntero)
-                canvas.showPage()
+                canvas,Hoja=Dibujar_Molino(canvas, puntero, Hoja)
                 #Cortar pdf
                 canvas.save()
                 from reportlab.pdfgen import canvas
@@ -259,7 +274,7 @@ def Generar_reporte(D1,D2):
     #Gruardas informe en pdf
     Generar_portada()
     canvas.save()
-    Unir_Informe()
+    Unir_Informe('Informe')
     
 #Funcion para dibujar planos acotados
 def Crear_plano_pdf(directorio_imagen, Nombre_archivo, Nombre_Usuario, Nombre_Paila, Valores_plano, valores_eliminar):
@@ -682,7 +697,6 @@ def Mostrar_pailas(Vol_aux, Etapas, Sitio):
                       H_fl,H_fn,A,L,H,Hc,lista_par[1],lista_par[2],lista_par[0],lista_par[5],
                       lista_par[4],lista_par[6],lista_par[8],lista_par[7],bool(Tipo_paila[1][i])
                       )
-        
         """Eliminar comentarios para probar el algoritmo de optimización"""
         #Comprobar_diseno(Volumen,i,int(Tipo_paila[0][i]),H_fl,H_fn,A,L,H,Hc,bool(Tipo_paila[1][i]))
         #print("________>>>>>>>>>>>>>____________")

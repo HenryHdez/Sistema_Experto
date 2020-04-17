@@ -2,15 +2,8 @@
 
     <div class="jumbotron jumbotron-fluid">
       <div class="container">
-
-        <p class="lead"><b>DATOS DE LA HORNILLA</b></p>
-        <table align="center">
-        {% for id, item in result.items() %}
-            <tr>
-               <td style="width:450px"> <b>{{ id }}</b> </td>
-               <td style="width:450px"> {{ item }} </td>
-            </tr>
-        {% endfor %}
+        <p class="lead"><b>VISTA PREVIA DEL INFORME.</b></p>
+        <iframe src="{{url_for('static', filename='/Informe.pdf')}}" width="950" height="1200" frameborder="2"></iframe>
 
       </div>
     </div>

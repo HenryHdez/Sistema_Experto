@@ -3,7 +3,7 @@
     <div class="jumbotron jumbotron-fluid">
       <div class="container">
 
-        <p class="lead"><b>DATOS DEL ÁREA</b></p>
+        <p class="lead"><b>INFORMACIÓN DEL MOLINO PRE-SELECCIONADOS</b></p>
         <table align="center">
         {% for id, item in result.items() %}
             <tr>
@@ -12,8 +12,37 @@
             </tr>
         {% endfor %}
         </table>
-
+        
+        </br>
+        </br>
+        <p class="lead"><b>DISPONIBLES SEGÚN LAS ESPECIFICACIONES TÉCNICAS</b></p>
+        
+        <table align="center">
+        {% for id, item in Molinos.items() %}
+            <tr>
+               <td style="width:450px"> <b>{{ id }}</b> </td>
+               {% for uj in item %}
+                   <td style="width:450px"> {{ uj }} </td>
+               {% endfor %}
+            </tr>
+        {% endfor %}
+        </table>
+        </br>   
+        </br>
+        </br>
+        </br>
+        </br>
+        </br>
+        </br> 
+        </br>
+        </br>
+        </br>  
+        </br>
+        </br> 
+        </br>
+        </br>
       </div>
+      </br>
     </div>
 
 

@@ -95,6 +95,8 @@ def generar_valores_informe():
     global Formulario_2_Valores
     global Diccionario 
     global Diccionario_2
+    global Diccionario_3
+    global Diccionario_4
     """Creación de la primer parte del diccionario"""
     Dept=result.get('Departamento')
     D_aux=df.departamento
@@ -160,25 +162,44 @@ def generar_valores_informe():
             int(Diccionario_2['Etapas']),
             "Hornilla: "+Diccionario['Nombre de usuario']+" ("+Diccionario['Departamento']+'-'+Diccionario['Ciudad']+')'
             )
+    """Presentar información del molino"""
+    Formulario_3_Etiquetas=['Caña molida al mes', 'Area Cosechada al mes',	 'Caña molida a la semana',		
+                            'Caña Molida por Hora', 'Jugo Crudo',	 'Jugo Clarificado', 'Masa de panela',		
+                            'Capacidad del Molino']
+    Formulario_3_Valores=[]
+    for i in Formulario_3_Etiquetas:
+        Formulario_3_Valores.append(Diccionario[i])
+    Diccionario_3=dict(zip(Formulario_3_Etiquetas,Formulario_3_Valores))
+    
+    Molino=pd.read_excel('static/Temp.xlsx',skipcolumn = 0,)
+    Marca=Molino['Marca'].values
+    Modelo=Molino['Modelo'].values
+    Kilos=Molino['kg/hora'].values
+    Diesel=Molino['Diesel'].values
+    Electrico=Molino['Electrico'].values
+    Gas=Molino['Gasolina'].values
+    Relacion=Molino['Relación i'].values
+    Valor=Molino['Precio'].values
+    
+    Diccionario_4={'Marca':Marca,
+                   'Modelo':Modelo,
+                   'Capacidad':Kilos,
+                   'Valor aproximado':Valor
+            }
     """Creación del pdf"""
     Pailas.Generar_reporte(Diccionario,Diccionario_2)
-#    pagina = 
-#    pdf = MyFPDF()
-#    pdf.add_page()
-#    pdf.write_html(pagina)
-#    pdf.output('html.pdf','F')
-
     
 #Enlaces para la generación del informe
 @app.route('/informe4')
 def infor4():
     global Diccionario
-    return render_template('informe4.html',result=Diccionario_2) 
+    return render_template('informe4.html',result=Diccionario) 
 
 @app.route('/informe3')
 def infor3():
-    global Diccionario
-    return render_template('informe3.html',result=Diccionario) 
+    global Diccionario_3
+    global Diccionario_4
+    return render_template('informe3.html',result=Diccionario_3, Molinos=Diccionario_4) 
 
 @app.route('/informe2')
 def infor2():

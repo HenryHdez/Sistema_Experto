@@ -29,7 +29,7 @@ def Seleccionar_Molino(Kilos_Hora):
     V1=[]
     aux=0
     for i in range (len(Kilos)):
-        if(Kilos[i]<Kilos_Hora):
+        if((Kilos[i]<Kilos_Hora)and(i<(len(Kilos)-1))):
             aux=Kilos[i]
         else:
             aux=Kilos[i]
@@ -57,7 +57,7 @@ def Seleccionar_Molino(Kilos_Hora):
            'Precio'     :V1
             }
     df = pd.DataFrame(datos, columns = ['Marca', 'Modelo', 'kg/hora', 'Diesel', 'Electrico', 'Gasolina', 'Relación i', 'Precio'])
-    df.to_excel('static/Molinosel.xlsx')
+    df.to_excel('static/Temp.xlsx')
     return sum(E1)/len(E1)
     
 def datos_entrada(Diccionario):
@@ -146,8 +146,9 @@ def datos_entrada(Diccionario):
     Temperatura_Ebullicion_Agua=-227.03 + (3816.44/(18.3036 - math.log(7.5*(Presion_atmosferica*(133.3224/1000)))))
     
     """Calculos de las propiedades de los jugos"""
-    #NOTA: Esta es una caracteristica propia del molino (Tomarla del catálogo).
+    #NOTA: Esta es una caracteristica (T33) es propia del molino (Tomarla del catálogo).
     T33=Seleccionar_Molino(Capacidad_molino) 
+    #>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<
     Inicial_Clf=997.39+(4.46*CSS_Cana)   
     Inicial_Eva=997.39+(4.46*CSS_Jugo_Clarificado)
     Inicial_Con=997.39+(4.46*CSS_Jugo_Posevaporacion)
@@ -191,7 +192,7 @@ def datos_entrada(Diccionario):
                'Presion Atmosferica',			
                'Temperatura Ebullición Agua',
                'CAPACIDAD MOLINO',
-               'Caña molida al mes	',	
+               'Caña molida al mes',	
                'Area Cosechada al mes',		
                'Caña molida a la semana',		
                'Caña Molida por Hora',		
