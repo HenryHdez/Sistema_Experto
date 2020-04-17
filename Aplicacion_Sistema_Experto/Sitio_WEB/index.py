@@ -42,8 +42,8 @@ def usua():
     global Nivel_Fosforo
     global Nivel_Calidad
     global Nivel_brpane
-    df = pd.read_json("Colombia.json")
-    cana=pd.read_excel('Variedades.xlsx')
+    df = pd.read_json("static/Colombia.json")
+    cana=pd.read_excel('static/Variedades.xlsx')
     Deptos_cana   = cana['Depto'].values
     Ciudad_cana   = cana['Ciudad'].values
     Tipo_cana     = cana['Tipo'].values

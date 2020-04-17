@@ -10,6 +10,7 @@ import time
 import os
 "Librería para realizar los calculos de la geometría de las pailas de una hornilla"
 
+"""--->>>Generar informe en pdf<<<<---"""
 #Función para unir el informe generado en varias funciones
 def Unir_Informe():
     from PyPDF2 import PdfFileMerger, PdfFileReader
@@ -30,7 +31,6 @@ def Fondo(canvas, Hoja):
     from reportlab.lib import utils
     from reportlab.lib.pagesizes import letter
     #Dibujar logo y membrete de AGROSAVIA
-    
     canvas.drawImage('static/Iconos/Agrosavia.jpg', 240, 720, width=150, height=40)
     canvas.drawImage('static/Iconos/Membrete.png' , 0, 0, width=650, height=15)
     canvas.drawImage('static/Iconos/Membrete2.png', 0, 650, width=150, height=150)   
@@ -99,11 +99,51 @@ def Generar_portada():
     canvas.drawString(20,355,'  INFORMACIÓN TÉCNICA DETALLADA   ') 
     canvas.showPage() #Salto de página    
     canvas.save()
+
+def Dibujar_Molino(canvas, puntero):
+    import pandas as pd
+    #Estructura para publicar el molino seleccionado
+    canvas.setFont('Helvetica-Bold', 14)
+    canvas.drawString(200,puntero,'   ')
+    canvas.drawString(200,puntero-20,'   ')
+    canvas.drawString(180,puntero-20,'>>>MOLINOS DISPONIBLES<<<')
+    Molino=pd.read_excel('static/Molinosel.xlsx',skipcolumn = 0,)
     
+    Marca=Molino['Marca'].values
+    Modelo=Molino['Modelo'].values
+    Kilos=Molino['kg/hora'].values
+    Diesel=Molino['Diesel'].values
+    Electrico=Molino['Electrico'].values
+    Gas=Molino['Gasolina'].values
+    Relacion=Molino['Relación i'].values
+    Valor=Molino['Precio'].values
+    
+    canvas.setFont('Helvetica-Bold', 11)
+    canvas.drawString(50,puntero-50,'MARCA')
+    canvas.drawString(120,puntero-50,'MODELO')
+    canvas.drawString(180,puntero-50,'KG/HORA')
+    canvas.drawString(245,puntero-50,'DIESEL')
+    canvas.drawString(295,puntero-50,'ELÉCTRICO')
+    canvas.drawString(365,puntero-50,'GASOLINA')
+    canvas.drawString(435,puntero-50,'RELACION (i)')
+    canvas.drawString(520,puntero-50,'PRECIO')
+    canvas.setFont('Helvetica', 11)
+    OF=65
+    for  i in range(len(Marca)):
+        canvas.drawString(49,puntero-OF, str(Marca[i]))
+        canvas.drawString(127,puntero-OF, str(Modelo[i]))
+        canvas.drawString(189,puntero-OF, str(Kilos[i]))
+        canvas.drawString(255,puntero-OF, str(Diesel[i]))
+        canvas.drawString(317,puntero-OF, str(Electrico[i]))
+        canvas.drawString(389,puntero-OF, str(Gas[i]))
+        canvas.drawString(454,puntero-OF, str(Relacion[i]))
+        canvas.drawString(519,puntero-OF, str(Valor[i]))  
+        OF=OF+15
 #Función para generar la parte escrita del informe
 def Generar_reporte(D1,D2):
     from reportlab.lib.pagesizes import letter
     from reportlab.pdfgen import canvas
+    import pandas as pd
     canvas = canvas.Canvas("pdf/A3_informe.pdf", pagesize=letter)
     #Espacio de trabajo disponible desde 20 hasta 650
     puntero=630
@@ -142,6 +182,7 @@ def Generar_reporte(D1,D2):
                 canvas.setFont('Helvetica-Bold', 14)
                 canvas.drawString(200,puntero,'--->>>MOLINO SELECCIONADO<<<---')                
             elif(str(i)=='DATOS DE LA MASA'):
+                Dibujar_Molino(canvas, puntero)
                 canvas.showPage()
                 #Cortar pdf
                 canvas.save()

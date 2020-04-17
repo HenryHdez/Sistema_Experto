@@ -5,7 +5,61 @@ Created on Wed Apr  8 11:38:48 2020
 @author: hahernandez
 """
 import math
-
+import pandas as pd
+"""----->>>>Selección del molino<<<<----"""
+def Seleccionar_Molino(Kilos_Hora):
+    Molino=pd.read_excel('static/Molinos.xlsx')
+    
+    Marca=Molino['Marca'].values
+    Modelo=Molino['Modelo'].values
+    Kilos=Molino['kghora'].values
+    Diesel=Molino['Diesel'].values
+    Electrico=Molino['Electrico'].values
+    Gas=Molino['Gasolina'].values
+    Relacion=Molino['Relacion'].values
+    Valor=Molino['Valor'].values
+    Seleccionado=[]
+    M1=[]
+    M2=[]        
+    K1=[]
+    D1=[]    
+    E1=[]
+    G1=[]
+    R1=[]
+    V1=[]
+    aux=0
+    for i in range (len(Kilos)):
+        if(Kilos[i]<Kilos_Hora):
+            aux=Kilos[i]
+        else:
+            aux=Kilos[i]
+            for j in range(len(Kilos)):
+                if(aux==Kilos[j]):
+                    Seleccionado.append(j)
+            break 
+    for i in Seleccionado:
+        M1.append(Marca[i])
+        M2.append(Modelo[i])        
+        K1.append(Kilos[i])
+        D1.append(Diesel[i])    
+        E1.append(Electrico[i])
+        G1.append(Gas[i])
+        R1.append(Relacion[i])
+        V1.append(Valor[i])  
+        
+    datos={'Marca'      :M1,
+           'Modelo'     :M2,
+           'kg/hora'    :K1,
+           'Diesel'     :D1,
+           'Electrico'  :E1,
+           'Gasolina'   :G1,
+           'Relación i' :R1,
+           'Precio'     :V1
+            }
+    df = pd.DataFrame(datos, columns = ['Marca', 'Modelo', 'kg/hora', 'Diesel', 'Electrico', 'Gasolina', 'Relación i', 'Precio'])
+    df.to_excel('static/Molinosel.xlsx')
+    return sum(E1)/len(E1)
+    
 def datos_entrada(Diccionario):
     """Estos datos se toman directamente del archivo HTML"""
     #Area de Caña Sembrada al rededor			
@@ -92,7 +146,8 @@ def datos_entrada(Diccionario):
     Temperatura_Ebullicion_Agua=-227.03 + (3816.44/(18.3036 - math.log(7.5*(Presion_atmosferica*(133.3224/1000)))))
     
     """Calculos de las propiedades de los jugos"""
-    T33=25 #NOTA: Esta es una caracteristica propia del molino (Tomarla del catálogo).
+    #NOTA: Esta es una caracteristica propia del molino (Tomarla del catálogo).
+    T33=Seleccionar_Molino(Capacidad_molino) 
     Inicial_Clf=997.39+(4.46*CSS_Cana)   
     Inicial_Eva=997.39+(4.46*CSS_Jugo_Clarificado)
     Inicial_Con=997.39+(4.46*CSS_Jugo_Posevaporacion)
