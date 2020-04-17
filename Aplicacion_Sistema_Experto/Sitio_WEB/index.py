@@ -157,7 +157,8 @@ def generar_valores_informe():
     Diccionario_2 = Diseno_inicial.Calculo_por_etapas(Diccionario)
     Pailas.Mostrar_pailas(
             Diccionario_2['Volumen de jugo [m^3/kg]'],
-            int(Diccionario_2['Etapas'])
+            int(Diccionario_2['Etapas']),
+            "Hornilla: "+Diccionario['Nombre de usuario']+" ("+Diccionario['Departamento']+'-'+Diccionario['Ciudad']+')'
             )
     """Creación del pdf"""
     Pailas.Generar_reporte(Diccionario,Diccionario_2)

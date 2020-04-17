@@ -7,9 +7,25 @@ Created on Mon Apr 13 08:53:50 2020
 import math
 import random
 import time
-"Librería que realiza los calculos de la geometría de la hornilla"
+import os
+"Librería para realizar los calculos de la geometría de las pailas de una hornilla"
 
+#Función para unir el informe generado en varias funciones
+def Unir_Informe():
+    from PyPDF2 import PdfFileMerger, PdfFileReader
+    from shutil import rmtree
+    listaPdfs = os.listdir('pdf')
+    listaPdfs
+    merger = PdfFileMerger()
+    
+    for file in listaPdfs:
+        merger.append(PdfFileReader('pdf/'+file))
+    merger.write('static/Informe.pdf')
+    "Borrar datos cargados temporalmente"
+#    rmtree('pdf')
+#    os.mkdir('pdf')
 
+#Layout del informe
 def Fondo(canvas, Hoja):
     from reportlab.lib import utils
     from reportlab.lib.pagesizes import letter
@@ -20,25 +36,76 @@ def Fondo(canvas, Hoja):
     canvas.drawImage('static/Iconos/Membrete2.png', 0, 650, width=150, height=150)   
     canvas.setLineWidth(.3)
     canvas.setFont('Helvetica-Bold', 20)
-    if(Hoja==1):
-        canvas.drawString(275,700,"INFORME")
-        canvas.drawString(135,678,"DISEÑO PRELIMINAR DE LA HORNILLA")
+    if(Hoja=="--"):
+        canvas.drawString(275,700,"INFORME:")
+        canvas.drawString(125,678,"DISEÑO PRELIMINAR DE UNA HORNILLA")
         canvas.line(0,670,680,670)
         canvas.line(0,665,680,665)
-        canvas.setFont('Helvetica-Bold', 14)
-        canvas.drawString(200,650,'--->>>DATOS DEL USUARIO<<<---')
     tiempo = time.asctime(time.localtime(time.time()))
     canvas.setFont('Helvetica-Bold', 7)
     canvas.drawString(520,5,str(tiempo))
     canvas.drawString(10,5,"Hoja: "+str(Hoja))
     return canvas
-    
-def Generar_reporte(D1,D2):
-    from reportlab.lib import utils
+
+#Función para generar las portadas
+def Generar_portada():
+    #Espacio de trabajo disponible desde 20 hasta 650
     from reportlab.lib.pagesizes import letter
     from reportlab.pdfgen import canvas
-    canvas = canvas.Canvas("Informe.pdf", pagesize=letter)
-    #Espacio de traajo disponible desde 20 hasta 650
+    #Portada
+    canvas = canvas.Canvas("pdf/A1_portada.pdf", pagesize=letter)
+    Fondo(canvas,"--")
+    canvas.drawImage('static/Iconos/Fondo_portada.png', 80, 150, width=500, height=350)
+    canvas.setFont('Helvetica-Bold', 30)
+    canvas.drawString(20,550,'           PARÁMETROS DE DISEÑO     ') 
+    canvas.drawString(20,515,'      Y ESQUEMAS MECÁNICOS PARA   ') 
+    canvas.drawString(20,480,'LA CONSTRUCCIÓN DE UNA HORNILLA  ') 
+    canvas.drawString(20,445,'   PARA LA PRODUCCIÓN DE PANELA  ')
+    canvas.setFont('Helvetica', 24)
+    canvas.drawString(220,280,' Presentado por:')
+    canvas.drawString(220,255,'   AGROSAVIA') 
+    canvas.setFont('Helvetica', 10)
+    canvas.drawString(170,240,'(Corporación Colombiana de Investigación Agropecuaria)')
+    canvas.save()
+    #Sección 1
+    from reportlab.pdfgen import canvas
+    canvas = canvas.Canvas("pdf/A2_portada.pdf", pagesize=letter)
+    Fondo(canvas,"--")
+    canvas.drawImage('static/Iconos/Fondo_otros.png', 50, 220, width=500, height=350)
+    canvas.setFont('Helvetica-Bold', 30)
+    canvas.drawString(20,450,'                         SECCIÓN 1:     ') 
+    canvas.drawString(20,415,'              DATOS DEL USUARIO E   ') 
+    canvas.drawString(20,380,'          INFORMACIÓN FINANCIERA  ') 
+    canvas.drawString(20,345,'                   DE LA HORNILLA  ')
+    canvas.showPage() #Salto de página    
+    canvas.save()
+    #Sección 2
+    from reportlab.pdfgen import canvas
+    canvas = canvas.Canvas("pdf/B0_portada.pdf", pagesize=letter)
+    Fondo(canvas,"--")
+    canvas.drawImage('static/Iconos/Fondo_otros.png', 50, 220, width=500, height=350)
+    canvas.setFont('Helvetica-Bold', 30)
+    canvas.drawString(20,390,'                         SECCIÓN 2:     ') 
+    canvas.drawString(20,355,'                PLANOS MECÁNICOS   ') 
+    canvas.showPage() #Salto de página    
+    canvas.save()
+    #Sección 3
+    from reportlab.pdfgen import canvas
+    canvas = canvas.Canvas("pdf/C0_portada.pdf", pagesize=letter)
+    Fondo(canvas,"--")
+    canvas.drawImage('static/Iconos/Fondo_otros.png', 50, 220, width=500, height=350)
+    canvas.setFont('Helvetica-Bold', 30)
+    canvas.drawString(20,390,'                         SECCIÓN 3:     ') 
+    canvas.drawString(20,355,'  INFORMACIÓN TÉCNICA DETALLADA   ') 
+    canvas.showPage() #Salto de página    
+    canvas.save()
+    
+#Función para generar la parte escrita del informe
+def Generar_reporte(D1,D2):
+    from reportlab.lib.pagesizes import letter
+    from reportlab.pdfgen import canvas
+    canvas = canvas.Canvas("pdf/A3_informe.pdf", pagesize=letter)
+    #Espacio de trabajo disponible desde 20 hasta 650
     puntero=630
     Hoja=1
     Fondo(canvas,Hoja)
@@ -46,10 +113,17 @@ def Generar_reporte(D1,D2):
         if(str(i)=='DATOS DE ENTRADA' or str(i)=='CAPACIDAD MOLINO' or 
            str(i)=='DATOS DE LA MASA' or str(i)=='PROPIEDADES DE LOS JUGOS'):
             if(str(i)=='DATOS DE ENTRADA'):
+                canvas.setFont('Helvetica-Bold', 14)
+                canvas.drawString(200,650,'--->>>DATOS DEL USUARIO<<<---')
                 canvas.setFont('Helvetica-Bold', 12)
                 canvas.drawString(50,puntero,'Vista de la caña')
                 canvas.drawImage('static/Cana/'+D1['Variedad de Caña']+'.png', 350, puntero-150, width=150, height=150)
                 canvas.showPage() #Salto de página
+                #Cortar pdf
+                canvas.save()
+                from reportlab.pdfgen import canvas
+                canvas = canvas.Canvas("pdf/C1_informe.pdf", pagesize=letter)
+                #-----
                 Hoja=Hoja+1
                 Fondo(canvas,Hoja)
                 puntero=650
@@ -57,6 +131,11 @@ def Generar_reporte(D1,D2):
                 canvas.drawString(90,puntero,'--->>>DATOS USADOS PARA EL CÁLCULO DE LA HORNILLA<<<---')
             elif(str(i)=='CAPACIDAD MOLINO'):
                 canvas.showPage() #Salto de página
+                #Cortar pdf
+                canvas.save()
+                from reportlab.pdfgen import canvas
+                canvas = canvas.Canvas("pdf/A4_informe.pdf", pagesize=letter)
+                #-----
                 Hoja=Hoja+1
                 Fondo(canvas,Hoja)
                 puntero=650
@@ -64,6 +143,11 @@ def Generar_reporte(D1,D2):
                 canvas.drawString(200,puntero,'--->>>MOLINO SELECCIONADO<<<---')                
             elif(str(i)=='DATOS DE LA MASA'):
                 canvas.showPage()
+                #Cortar pdf
+                canvas.save()
+                from reportlab.pdfgen import canvas
+                canvas = canvas.Canvas("pdf/C2_informe.pdf", pagesize=letter)
+                #-----
                 Hoja=Hoja+1
                 Fondo(canvas,Hoja)
                 puntero=650
@@ -85,7 +169,6 @@ def Generar_reporte(D1,D2):
             puntero=650            
         else:          
             puntero=puntero-20
-    #Guarda pdf en la carpeta raíz del proyecto
     
     """----------->>>>>>> Publicar Calculos por etapa<<<<<<<<<<<------------"""
     #Estructura para imprimir los calculos por Etapa
@@ -133,34 +216,24 @@ def Generar_reporte(D1,D2):
         else:
             puntero_h=puntero_h-80
     #Gruardas informe en pdf
+    Generar_portada()
     canvas.save()
-#    fl=0
-#    Dibujar_plano("Hola"+str(fl),6,1,2,3,4,5,6,7,8,9,10,11,12,13,14,fl)
+    Unir_Informe()
     
-"""Funciones para estimar el volumen de cada paila, donde"""
-    #Hfn        Altura de fondo
-    #Hfa o hfl  Altura falca
-    #hal        Altura aletas
-    #An o A     Ancho de paila
-    #Hc         Altura de casco
-    #H          Altura total
-#Funciones para dibujar planos acotados
-    
+#Funcion para dibujar planos acotados
 def Crear_plano_pdf(directorio_imagen, Nombre_archivo, Nombre_Usuario, Nombre_Paila, Valores_plano, valores_eliminar):
     from reportlab.lib.pagesizes import letter
     from reportlab.pdfgen import canvas
     Etiquetas=['Altura de la falca','Altura del fondo','Ancho', 'Ancho', 'Longitud',
                'Longitud', 'Angulo', 'Altura aletas', 'Separación entre aletas', 
-               'Número de aletas', 'Altura del casco', 'Ancho del casco',
-               'Cantidad de tubos', 'Diametro del tubo', 'Longitud del tubo',
-               'Longitud canal', 'Cantidad de canales']
+               'Número de aletas', 'Alto del casco', 'Ancho del casco',
+               'Cantidad de tubos', 'Diametro del tubo', 'Diametro del tubo',
+               'Grosor del canal', 'Cantidad de canales']
     Conv=['A','B','C','D','E','G','I','F','H','J','K','L','M','N','O','P','Q']
     for i in range(len(valores_eliminar)-1,-1,-1):
         Valores_plano.pop(valores_eliminar[i])
         Etiquetas.pop(valores_eliminar[i])
         Conv.pop(valores_eliminar[i])
-
-        
     canvas = canvas.Canvas(Nombre_archivo+".pdf", pagesize=letter)
     canvas.drawImage(directorio_imagen, 0, 0, width=610, height=790)
     canvas.setLineWidth(0.5)
@@ -188,7 +261,15 @@ def Crear_plano_pdf(directorio_imagen, Nombre_archivo, Nombre_Usuario, Nombre_Pa
     canvas.line(220,128,220,Puntero-2)
     canvas.line(300,128,300,Puntero-2)
     canvas.save()
-            
+
+"""--->>>Está función convierte en milimetros las dimensiones y envia los 
+parámetros de salida a la función para exportar a pdf<<<<----"""   
+    #Hfn        Altura de fondo
+    #Hfa o hfl  Altura falca
+    #hal        Altura aletas
+    #An o A     Ancho de paila
+    #Hc         Altura de casco
+    #H          Altura total     
 def Dibujar_plano(Nombre_Sitio,Nombre_archivo,Tipo_paila,H_fl,H_fn,Ancho,L,Ho,Hc,N_Aletas,h_Aletas,Angulo,nT,dT,lT,lC,Cantidad_canales,Activar_Aletas):
     #Convertir medidas en milimetros
     A=H_fl*1000                             #0
@@ -196,22 +277,23 @@ def Dibujar_plano(Nombre_Sitio,Nombre_archivo,Tipo_paila,H_fl,H_fn,Ancho,L,Ho,Hc
     C=Ancho*1000                            #2
     G=L*1000                                #3
     E=(L*1000)+100                          #4
-    D=2*(math.sin(90-Angulo)*H_fl)+Ancho    #5
-    I=Angulo                                #6
-    F=h_Aletas                              #7
+    D=2*(math.sin((math.pi/2)-Angulo)*H_fl)+Ancho    #5
+    D=D*1000
+    I=(180*Angulo)/math.pi                                #6
+    F=h_Aletas*1000                         #7
     H=0.07*1000                             #8- 0.07 es la separación entre aletas
     J=N_Aletas                              #9
-    K=Ho                                    #10
-    L=Hc                                    #11 ACDIK
+    K=Hc*1000                               #10
+    L=Ho*1000                               #11 ACDIK
     M=nT                                    #12
-    N=dT                                    #13
-    O=lT                                    #14
-    P=lC                                    #15
+    N=dT*1000                               #13
+    O=lT*1000                               #14
+    P=lC*1000                               #15
     Q=Cantidad_canales                      #16
     Valores_plano=[A,B,C,D,E,G,I,F,H,J,K,L,M,N,O,P,Q]
     
     if Tipo_paila==1:
-        if Activar_Aletas==1:
+        if Activar_Aletas==True:
             Crear_plano_pdf('static/Pailas/Plana_con_aletas.png', Nombre_archivo,
                             Nombre_Sitio, 'Diagrama de una paila plana con aletas', Valores_plano, [10,11,12,13,14,15,16])
         else:
@@ -219,7 +301,7 @@ def Dibujar_plano(Nombre_Sitio,Nombre_archivo,Tipo_paila,H_fl,H_fn,Ancho,L,Ho,Hc
                             Nombre_Sitio, 'Diagrama de una paila plana sin aletas', Valores_plano, [7,8,9,10,11,12,13,14,15,16])
     
     elif Tipo_paila==2: #sin plano
-        if Activar_Aletas==1:
+        if Activar_Aletas==True:
             Crear_plano_pdf('static/Pailas/Pirotubular_circular_con_aletas.png', Nombre_archivo,
                             Nombre_Sitio, 'Diagrama de una paila pirotubular circular con aletas', Valores_plano, [10,11,14,15,16])
         else:
@@ -231,7 +313,7 @@ def Dibujar_plano(Nombre_Sitio,Nombre_archivo,Tipo_paila,H_fl,H_fn,Ancho,L,Ho,Hc
                         Nombre_Sitio, 'Diagrama de una paila semiesférica', Valores_plano, [1,4,5,7,8,9,11,12,13,14,15,16])   
         
     elif Tipo_paila==4:
-        if Activar_Aletas==1:
+        if Activar_Aletas==True:
             Crear_plano_pdf('static/Pailas/Semicilindrica_con_aletas.png', Nombre_archivo,
                             Nombre_Sitio, 'Diagrama de una paila semicilindrica con aletas', Valores_plano, [1,12,13,14,15,16])
         else:
@@ -239,7 +321,7 @@ def Dibujar_plano(Nombre_Sitio,Nombre_archivo,Tipo_paila,H_fl,H_fn,Ancho,L,Ho,Hc
                             Nombre_Sitio, 'Diagrama de una paila semicilindrica sin aletas', Valores_plano, [1,7,8,9,12,13,14,15,16])
 
     elif Tipo_paila==5: #sin plano
-        if Activar_Aletas==1:
+        if Activar_Aletas==True:
             Crear_plano_pdf('static/Pailas/Pirotubular_cuadrada_con_aletas.png', Nombre_archivo,
                             Nombre_Sitio, 'Diagrama de una paila pirotubular cuadrada con aletas', Valores_plano, [10,11,13,15,16])
         else:
@@ -247,21 +329,28 @@ def Dibujar_plano(Nombre_Sitio,Nombre_archivo,Tipo_paila,H_fl,H_fn,Ancho,L,Ho,Hc
                             Nombre_Sitio, 'Diagrama de una paila pirotubular cuadrada sin aletas', Valores_plano, [7,8,9,10,11,13,15,16])    
 
     elif Tipo_paila==6: #Sin plano
-        if Activar_Aletas==1:
+        if Activar_Aletas==True:
             Crear_plano_pdf('static/Pailas/Cuadrada_acanalada_con_aletas.png', Nombre_archivo,
-                            Nombre, 'Diagrama de una paila cuadrada acanalada con aletas', Valores_plano, [10,11,12,13,14])
+                            Nombre_Sitio, 'Diagrama de una paila cuadrada acanalada con aletas', Valores_plano, [10,11,12,13,14])
         else:
             Crear_plano_pdf('static/Pailas/Cuadrada_acanalada_sin_aletas.png', Nombre_archivo,
                             Nombre_Sitio, 'Diagrama de una paila cuadrada acanalada sin aletas', Valores_plano, [7,8,9,10,11,12,13,14])     
-    
+
+
+"""**************************************************************************"""
+"""--->>>Este grupo de funciones estima las dimensiones de la geometria de la 
+paila<<<----"""
 def Cantidad_Aletas(A,B_Aletas):
     #El numero de aletas es un parámetro que varia en función del 
     #ancho de la paila.Lla separación minima entre ellas es de 7cm
     if(B_Aletas==True):
         Separacion_Aletas=0.07
-        return round(A/Separacion_Aletas,0)	
+        return round(A/Separacion_Aletas,0), Separacion_Aletas	
     else:
-        return 0
+        return 0, 0
+    
+#Orden de las variables de salida
+#Volumen_Total, Ang, N_Aletas_Canal ó N_Aletas, h_Aletas, Seperacion_Aletas, dT, nT, lT, N_Canales
                 
 def Semiesferica(H_fn,A,H_fl):
     R=(((A/2)**2)+(H_fn**2))/(2*H_fn)	
@@ -272,11 +361,11 @@ def Semiesferica(H_fn,A,H_fl):
     A2=x**2
     VFA=(H_fl*(A1+A2+math.sqrt(A1*A2)))/3
     Volumen_Total=VFA+VTJ	
-    return Volumen_Total
+    return [Volumen_Total, Ang, 0, 0, 0, 0, 0, 0, 0, 0]
 
 def Semicilindrica(H,Hc,A,L,Hfa,B_Aletas):
     #la altura de las aletas es fijo por ahora 10cm
-    N_Aletas_Canal=Cantidad_Aletas(A,B_Aletas)
+    N_Aletas_Canal, Separacion_Aletas=Cantidad_Aletas(A,B_Aletas)
     h_Aletas=0.01
     Ang=68*math.pi/180
     #Oculto en la base
@@ -305,11 +394,11 @@ def Semicilindrica(H,Hc,A,L,Hfa,B_Aletas):
     VTJ=Vcil+(2*Vca)
     VFA=V
     Volumen_Total=VTJ+VFA
-    return Volumen_Total
+    return [Volumen_Total, Ang, N_Aletas_Canal, h_Aletas, Separacion_Aletas, 0, 0, 0, 0, 0]
        
 def Plana(H_fl,H_fn,A,L,B_Aletas):
     #La altura de las aletas es fijo por ahora 10cm
-    N_Aletas=Cantidad_Aletas(A,B_Aletas)
+    N_Aletas, Separacion_Aletas=Cantidad_Aletas(A,B_Aletas)
     h_Aletas=0.01
     Ang=68*math.pi/180
     Area=(A*L)+(2*A*H_fn)+(2*H_fn*L)	
@@ -318,13 +407,13 @@ def Plana(H_fl,H_fn,A,L,B_Aletas):
     """Otros parámetros"""
     Porcentaje_Llenado=Volumen_Fon/Volumen_Total
     Area_TCC=(2*h_Aletas*L*N_Aletas)+Area
-    return Volumen_Total
+    return [Volumen_Total, Ang, N_Aletas, h_Aletas, Separacion_Aletas, 0, 0, 0, 0, 0]
 	
 def Pirotubular_Circular(H_fl,H_fn,A,L,B_Aletas):
     #dT es el diametro del tubo
     #nT es el numero de tubos
     #La altura de las aletas es fijo por ahora 10cm
-    N_Aletas=Cantidad_Aletas(A,B_Aletas)
+    N_Aletas, Separacion_Aletas=Cantidad_Aletas(A,B_Aletas)
     h_Aletas=0.01
     Ang=68*math.pi/180
     dT=H_fn/3
@@ -334,13 +423,13 @@ def Pirotubular_Circular(H_fl,H_fn,A,L,B_Aletas):
     """Otros parámetros"""
     Porcentaje_Llenado=Volumen_Fon/Volumen_Total
     Area_TCC=((((H_fn)*(A))-(2*((math.pi/4)*dT**2)*nT))+(2*(H_fn*L)+(A*L)))+(math.pi*dT*L*nT)+(2*(L*h_Aletas)+(2*(h_Aletas))*N_Aletas)
-    return Volumen_Total
+    return [Volumen_Total, Ang, N_Aletas, h_Aletas, Separacion_Aletas, dT, nT, 0, 0, 0]
 
 def Pirotubular_Cuadrada(H_fl,H_fn,A,L,B_Aletas):
     #lT es la medida de un lado de un tubo cuadrado
     #nT es el numero de tubos
     #La altura de las aletas es fijo por ahora 10cm
-    N_Aletas=Cantidad_Aletas(A,B_Aletas)
+    N_Aletas, Separacion_Aletas=Cantidad_Aletas(A,B_Aletas)
     h_Aletas=0.01
     Ang=68*math.pi/180
     lT=H_fl/2
@@ -351,14 +440,14 @@ def Pirotubular_Cuadrada(H_fl,H_fn,A,L,B_Aletas):
     """Otros parámetros"""
     Porcentaje_Llenado=Volumen_Fon/Volumen_Total
     Area_TCC=(h_Aletas*L*N_Aletas*2)+Area
-    return Volumen_Total
+    return [Volumen_Total, Ang, N_Aletas, h_Aletas, Separacion_Aletas, 0, nT, lT, 0, 0]
     
 def Acanalada_Cuadrada(H_fl,H_fn,A,L,B_Aletas):
     #la altura de las aletas es fijo por ahora 10cm
     #lC es la medida de un lado de un canal cuadrado y las aletas van el
     #ducto del canal
     lC=H_fn/3
-    N_Aletas_Canal=Cantidad_Aletas(lC,B_Aletas)
+    N_Aletas_Canal, Separacion_Aletas=Cantidad_Aletas(lC,B_Aletas)
     h_Aletas=0.01
     Ang=68*math.pi/180
     N_Canales=round((A+lC)/(lC*2))
@@ -368,9 +457,12 @@ def Acanalada_Cuadrada(H_fl,H_fn,A,L,B_Aletas):
     """Otros parámetros"""
     Porcentaje_Llenado=Volumen_Fon/Volumen_Total
     Area_TCC=(h_Aletas*L*N_Aletas_Canal*N_Canales*2)+Area
-    return Volumen_Total
+    return [Volumen_Total, Ang, N_Aletas_Canal, h_Aletas, Separacion_Aletas, 0, 0, 0, N_Canales, lC]
 
-#Está función mide el valor de aptitud del individuo (Paila)
+"""--->>>-------------------------------------------------------------<<<----"""
+"""**************************************************************************"""
+
+"""--->>>Está función mide el valor de aptitud del individuo (Paila)<<<---"""
 def Valor_Aptitud(Vol_objetivo,Tipo_paila,H_fl,H_fn,A,L,H,Hc,Activar_Aletas):
     #Semiesferica(H_fn,A,H_fl)
     #Semicilindrica(H,Hc,A,L,Hfa,B_Aletas)
@@ -380,30 +472,39 @@ def Valor_Aptitud(Vol_objetivo,Tipo_paila,H_fl,H_fn,A,L,H,Hc,Activar_Aletas):
     #Acanalada_Cuadrada(H_fl,H_fn,A,L,lC,B_Aletas)
     f=100.0
     if Tipo_paila==1:
-        f=abs(Vol_objetivo-Plana(H_fl,H_fn,A,L,Activar_Aletas))
+        lista_par=Plana(H_fl,H_fn,A,L,Activar_Aletas)
+        f=abs(Vol_objetivo-lista_par[0])
         f=(f/Vol_objetivo)*100.0
     elif Tipo_paila==2:
-        f=abs(Vol_objetivo-Pirotubular_Circular(H_fl,H_fn,A,L,Activar_Aletas))
+        lista_par=Pirotubular_Circular(H_fl,H_fn,A,L,Activar_Aletas)
+        f=abs(Vol_objetivo-lista_par[0])
         f=(f/Vol_objetivo)*100.0
     elif Tipo_paila==3:
-        f=abs(Vol_objetivo-Semiesferica(H_fn,A,H_fl))
+        lista_par=Semiesferica(H_fn,A,H_fl)
+        f=abs(Vol_objetivo-lista_par[0])
         f=(f/Vol_objetivo)*100.0
     elif Tipo_paila==4:
-        f=abs(Vol_objetivo-Semicilindrica(H,Hc,A,L,H_fl,Activar_Aletas))
+        lista_par=Semicilindrica(H,Hc,A,L,H_fl,Activar_Aletas)
+        f=abs(Vol_objetivo-lista_par[0])
         f=(f/Vol_objetivo)*100.0
     elif Tipo_paila==5:
-        f=abs(Vol_objetivo-Pirotubular_Cuadrada(H_fl,H_fn,A,L,Activar_Aletas))
+        lista_par=Pirotubular_Cuadrada(H_fl,H_fn,A,L,Activar_Aletas)
+        f=abs(Vol_objetivo-lista_par[0])
         f=(f/Vol_objetivo)*100.0    
     elif Tipo_paila==6:
-        f=abs(Vol_objetivo-Acanalada_Cuadrada(H_fl,H_fn,A,L,Activar_Aletas))
+        lista_par=Acanalada_Cuadrada(H_fl,H_fn,A,L,Activar_Aletas)
+        f=abs(Vol_objetivo-lista_par[0])
         f=(f/Vol_objetivo)*100.0 
-    return f
+    return [f, lista_par[0:10]]
 
-def Dibujar_paila(Vol,i,Tipo_paila,H_fl,H_fn,A,L,H,Hc,Activar_Aletas):
+"""--->>>>Está funcion esta oculta pero retorna el margen de error del algoritmo
+por consola<<<----"""
+def Comprobar_diseno(Vol,i,Tipo_paila,H_fl,H_fn,A,L,H,Hc,Activar_Aletas):
     print("Etapa: "+str(i+1))
     print("Capacidad en m^3/kg esperada: "+str(Vol))
     if Tipo_paila==1:
-        print("Capacidad en m^3/kg estimada: "+str(Plana(H_fl,H_fn,A,L,Activar_Aletas)))
+        lista_par=Plana(H_fl,H_fn,A,L,Activar_Aletas)
+        print("Capacidad en m^3/kg estimada: "+str(lista_par[0]))
         if(Activar_Aletas==True):
             print("Tipo seleccionado: Plana con aletas")
         else:
@@ -413,7 +514,8 @@ def Dibujar_paila(Vol,i,Tipo_paila,H_fl,H_fn,A,L,H,Hc,Activar_Aletas):
         print("A: "+str(A))
         print("L: "+str(L))
     elif Tipo_paila==2:
-        print("Cantidad en Litros estimada: "+str(Pirotubular_Circular(H_fl,H_fn,A,L,Activar_Aletas)))
+        lista_par=Pirotubular_Circular(H_fl,H_fn,A,L,Activar_Aletas)
+        print("Cantidad en Litros estimada: "+str(lista_par[0]))
         if(Activar_Aletas==True):
             print("Tipo seleccionado: Pirotubular circular con aletas")
         else:
@@ -423,13 +525,15 @@ def Dibujar_paila(Vol,i,Tipo_paila,H_fl,H_fn,A,L,H,Hc,Activar_Aletas):
         print("A: "+str(A))
         print("L: "+str(L))
     elif Tipo_paila==3:
-        print("Cantidad en Litros estimada: "+str(Semiesferica(H_fn,A,H_fl)))
+        lista_par=Semiesferica(H_fn,A,H_fl)
+        print("Cantidad en Litros estimada: "+str(lista_par[0]))
         print("Tipo seleccionado: Semiesferica")
         print("H_fl: "+str(H_fl))
         print("H_fn: "+str(H_fn))
         print("A: "+str(A))
     elif Tipo_paila==4:
-        print("Cantidad en Litros estimada: "+str(Semicilindrica(H,Hc,A,L,H_fl,Activar_Aletas)))
+        lista_par=Semicilindrica(H,Hc,A,L,H_fl,Activar_Aletas)
+        print("Cantidad en Litros estimada: "+str(lista_par[0]))
         if(Activar_Aletas==True):
             print("Tipo seleccionado: Semicilindrica con aletas")
         else:
@@ -440,7 +544,8 @@ def Dibujar_paila(Vol,i,Tipo_paila,H_fl,H_fn,A,L,H,Hc,Activar_Aletas):
         print("L: "+str(L)) 
         print("H: "+str(H))
     elif Tipo_paila==5:  
-        print("Cantidad en Litros estimada: "+str(Pirotubular_Cuadrada(H_fl,H_fn,A,L,Activar_Aletas)))
+        lista_par=Pirotubular_Cuadrada(H_fl,H_fn,A,L,Activar_Aletas)
+        print("Cantidad en Litros estimada: "+str(lista_par[0]))
         if(Activar_Aletas==True):
             print("Tipo seleccionado: Pirotubular cuadrada con aletas")
         else:
@@ -450,7 +555,8 @@ def Dibujar_paila(Vol,i,Tipo_paila,H_fl,H_fn,A,L,H,Hc,Activar_Aletas):
         print("A: "+str(A))
         print("L: "+str(L))        
     elif Tipo_paila==6:
-        print("Cantidad en Litros estimada: "+str(Acanalada_Cuadrada(H_fl,H_fn,A,L,Activar_Aletas)))
+        lista_par=Acanalada_Cuadrada(H_fl,H_fn,A,L,Activar_Aletas)
+        print("Cantidad en Litros estimada: "+str(lista_par[0]))
         if(Activar_Aletas==True):
             print("Tipo seleccionado: Acanalada cuadrada con aletas")
         else:
@@ -460,6 +566,7 @@ def Dibujar_paila(Vol,i,Tipo_paila,H_fl,H_fn,A,L,H,Hc,Activar_Aletas):
         print("A: "+str(A))
         print("L: "+str(L))
 
+"""--------->>>>limitador de los valores asignados a las dimensiones<<------"""
 def comprobar_individuo(Lim_inf,Lim_sup,valor_actual):
     if(valor_actual>=Lim_sup):
         return Lim_sup
@@ -467,9 +574,11 @@ def comprobar_individuo(Lim_inf,Lim_sup,valor_actual):
         return Lim_inf
     else:
         return valor_actual
-    
+
+"""--------->>>Función que optimiza las dimensiones de la paila a partir de los,
+pesos<<-------------""" 
 #Dimensiones de la lamina 4*10 pies o 1.21*3.04 metros (Restricción del sistema)
-def Mostrar_pailas(Vol_aux, Etapas):
+def Mostrar_pailas(Vol_aux, Etapas, Sitio):
     Tipo_paila=[[],[]]
     Total_pailas=6
     for i in range(Etapas):
@@ -477,10 +586,10 @@ def Mostrar_pailas(Vol_aux, Etapas):
         if(i==0):
             Tipo_paila[1].append(False)
         else:
-            Tipo_paila[1].append(random.choice([True,False]))   
-    #Algoritmo de optimización (Ascenso a la colina)
+            Tipo_paila[1].append(random.choice([True,False]))  
+    """---->>>>Algoritmo de optimización (Ascenso a la colina)<<<<----"""
     for i in range(Etapas-1,-1,-1):
-        f_1=1000
+        f_1=10000000
         iteraciones=0
         Volumen=float(Vol_aux[i])
         #Recuerde H_fl o Hfa es lo mismo
@@ -491,10 +600,9 @@ def Mostrar_pailas(Vol_aux, Etapas):
         L    = comprobar_individuo(0.30, 3.00, abs(random.uniform(0.40, 3.00)))
         H    = comprobar_individuo(0.02, 1.50, abs(random.uniform(0.02, 1.50)))
         Hc   = comprobar_individuo(0.05, 0.50, abs(random.uniform(0.05, 0.50)))
-        f=Valor_Aptitud(Volumen,int(Tipo_paila[0][i]),H_fl,H_fn,A,L,H,Hc,bool(Tipo_paila[1][i]))
-        #Paso es una variable que aumenta o disminuye el cambio de la variable de entrada
-        sigma=0.03
-        while ((0.2<f)and(iteraciones<20000)):
+        f_tem=Valor_Aptitud(Volumen,int(Tipo_paila[0][i]),H_fl,H_fn,A,L,H,Hc,bool(Tipo_paila[1][i]))
+        f=f_tem[0]
+        while ((0.2<f)and(iteraciones<50000)):
             if(f_1<f):
                 H_fl = H_fl_1
                 H_fn = H_fn_1
@@ -502,18 +610,40 @@ def Mostrar_pailas(Vol_aux, Etapas):
                 L    = L_1
                 H    = H_1
                 Hc   = Hc_1
-                f=Valor_Aptitud(Volumen,int(Tipo_paila[0][i]),H_fl,H_fn,A,L,H,Hc,bool(Tipo_paila[1][i]))     
+                f_tem=Valor_Aptitud(Volumen,int(Tipo_paila[0][i]),H_fl,H_fn,A,L,H,Hc,bool(Tipo_paila[1][i]))
+                f=f_tem[0]
+                lista_par=f_tem[1][1:10]   
             H_fl_1 = comprobar_individuo(0.05, 1.00, abs(random.uniform(0.05, 1.00)))
             H_fn_1 = comprobar_individuo(0.05, 0.50, abs(random.uniform(0.05, 0.50)))
             A_1    = comprobar_individuo(0.15, 1.00, abs(random.uniform(0.15, 1.00)))
             L_1    = comprobar_individuo(0.30, 3.00, abs(random.uniform(0.40, 3.00)))
             H_1    = comprobar_individuo(0.02, 1.50, abs(random.uniform(0.02, 1.50)))
             Hc_1   = comprobar_individuo(0.05, 0.50, abs(random.uniform(0.05, 0.50)))
-            f_1    = Valor_Aptitud(Volumen,int(Tipo_paila[0][i]),H_fl_1,H_fn_1,A_1,L_1,H_1,Hc_1,bool(Tipo_paila[1][i]))
-            iteraciones=iteraciones+1    
+            f_tem=Valor_Aptitud(Volumen,int(Tipo_paila[0][i]),H_fl_1,H_fn_1,A_1,L_1,H_1,Hc_1,bool(Tipo_paila[1][i]))
+            f_1=f_tem[0]
+            iteraciones=iteraciones+1
+        """--->>>Llamado a la función para esquematizar un plano en archivo pdf<<<----"""
+        #lista_par[0]>>>Ang
+        #lista_par[1]>>>N_Aletas_Canal ó N_Aletas
+        #lista_par[2]>>>h_Aletas
+        #lista_par[3]>>>Seperacion_Aletas
+        #lista_par[4]>>>dT
+        #lista_par[5]>>>nT
+        #lista_par[6]>>>lT
+        #lista_par[7]>>>N_Canales
+        #lista_par[8]>>>lC
+        if(i<9):
+            Texto_etapa= "0"+str(i+1)
+        else:
+            Texto_etapa= str(i+1)
+            
+        Dibujar_plano(Sitio+" [Paila: "+Texto_etapa+"]","pdf/B1_Etapa_"+Texto_etapa,int(Tipo_paila[0][i]),
+                      H_fl,H_fn,A,L,H,Hc,lista_par[1],lista_par[2],lista_par[0],lista_par[5],
+                      lista_par[4],lista_par[6],lista_par[8],lista_par[7],bool(Tipo_paila[1][i])
+                      )
         
-        Dibujar_plano("Lugar del diccionario",str(i)+"_Etapa",int(Tipo_paila[0][i]),H_fl,H_fn,0,L,0,Hc,0,0,0,0,0,0,0,100,int(Tipo_paila[1][i]))
-        Dibujar_paila(Volumen,i,Tipo_paila[0][i],H_fl,H_fn,A,L,H,Hc,Tipo_paila[1][i])
-        print("________>>>>>>>>>>>>>____________")
-        print(str(iteraciones))
-        print(str(f))     
+        """Eliminar comentarios para probar el algoritmo de optimización"""
+        #Comprobar_diseno(Volumen,i,int(Tipo_paila[0][i]),H_fl,H_fn,A,L,H,Hc,bool(Tipo_paila[1][i]))
+        #print("________>>>>>>>>>>>>>____________")
+        #print(str(iteraciones))
+        #print(str(f))  
