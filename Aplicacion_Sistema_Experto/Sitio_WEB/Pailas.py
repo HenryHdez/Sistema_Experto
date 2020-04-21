@@ -15,21 +15,19 @@ import os
 def Unir_Informe(nombre):
     from PyPDF2 import PdfFileMerger, PdfFileReader
     from shutil import rmtree
-    listaPdfs = os.listdir('pdf')
+    listaPdfs = os.listdir('static/pdf')
     listaPdfs
     merger = PdfFileMerger()
     
     for file in listaPdfs:
-        merger.append(PdfFileReader('pdf/'+file))
+        merger.append(PdfFileReader('static/pdf/'+file))
     merger.write('static/'+nombre+'.pdf')
-    "Borrar datos cargados temporalmente"
-#    rmtree('pdf')
-#    os.mkdir('pdf')
+    """Borrar datos cargados temporalmente"""
+    rmtree('static/pdf')
+    os.mkdir('static/pdf')
 
 #Layout del informe
 def Fondo(canvas, Hoja):
-    from reportlab.lib import utils
-    from reportlab.lib.pagesizes import letter
     #Dibujar logo y membrete de AGROSAVIA
     canvas.drawImage('static/Iconos/Agrosavia.jpg', 240, 720, width=150, height=40)
     canvas.drawImage('static/Iconos/Membrete.png' , 0, 0, width=650, height=15)
@@ -53,7 +51,7 @@ def Generar_portada():
     from reportlab.lib.pagesizes import letter
     from reportlab.pdfgen import canvas
     #Portada
-    canvas = canvas.Canvas("pdf/A1_portada.pdf", pagesize=letter)
+    canvas = canvas.Canvas("static/pdf/A1_portada.pdf", pagesize=letter)
     Fondo(canvas,"--")
     canvas.drawImage('static/Iconos/Fondo_portada.png', 80, 150, width=500, height=350)
     canvas.setFont('Helvetica-Bold', 30)
@@ -69,7 +67,7 @@ def Generar_portada():
     canvas.save()
     #Sección 1
     from reportlab.pdfgen import canvas
-    canvas = canvas.Canvas("pdf/A2_portada.pdf", pagesize=letter)
+    canvas = canvas.Canvas("static/pdf/A2_portada.pdf", pagesize=letter)
     Fondo(canvas,"--")
     canvas.drawImage('static/Iconos/Fondo_otros.png', 50, 220, width=500, height=350)
     canvas.setFont('Helvetica-Bold', 30)
@@ -80,7 +78,7 @@ def Generar_portada():
     canvas.save()
     #Sección 2
     from reportlab.pdfgen import canvas
-    canvas = canvas.Canvas("pdf/B0_portada.pdf", pagesize=letter)
+    canvas = canvas.Canvas("static/pdf/B0_portada.pdf", pagesize=letter)
     Fondo(canvas,"--")
     canvas.drawImage('static/Iconos/Fondo_otros.png', 50, 220, width=500, height=350)
     canvas.setFont('Helvetica-Bold', 30)
@@ -90,7 +88,7 @@ def Generar_portada():
     canvas.save()
     #Sección 3
     from reportlab.pdfgen import canvas
-    canvas = canvas.Canvas("pdf/C0_portada.pdf", pagesize=letter)
+    canvas = canvas.Canvas("static/pdf/C0_portada.pdf", pagesize=letter)
     Fondo(canvas,"--")
     canvas.drawImage('static/Iconos/Fondo_otros.png', 50, 220, width=500, height=350)
     canvas.setFont('Helvetica-Bold', 30)
@@ -159,8 +157,7 @@ def Generar_reporte(D1,D2):
     #Genera la vista previa
     from reportlab.lib.pagesizes import letter
     from reportlab.pdfgen import canvas
-    import pandas as pd
-    canvas = canvas.Canvas("pdf/A3_informe.pdf", pagesize=letter)
+    canvas = canvas.Canvas("static/pdf/A3_informe.pdf", pagesize=letter)
     #Espacio de trabajo disponible desde 20 hasta 650
     puntero=630
     Hoja=1
@@ -178,7 +175,7 @@ def Generar_reporte(D1,D2):
                 #Cortar pdf
                 canvas.save()
                 from reportlab.pdfgen import canvas
-                canvas = canvas.Canvas("pdf/C1_informe.pdf", pagesize=letter)
+                canvas = canvas.Canvas("static/pdf/C1_informe.pdf", pagesize=letter)
                 #-----
                 Hoja=Hoja+1
                 Fondo(canvas,Hoja)
@@ -190,7 +187,7 @@ def Generar_reporte(D1,D2):
                 #Cortar pdf
                 canvas.save()
                 from reportlab.pdfgen import canvas
-                canvas = canvas.Canvas("pdf/A4_informe.pdf", pagesize=letter)
+                canvas = canvas.Canvas("static/pdf/A4_informe.pdf", pagesize=letter)
                 #-----
                 Hoja=Hoja+1
                 Fondo(canvas,Hoja)
@@ -202,7 +199,7 @@ def Generar_reporte(D1,D2):
                 #Cortar pdf
                 canvas.save()
                 from reportlab.pdfgen import canvas
-                canvas = canvas.Canvas("pdf/C2_informe.pdf", pagesize=letter)
+                canvas = canvas.Canvas("static/pdf/C2_informe.pdf", pagesize=letter)
                 #-----
                 Hoja=Hoja+1
                 Fondo(canvas,Hoja)
@@ -280,8 +277,8 @@ def Generar_reporte(D1,D2):
 def Crear_plano_pdf(directorio_imagen, Nombre_archivo, Nombre_Usuario, Nombre_Paila, Valores_plano, valores_eliminar):
     from reportlab.lib.pagesizes import letter
     from reportlab.pdfgen import canvas
-    Etiquetas=['Altura de la falca','Altura del fondo','Ancho', 'Ancho', 'Longitud',
-               'Longitud', 'Angulo', 'Altura aletas', 'Separación entre aletas', 
+    Etiquetas=['Altura de la falca','Altura del fondo','Ancho', 'Ancho del fondo', 'Longitud',
+               'Longitud del fondo', 'Angulo', 'Altura aletas', 'Separación entre aletas', 
                'Número de aletas', 'Alto del casco', 'Ancho del casco',
                'Cantidad de tubos', 'Diametro del tubo', 'Diametro del tubo',
                'Grosor del canal', 'Cantidad de canales']
@@ -293,9 +290,9 @@ def Crear_plano_pdf(directorio_imagen, Nombre_archivo, Nombre_Usuario, Nombre_Pa
     canvas = canvas.Canvas(Nombre_archivo+".pdf", pagesize=letter)
     canvas.drawImage(directorio_imagen, 0, 0, width=610, height=790)
     canvas.setLineWidth(0.5)
-    canvas.line(55,128,300,128)
+    canvas.line(55,134,300,134)
     for i in range(len(Etiquetas)):
-        Puntero=120-(i*9)
+        Puntero=126-(i*9)
         canvas.setFont('Helvetica-Bold', 9)
         canvas.drawString(57, Puntero, Etiquetas[i])
         canvas.setFont('Helvetica-Bold', 9)
@@ -304,7 +301,7 @@ def Crear_plano_pdf(directorio_imagen, Nombre_archivo, Nombre_Usuario, Nombre_Pa
         canvas.drawString(250, Puntero, str(round(Valores_plano[i],3)))
         canvas.line(55,Puntero-2,300,Puntero-2)
     canvas.setFont('Helvetica-Bold', 9)
-    canvas.drawString(150, 130, 'CONVENCIONES') 
+    canvas.drawString(150, 136, 'CONVENCIONES') 
     canvas.setFont('Helvetica-Bold', 7)
     canvas.drawString(370, 76, Nombre_Usuario)   
     canvas.drawString(370, 67, Nombre_Paila)  
@@ -312,10 +309,10 @@ def Crear_plano_pdf(directorio_imagen, Nombre_archivo, Nombre_Usuario, Nombre_Pa
     canvas.setFont('Helvetica-Bold', 5)
     tiempo = time.asctime(time.localtime(time.time()))
     canvas.drawString(460,35,str(tiempo))
-    canvas.line(55,128,55,Puntero-2)
-    canvas.line(180,128,180,Puntero-2)
-    canvas.line(220,128,220,Puntero-2)
-    canvas.line(300,128,300,Puntero-2)
+    canvas.line(55,134,55,Puntero-2)
+    canvas.line(180,134,180,Puntero-2)
+    canvas.line(220,134,220,Puntero-2)
+    canvas.line(300,134,300,Puntero-2)
     canvas.save()
 
 """--->>>Está función convierte en milimetros las dimensiones y envia los 
@@ -658,6 +655,13 @@ def Mostrar_pailas(Vol_aux, Etapas, Sitio):
         Hc   = comprobar_individuo(0.05, 0.50, abs(random.uniform(0.05, 0.50)))
         f_tem=Valor_Aptitud(Volumen,int(Tipo_paila[0][i]),H_fl,H_fn,A,L,H,Hc,bool(Tipo_paila[1][i]))
         f=f_tem[0]
+        #Memorias tempales
+        H_fl_1 = 0
+        H_fn_1 = 0
+        A_1 = 0
+        L_1 = 0
+        H_1 = 0
+        Hc_1 = 0
         while ((0.2<f)and(iteraciones<50000)):
             if(f_1<f):
                 H_fl = H_fl_1
@@ -693,7 +697,7 @@ def Mostrar_pailas(Vol_aux, Etapas, Sitio):
         else:
             Texto_etapa= str(i+1)
             
-        Dibujar_plano(Sitio+" [Paila: "+Texto_etapa+"]","pdf/B1_Etapa_"+Texto_etapa,int(Tipo_paila[0][i]),
+        Dibujar_plano(Sitio+" [Paila: "+Texto_etapa+"]","static/pdf/B1_Etapa_"+Texto_etapa,int(Tipo_paila[0][i]),
                       H_fl,H_fn,A,L,H,Hc,lista_par[1],lista_par[2],lista_par[0],lista_par[5],
                       lista_par[4],lista_par[6],lista_par[8],lista_par[7],bool(Tipo_paila[1][i])
                       )
