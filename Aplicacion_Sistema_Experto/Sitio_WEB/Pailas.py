@@ -8,6 +8,22 @@ import math
 import random
 import time
 import os
+import pandas as pd
+global Cantidad_pailas
+global Lista_de_pailas
+#Cantidad_pailas[0] es plana
+#Cantidad_pailas[1] es plana sin aletas
+#Cantidad_pailas[2] es pirotubular circular
+#Cantidad_pailas[3] es pirotubular circular SA
+#Cantidad_pailas[4] es semiesférica
+#Cantidad_pailas[5] es semicilindrica
+#Cantidad_pailas[6] es semicilindrica SA
+#Cantidad_pailas[7] es cuadrada
+#Cantidad_pailas[8] es cuadrada SA
+#Cantidad_pailas[9] es acanalada
+#Cantidad_pailas[10] es acanalada SA
+Cantidad_pailas=[0,0,0,0,0,0,0,0,0,0,0]
+Lista_de_pailas=[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ']
 "Librería para realizar los calculos de la geometría de las pailas de una hornilla"
 
 """--->>>Generar informe en pdf<<<<---"""
@@ -23,7 +39,9 @@ def Unir_Informe(nombre):
         merger.append(PdfFileReader('static/pdf/'+file))
     merger.write('static/'+nombre+'.pdf')
     """Borrar datos cargados temporalmente"""
+    #rmtree('static/Temp')
     rmtree('static/pdf')
+    #os.mkdir('static/Temp')
     os.mkdir('static/pdf')
 
 #Layout del informe
@@ -104,7 +122,7 @@ def Dibujar_Molino(canvas, puntero, Hoja):
     canvas.drawString(200,puntero,'   ')
     canvas.drawString(200,puntero-20,'   ')
     canvas.drawString(190,puntero-20,'>>>MOLINOS DISPONIBLES<<<')
-    Molino=pd.read_excel('static/Temp.xlsx',skipcolumn = 0,)
+    Molino=pd.read_excel('static/Temp/Temp.xlsx',skipcolumn = 0,)
     
     Marca=Molino['Marca'].values
     Modelo=Molino['Modelo'].values
@@ -324,6 +342,8 @@ parámetros de salida a la función para exportar a pdf<<<<----"""
     #Hc         Altura de casco
     #H          Altura total     
 def Dibujar_plano(Nombre_Sitio,Nombre_archivo,Tipo_paila,H_fl,H_fn,Ancho,L,Ho,Hc,N_Aletas,h_Aletas,Angulo,nT,dT,lT,lC,Cantidad_canales,Activar_Aletas):
+    global Cantidad_pailas
+    global Lista_de_pailas
     #Convertir medidas en milimetros
     A=H_fl*1000                             #0
     B=H_fn*1000                             #1
@@ -343,49 +363,70 @@ def Dibujar_plano(Nombre_Sitio,Nombre_archivo,Tipo_paila,H_fl,H_fn,Ancho,L,Ho,Hc
     O=lT*1000                               #14
     P=lC*1000                               #15
     Q=Cantidad_canales                      #16
-    Valores_plano=[A,B,C,D,E,G,I,F,H,J,K,L,M,N,O,P,Q]
-    
+    Valores_plano=[A,B,C,D,E,G,I,F,H,J,K,L,M,N,O,P,Q] 
     if Tipo_paila==1:
         if Activar_Aletas==True:
+            Cantidad_pailas[0]=Cantidad_pailas[0]+1
+            Lista_de_pailas[0]='Plana'
             Crear_plano_pdf('static/Pailas/Plana_con_aletas.png', Nombre_archivo,
                             Nombre_Sitio, 'Diagrama de una paila plana con aletas', Valores_plano, [10,11,12,13,14,15,16])
         else:
+            Cantidad_pailas[1]=Cantidad_pailas[1]+1
+            Lista_de_pailas[1]='Plana SA'
             Crear_plano_pdf('static/Pailas/Plana_sin_aletas.png', Nombre_archivo,
                             Nombre_Sitio, 'Diagrama de una paila plana sin aletas', Valores_plano, [7,8,9,10,11,12,13,14,15,16])
     
-    elif Tipo_paila==2: #sin plano
+    elif Tipo_paila==2: 
         if Activar_Aletas==True:
+            Cantidad_pailas[2]=Cantidad_pailas[2]+1
+            Lista_de_pailas[2]='Pirotubular'
             Crear_plano_pdf('static/Pailas/Pirotubular_circular_con_aletas.png', Nombre_archivo,
                             Nombre_Sitio, 'Diagrama de una paila pirotubular circular con aletas', Valores_plano, [10,11,14,15,16])
         else:
+            Cantidad_pailas[3]=Cantidad_pailas[3]+1
+            Lista_de_pailas[3]='Pirotubular SA'
             Crear_plano_pdf('static/Pailas/Pirotubular_circular_sin_aletas.png', Nombre_archivo,
                             Nombre_Sitio, 'Diagrama de una paila pirotubular circular sin aletas', Valores_plano, [7,8,9,10,11,14,15,16])
     
     elif Tipo_paila==3:
+        Cantidad_pailas[4]=Cantidad_pailas[4]+1
+        Lista_de_pailas[4]='Semiesferica'
         Crear_plano_pdf('static/Pailas/Semiesferica.png', Nombre_archivo,
                         Nombre_Sitio, 'Diagrama de una paila semiesférica', Valores_plano, [1,4,5,7,8,9,11,12,13,14,15,16])   
         
     elif Tipo_paila==4:
         if Activar_Aletas==True:
+            Cantidad_pailas[5]=Cantidad_pailas[5]+1
+            Lista_de_pailas[5]='Semicilindria'
             Crear_plano_pdf('static/Pailas/Semicilindrica_con_aletas.png', Nombre_archivo,
                             Nombre_Sitio, 'Diagrama de una paila semicilindrica con aletas', Valores_plano, [1,12,13,14,15,16])
         else:
+            Cantidad_pailas[6]=Cantidad_pailas[6]+1
+            Lista_de_pailas[6]='Semicilindrica SA'
             Crear_plano_pdf('static/Pailas/Semicilindrica_sin_aletas.png', Nombre_archivo,
                             Nombre_Sitio, 'Diagrama de una paila semicilindrica sin aletas', Valores_plano, [1,7,8,9,12,13,14,15,16])
 
-    elif Tipo_paila==5: #sin plano
+    elif Tipo_paila==5:
         if Activar_Aletas==True:
+            Cantidad_pailas[7]=Cantidad_pailas[7]+1
+            Lista_de_pailas[7]='Pirotubular cuadrada'
             Crear_plano_pdf('static/Pailas/Pirotubular_cuadrada_con_aletas.png', Nombre_archivo,
                             Nombre_Sitio, 'Diagrama de una paila pirotubular cuadrada con aletas', Valores_plano, [10,11,13,15,16])
         else:
+            Cantidad_pailas[8]=Cantidad_pailas[8]+1
+            Lista_de_pailas[8]='Pirotubular cuadrada SA'
             Crear_plano_pdf('static/Pailas/Pirotubular_cuadrada_sin_aletas.png', Nombre_archivo,
                             Nombre_Sitio, 'Diagrama de una paila pirotubular cuadrada sin aletas', Valores_plano, [7,8,9,10,11,13,15,16])    
 
-    elif Tipo_paila==6: #Sin plano
+    elif Tipo_paila==6:
         if Activar_Aletas==True:
+            Cantidad_pailas[9]=Cantidad_pailas[9]+1
+            Lista_de_pailas[9]='Cuadrada acanalada'
             Crear_plano_pdf('static/Pailas/Cuadrada_acanalada_con_aletas.png', Nombre_archivo,
                             Nombre_Sitio, 'Diagrama de una paila cuadrada acanalada con aletas', Valores_plano, [10,11,12,13,14])
         else:
+            Cantidad_pailas[10]=Cantidad_pailas[10]+1
+            Lista_de_pailas[10]='Cuadrada acanalada SA'
             Crear_plano_pdf('static/Pailas/Cuadrada_acanalada_sin_aletas.png', Nombre_archivo,
                             Nombre_Sitio, 'Diagrama de una paila cuadrada acanalada sin aletas', Valores_plano, [7,8,9,10,11,12,13,14])     
 
@@ -449,7 +490,7 @@ def Semicilindrica(H,Hc,A,L,Hfa,B_Aletas):
     Volumen_Total=VTJ+VFA
     return [Volumen_Total, Ang, N_Aletas_Canal, h_Aletas, Separacion_Aletas, 0, 0, 0, 0, 0]
        
-def Plana(H_fl,H_fn,A,L,B_Aletas):
+def Plana(H_fl,H_fn,A,L,B_Aletas): 
     #La altura de las aletas es fijo por ahora 10cm
     N_Aletas, Separacion_Aletas=Cantidad_Aletas(A,B_Aletas)
     h_Aletas=0.01
@@ -462,7 +503,7 @@ def Plana(H_fl,H_fn,A,L,B_Aletas):
     Area_TCC=(2*h_Aletas*L*N_Aletas)+Area
     return [Volumen_Total, Ang, N_Aletas, h_Aletas, Separacion_Aletas, 0, 0, 0, 0, 0]
 	
-def Pirotubular_Circular(H_fl,H_fn,A,L,B_Aletas):
+def Pirotubular_Circular(H_fl,H_fn,A,L,B_Aletas):   
     #dT es el diametro del tubo
     #nT es el numero de tubos
     #La altura de las aletas es fijo por ahora 10cm
@@ -478,7 +519,7 @@ def Pirotubular_Circular(H_fl,H_fn,A,L,B_Aletas):
     Area_TCC=((((H_fn)*(A))-(2*((math.pi/4)*dT**2)*nT))+(2*(H_fn*L)+(A*L)))+(math.pi*dT*L*nT)+(2*(L*h_Aletas)+(2*(h_Aletas))*N_Aletas)
     return [Volumen_Total, Ang, N_Aletas, h_Aletas, Separacion_Aletas, dT, nT, 0, 0, 0]
 
-def Pirotubular_Cuadrada(H_fl,H_fn,A,L,B_Aletas):
+def Pirotubular_Cuadrada(H_fl,H_fn,A,L,B_Aletas):           
     #lT es la medida de un lado de un tubo cuadrado
     #nT es el numero de tubos
     #La altura de las aletas es fijo por ahora 10cm
@@ -632,6 +673,8 @@ def comprobar_individuo(Lim_inf,Lim_sup,valor_actual):
 pesos<<-------------""" 
 #Dimensiones de la lamina 4*10 pies o 1.21*3.04 metros (Restricción del sistema)
 def Mostrar_pailas(Vol_aux, Etapas, Sitio):
+    global Cantidad_pailas
+    global Lista_de_pailas
     Tipo_paila=[[],[]]
     Total_pailas=6
     for i in range(Etapas):
@@ -696,7 +739,6 @@ def Mostrar_pailas(Vol_aux, Etapas, Sitio):
             Texto_etapa= "0"+str(i+1)
         else:
             Texto_etapa= str(i+1)
-            
         Dibujar_plano(Sitio+" [Paila: "+Texto_etapa+"]","static/pdf/B1_Etapa_"+Texto_etapa,int(Tipo_paila[0][i]),
                       H_fl,H_fn,A,L,H,Hc,lista_par[1],lista_par[2],lista_par[0],lista_par[5],
                       lista_par[4],lista_par[6],lista_par[8],lista_par[7],bool(Tipo_paila[1][i])
@@ -705,4 +747,8 @@ def Mostrar_pailas(Vol_aux, Etapas, Sitio):
         #Comprobar_diseno(Volumen,i,int(Tipo_paila[0][i]),H_fl,H_fn,A,L,H,Hc,bool(Tipo_paila[1][i]))
         #print("________>>>>>>>>>>>>>____________")
         #print(str(iteraciones))
-        #print(str(f))  
+        #print(str(f)) 
+    df = pd.DataFrame([Lista_de_pailas, Cantidad_pailas])
+    df.to_excel('static/Temp/Temp2.xlsx')
+    Cantidad_pailas=[0,0,0,0,0,0,0,0,0,0,0]
+    Lista_de_pailas=[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ']

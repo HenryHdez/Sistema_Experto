@@ -5,14 +5,18 @@ Created on Mon Apr 20 10:08:42 2020
 @author: hahernandez
 """
 
-import pandas as pd
+import xlrd
 import math
+import random
+import pandas as pd
+import numpy as np
 import numpy_financial as npf
+import matplotlib.pyplot as plt
 global Capacidad_hornilla
 global Molino_seleccionado
 global Horas_trabajo_al_dia
 
-def variables(Capacidad, Horas, semana, moliendas, Cana_estimada):
+def Variables(Capacidad, Horas, semana, moliendas, Cana_estimada):
     global Capacidad_hornilla
     global Horas_trabajo_al_dia
     global Dias_trabajo_semana
@@ -30,12 +34,22 @@ def estimar_total(vector):
         acumulado.append(i[2])
     return sum(acumulado)
    
-def costos(Cantidad_pailas):
+def costos():
     global Capacidad_hornilla
     global Horas_trabajo_al_dia
     global Dias_trabajo_semana
     global Toneladas_cana_a_moler
     global numero_moliendas
+    Archivo_Temporal=xlrd.open_workbook('static/Temp/Temp2.xlsx')
+    libro = Archivo_Temporal.sheet_by_index(0)
+    Tipo_de_Pailas=[]
+    Cantidad_pailas=[]
+    for i in range(len(libro.row(1))):
+        Tipo_de_Pailas.append(libro.row(1)[i].value)
+        Cantidad_pailas.append(libro.row(2)[i].value)
+    Tipo_de_Pailas=Tipo_de_Pailas[1:]
+    Cantidad_pailas=Cantidad_pailas[1:]
+    
     """>>>>>>>>>>>>-----------COSTOS DEL PROYECTO-------------<<<<<<<<<<<<"""
     """>>>>>>>>>>>>----------Costos de la hornilla-------------<<<<<<<<<<<<"""
     Valor_Hornilla=[]
@@ -155,10 +169,9 @@ def costos(Cantidad_pailas):
     #>>>>>>>>>>>>>>>>>>>>>>>>>>>>Total gastos operativos
     total_operativos=estimar_total(Valor_Operativo)
     """>>>>>>>>>>>>>>-------------TOTALES PROYECTO--------------<<<<<<<<<<<<<<<"""
-    Costo_imprevistos=0.2*total_hornilla
+    Costo_imprevistos=0.02*total_hornilla
     Consolidado_totales_1=[total_hornilla, total_recuperador, total_operativos, Costo_imprevistos, float(Operativos['Movilidad'])]
     Total_proyecto=sum(Consolidado_totales_1)
-    
     """>>>>-----------------COSTOS DE LA PRODUCCIÓN-------------------------<<<"""
     #Variables
     Valor_Cana=float(Operativos['Tonelada de Caña'].values)	
@@ -169,7 +182,7 @@ def costos(Cantidad_pailas):
     Precio_otros_dia=float(Operativos['Valor otros'].values)
     Produ_diaria=Horas_trabajo_al_dia*Capacidad_hornilla
     #>>>>>>>>>>>>>>>>>>>>>Molinos<<<<<<<<<<<<<<<<<<
-    Molino=pd.read_excel('static/Temp.xlsx',skipcolumn = 0,)
+    Molino=pd.read_excel('static/Temp/Temp.xlsx',skipcolumn = 0,)
     Marca=Molino['Marca'].values
     Modelo=Molino['Modelo'].values
     Kilos=Molino['kg/hora'].values
@@ -200,9 +213,11 @@ def costos(Cantidad_pailas):
     Consumo_Controlador=Precio_KWh*Consumo
     Total_Control=math.ceil(Consumo_Controlador/Produ_diaria)
     Costo_kg_control=math.ceil(Total_Control/Produ_diaria)
-    # >>>>>>>>>> Materia Prima			
-    Relacion=	Toneladas_cana_a_moler/Capacidad_hornilla
-    Costo_kg_cana=Valor_Cana*Relacion
+    # >>>>>>>>>> Materia Prima	
+    #Multiplico por 1000 para pasar de KG/h a litros
+    Relacion=	Toneladas_cana_a_moler/(Capacidad_hornilla*1000)
+
+    Costo_kg_cana=math.ceil(Valor_Cana*Relacion)
     #Otros insumos Cera, Empaques, Clarificante			
     Costo_kg_otros=math.ceil(Precio_otros_dia/Produ_diaria)
     #Costo personal			
@@ -210,13 +225,15 @@ def costos(Cantidad_pailas):
     Valor_Contrato=Valor_operario*Numero_Operarios
     Costo_kg_Contrato=math.ceil(Valor_Contrato/Produ_diaria)			
     #Costo Mantenimiento			
-    Costo_kg_Mtto=math.ceil(Mtto/Produ_diaria)
+    
+    Costo_kg_Mtto=math.ceil(Mtto/(Produ_diaria*Dias_trabajo_semana*4*12))
     """>>>>>>>>>>>>>>-------------TOTALES PRODUCCION--------------<<<<<<<<<<<<<<<"""
     Consolidado_totales_2=[Costo_kg_Motor, Costo_kg_Diesel, Costo_kg_control, Costo_kg_cana, Costo_kg_otros, Costo_kg_Mtto, Costo_kg_Contrato]
+
     Costo_total_kg=sum(Consolidado_totales_2)
     """>>>>>>>>>>>>>>>>>>>>----------------COSTO FINANCIERO---------------------<<<<<<<<<"""
     Interes=float(Operativos['Tasa interes'].values)
-    t_anos=3
+    t_anos=float(Operativos['Anos depreciacion'].values)
     Costo_financiero=(Total_proyecto*(1+Interes)**t_anos)-Total_proyecto
     """>>>>>>>>>>>>-------------GANACIAS DE LA PANELA-----------<<<<<<<<<<<<<<<<<<<<<<<"""
     Valor_panela=float(Operativos['Costo panela'].values)
@@ -226,12 +243,21 @@ def costos(Cantidad_pailas):
     """>>>>>>>>>>>>>>>>>>>>--------------------DEPRECIACION---------------<<<<<<<<<<<<<<<<<"""
     Valor_Inicial=Total_proyecto
     Vida_util_anos_horn=int(Operativos['vida util hornilla'].values)
-    Valor_Salvamento=Total_proyecto*0.1
+    Valor_Salvamento=Total_proyecto*0.05
     Depreciacion_anual=(Valor_Inicial-Valor_Salvamento)/Vida_util_anos_horn
     Depreciacion=[]
     Depreciacion.append(round(Valor_Inicial,3))
     for ano in range(1,Vida_util_anos_horn):
         Depreciacion.append(round(Depreciacion[ano-1]-Depreciacion_anual,3))
+    ###########>>>>>>>>>>>>>>>>>>>>>>Graficar Depreciación<<<<<<<<<<<<<<<<<<<<<################
+    Fig = plt.Figure()
+    Fig_1 = Fig.add_subplot(111)
+    Fig_1.plot(range(len(Depreciacion)),np.array(Depreciacion)/1000000)
+    Fig_1.grid(color='k', linestyle='--', linewidth=1)
+    Fig_1.set_ylabel('Depreciación en pesos (X1000000)')
+    Fig_1.set_xlabel('Años')
+    Fig.savefig("static/Graficas/Depreciacion.jpg")
+    ############################################################################################
     
     """>>>>>>>>>>>>>>>>>>>>--------------------FLUJO DE CAJA---------------<<<<<<<<<<<<<<<<<"""
     #Depreciación Anual, Mtto, Ingresos, Flujo de caja
@@ -242,29 +268,71 @@ def costos(Cantidad_pailas):
     flujo_caja.append(Estado_caja[3])
     Costo_produccion=[]
     for ano in range(1,Vida_util_anos_horn):
-        Estado_caja=[Depreciacion_anual, Produccion_anual_kg*Costo_total_kg, 
-                     Ingreso_anual, Ingreso_anual-(Depreciacion_anual+(Produccion_anual_kg*Costo_total_kg))]
+        Estado_caja=[Depreciacion_anual, 
+                     Produccion_anual_kg*Costo_total_kg, 
+                     Ingreso_anual, 
+                     Ingreso_anual-(Depreciacion_anual+(Produccion_anual_kg*Costo_total_kg))]
         Lista_caja.append(Estado_caja)
         Costo_produccion.append(Estado_caja[1])
         flujo_caja.append(Estado_caja[3])
+    ###########>>>>>>>>>>>>>>>>>>>>>>Graficar flujo de caja<<<<<<<<<<<<<<<<<<<<<################
+    Fig = plt.Figure()
+    Fig_2 = Fig.add_subplot(111)
+    Fig_2.barh(range(len(flujo_caja)),np.array(flujo_caja)/1000000)
+    Fig_2.grid(color='k', linestyle='--', linewidth=1)
+    Fig_2.set_ylabel('Años')
+    Fig_2.set_xlabel('Flujo de caja en pesos (X1000000)')
+    Fig.savefig("static/Graficas/Flujo_Caja.jpg")
+    ############################################################################################
+#    print(Depreciacion_anual)
+#    print(Produccion_anual_kg)
+#    print(Costo_total_kg)
+#    print(Produccion_anual_kg*Costo_total_kg)
+#    print(flujo_caja)
     #Valor presente neto
-    Tasa_Interes=0.2
+    Tasa_Interes=float(Operativos['Tasa interes'].values)
     NPV=npf.npv(rate=Tasa_Interes,values=flujo_caja)
     TIR=round(npf.irr(flujo_caja), 3)
     """>>>>>>------RETORNO A LA INVERSION----<<<<"""
     Retorno_inversion=[]   
     for i in Costo_produccion:
-        Ganacia_Acumulada=Valor_panela*i
+        Ingreso_esperado=Valor_panela*Produccion_anual_kg
+        Ganancia_Acumulada=Ingreso_esperado-i
         Valor_Proyecto=round(flujo_caja[0],3)
-        Tiempo_anos=round(flujo_caja[0]/((Valor_panela*i)-i),3)
-        Estado_retorno=[Valor_panela, i, Ganacia_Acumulada, Ganacia_Acumulada-i, 
-                        Valor_Proyecto, Tiempo_anos, Tiempo_anos*12]
-        Valor_panela=Valor_panela+25
+        Tiempo_anos=round(-Valor_Proyecto/Ganancia_Acumulada,3)
+        Estado_retorno=[Valor_panela, 
+                        i, 
+                        Ingreso_esperado,
+                        Ganancia_Acumulada,  
+                        Valor_Proyecto, 
+                        Tiempo_anos, 
+                        Tiempo_anos*12]
+        Valor_panela=Valor_panela+random.uniform(-500, 500)
         Retorno_inversion.append(Estado_retorno)
-    print(Retorno_inversion)
-    
-variables(120, 12, 12, 13, 111)
-costos([0,1,2,3,4,5,6,7,8,9,10])
+    MA=np.array(Retorno_inversion)
+    lista_valor_panela=MA[:,0]
+    Anos=MA[:,5]
+    Meses=MA[:,6]
+    #print(Anos)
+    ###########>>>>>>>>>>>>>>>>>Graficar Retorno a la inversión<<<<<<<<<<<<<<<<<################
+    Fig = plt.Figure()
+    Fig_3 = Fig.add_subplot(111)
+    Fig_3.plot(lista_valor_panela,Anos)
+    Fig_3.grid(color='k', linestyle='--', linewidth=1)
+    Fig_3.set_ylabel('Años')
+    Fig_3.set_xlabel('Valor de la panela en pesos')
+    Fig.savefig("static/Graficas/RI_Anos.jpg")
+    ############################################################################################
+    ###########>>>>>>>>>>>>>>>>>Graficar Retorno a la inversión<<<<<<<<<<<<<<<<<################
+    Fig = plt.Figure()
+    Fig_4 = Fig.add_subplot(111)
+    Fig_4.plot(lista_valor_panela,Meses)
+    Fig_4.grid(color='k', linestyle='--', linewidth=1)
+    Fig_4.set_ylabel('Meses')
+    Fig_4.set_xlabel('Valor de la panela en pesos')
+    Fig.savefig("static/Graficas/RI_Meses.jpg")
+    ############################################################################################
+        #print(Retorno_inversion)
 #    Marca=Molino['Marca'].values
 #    Modelo=Molino['Modelo'].values
 #    Kilos=Molino['kghora'].values

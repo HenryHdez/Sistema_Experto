@@ -8,8 +8,7 @@ import math
 import pandas as pd
 """----->>>>Selección del molino<<<<----"""
 def Seleccionar_Molino(Kilos_Hora):
-    Molino=pd.read_excel('static/Molinos.xlsx')
-    
+    Molino=pd.read_excel('static/Catalogos/Molinos.xlsx')
     Marca=Molino['Marca'].values
     Modelo=Molino['Modelo'].values
     Kilos=Molino['kghora'].values
@@ -57,12 +56,12 @@ def Seleccionar_Molino(Kilos_Hora):
            'Precio'     :V1
             }
     df = pd.DataFrame(datos, columns = ['Marca', 'Modelo', 'kg/hora', 'Diesel', 'Electrico', 'Gasolina', 'Relación i', 'Precio'])
-    df.to_excel('static/Temp.xlsx')
+    df.to_excel('static/Temp/Temp.xlsx')
     return sum(E1)/len(E1)
     
 def datos_entrada(Diccionario):
     """Estos datos se toman directamente del archivo HTML"""
-    #Area de Caña Sembrada al rededor			
+    #Crecimiento del área sembrada en los proximos 5 años		
     #Area de Caña Sembrada Propia			
     #Area de Caña Sembrada Para Calculo			
     #Periodo vegetatio			
@@ -75,7 +74,7 @@ def datos_entrada(Diccionario):
     #Altura del Sitio	
     
     """Nota: los valores de estas variables son supuestos (Estas son otras variables de entrada)"""
-    Porcentaje_extraccion=0.6 #60%
+    Porcentaje_extraccion=0.6       #60%
     Bagazillo_Prelimpiador=0.02 #2%
     Cachaza=0.04 #4%    
     CSS_Jugo_Clarificado=float(Diccionario['Grados Brix de la caña'])+5
@@ -91,7 +90,9 @@ def datos_entrada(Diccionario):
     
     """Calculo de la capacidad del molino"""		
     #Área de caña sembrada para el calculo
-    Area_cana_calculo=(float(Diccionario['Área caña sembrada alrededor'])+float(Diccionario['Área caña sembrada propia']))/2
+    Crecimiento=float(Diccionario['Crecimiento aproximado del área sembrada'])
+    Crecimiento=Crecimiento+float(Diccionario['Área caña sembrada'])
+    Area_cana_calculo=(Crecimiento+float(Diccionario['Área caña sembrada']))/2
     Cana_esperada_hectarea=float(Diccionario['Caña esperada por hectárea'])
     P_vegetativo=float(Diccionario['Periodo vegetativo'])
     #Caña molida al mes = Area sembrada de caña para calculo*Caña esperada por hectarea/Periodo vegetativo

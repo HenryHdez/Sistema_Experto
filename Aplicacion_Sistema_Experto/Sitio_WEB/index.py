@@ -7,6 +7,7 @@ import smtplib
 import os
 from werkzeug.utils import secure_filename
 import Diseno_inicial
+import Costos_funcionamiento
 import Pailas
 #from libraries import Pailas
 
@@ -42,8 +43,8 @@ def usua():
     global Nivel_Fosforo
     global Nivel_Calidad
     global Nivel_brpane
-    df = pd.read_json("static/Colombia.json")
-    cana=pd.read_excel('static/Variedades.xlsx')
+    df = pd.read_json("static/Catalogos/Colombia.json")
+    cana=pd.read_excel('static/Catalogos/Variedades.xlsx')
     Deptos_cana   = cana['Depto'].values
     Ciudad_cana   = cana['Ciudad'].values
     Tipo_cana     = cana['Tipo'].values
@@ -107,8 +108,8 @@ def generar_valores_informe():
     H2O=H2O.tolist()
     altura_media=amsnm[D_aux.index(Dept)]
     NivelFre=H2O[D_aux.index(Dept)]
-    vector=['Nombre de usuario','Departamento','Ciudad','Área caña sembrada alrededor',
-            'Área caña sembrada propia','Periodo vegetativo','Caña por esperada hectárea',
+    vector=['Nombre de usuario','Departamento','Ciudad','Crecimiento aproximado del área sembrada',
+            'Área caña sembrada','Periodo vegetativo','Caña por esperada hectárea',
             'Periodo vegetativo','Caña por hectárea esperada','Número de moliendas',
             'Días de trabajo a la semana','Horas de trabajo al día','Variedad de Caña']
     Formulario_1_Etiquetas=[]
@@ -171,7 +172,7 @@ def generar_valores_informe():
         Formulario_3_Valores.append(Diccionario[i])
     Diccionario_3=dict(zip(Formulario_3_Etiquetas,Formulario_3_Valores))
     
-    Molino=pd.read_excel('static/Temp.xlsx',skipcolumn = 0,)
+    Molino=pd.read_excel('static/Temp/Temp.xlsx',skipcolumn = 0,)
     Marca=Molino['Marca'].values
     Modelo=Molino['Modelo'].values
     Kilos=Molino['kg/hora'].values
@@ -186,6 +187,13 @@ def generar_valores_informe():
                    'Capacidad':Kilos,
                    'Valor aproximado':Valor
             }
+    """Analisis financiero"""
+    Costos_funcionamiento.Variables(float(Diccionario['Capacidad Estimada de la hornilla']),
+                                    float(Diccionario['Horas de trabajo al día']), 
+                                    float(Diccionario['Días de trabajo a la semana']), 
+                                    float(Diccionario['Número de moliendas']),
+                                    float(Diccionario['Caña molida al mes']))
+    Costos_funcionamiento.costos()
     """Creación del pdf"""
     Pailas.Generar_reporte(Diccionario,Diccionario_2)
     

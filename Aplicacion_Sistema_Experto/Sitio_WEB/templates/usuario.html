@@ -29,13 +29,13 @@
         <table align="center">
             <tr>
                <td style="width:450px"> <b>Nombre de usuario o entidad:</b> </td>
-               <td style="width:450px"> <input type = "text" name = "Nombre de usuario" placeholder="Ej. AGROSAVIA" maxlength="20"/> </td>
+               <td style="width:450px"> <input type = "text" name = "Nombre de usuario" placeholder="Ej. AGROSAVIA" style="width : 250px; text-align:center;" maxlength="20"/> </td>
             </tr>
                                                                         
             <tr>
                 <td style="width:450px"> <b>Departamento:</b> </td>
                 <td style="width:450px"> 
-                    <select id="Deptos" name="Departamento" onchange="SeleccionarDepto();">
+                    <select id="Deptos" name="Departamento" style="width : 250px; text-align:center;" onchange="SeleccionarDepto();">
                         {% for i, valor in departamentos.items() %}
                             {% if i == 4 %}
                                 <option value= "Bogotá D.C." selected>Bogotá D.C.</option>"
@@ -50,45 +50,45 @@
             <tr>
                 <td style="width:450px"> <b>Ciudad:</b> </td>
                 <td style="width:450px"> 
-                    <select id="Ciudad" name= "Ciudad" onchange="Seleccionarvariedad();">
+                    <select id="Ciudad" name= "Ciudad" style="width : 250px; text-align:center;" onchange="Seleccionarvariedad();">
                         <option value= "Bogotá">Bogotá</option>"
                     </select>                  
                 </td>
             </tr> 
             
             <tr>
-               <td style="width:450px"> <b>Área de caña sembrada al rededor (Hectáreas):</b> </td>
-               <td style="width:450px"> <input type = "number" name = "Área caña sembrada alrededor" value="18"  min="1" max="100"/> </td>
+               <td style="width:450px"> <b>Área de caña sembrada (Hectáreas):</b> </td>
+               <td style="width:450px"> <input type = "number" name = "Área caña sembrada" style="width : 250px; text-align:center;" value="18"  min="1" max="100"/> </td>
             </tr>
 
             <tr>
-               <td style="width:450px"> <b>Área de caña sembrada propia (Hectáreas):</b> </td>
-               <td style="width:450px"> <input type = "number" name = "Área caña sembrada propia" value="18"  min="1" max="100"/> </td>
+               <td style="width:450px"> <b>Crecimiento aproximado del área sembrada (Hectáreas):</b> </td>
+               <td style="width:450px"> <input type = "number" name = "Crecimiento aproximado del área sembrada" style="width : 250px; text-align:center;" value="0"  min="0" max="100"/> </td>
             </tr>
 
             <tr>
                <td style="width:450px"> <b>Periodo vegetativo (meses):</b> </td>
-               <td style="width:450px"> <input type = "number" name = "Periodo vegetativo" value="15" min="1" max="365"/> </td>
+               <td style="width:450px"> <input type = "number" name = "Periodo vegetativo" style="width : 250px; text-align:center;" value="15" min="1" max="365"/> </td>
             </tr>
 
             <tr>
                <td style="width:450px"> <b>Caña esperada por hectárea (Toneladas/Hectarea):</b> </td>
-               <td style="width:450px"> <input type = "number" name = "Caña esperada por hectárea" value="120" min="1" max="1500"/> </td>
+               <td style="width:450px"> <input type = "number" name = "Caña esperada por hectárea" style="width : 250px; text-align:center;" value="120" min="1" max="1500"/> </td>
             </tr>
             
             <tr>
                <td style="width:450px"> <b>Número de moliendas:</b> </td>
-               <td style="width:450px"> <input type = "number" name = "Número de moliendas" value="2" min="0" max="999"/> </td>
+               <td style="width:450px"> <input type = "number" name = "Número de moliendas" style="width : 250px; text-align:center;" value="2" min="0" max="999"/> </td>
             </tr>
 
             <tr>
                <td style="width:450px"> <b>Días de trabajo a la semana:</b> </td>
-               <td style="width:450px"> <input type = "number" name = "Días de trabajo a la semana" value="6" min="1" max="7"/> </td>
+               <td style="width:450px"> <input type = "number" name = "Días de trabajo a la semana" style="width : 250px; text-align:center;" value="6" min="1" max="7"/> </td>
             </tr>
 
             <tr>
                <td style="width:450px"> <b>Horas de trabajo al día:</b> </td>
-               <td style="width:450px"> <input type = "number" name = "Horas de trabajo al día" value="12" min="1" max="24"/> </td>
+               <td style="width:450px"> <input type = "number" name = "Horas de trabajo al día" style="width : 250px; text-align:center;" value="12" min="1" max="24"/> </td>
             </tr>
 
             <tr>
@@ -113,7 +113,7 @@
 
             <tr>
                <td style="width:450px"> <b>Concentración de Solidos Solubles (CSS) [°Brix]:</b> </td>
-               <td style="width:450px"> <input id="CSS de la caña" type = "text" name = "CSS de la caña" value="17.1" disabled/> </td>
+               <td style="width:450px"> <input id="CSS de la caña" type = "text" name = "CSS de la caña" style="width : 250px; text-align:center;" value="17.1" disabled/> </td>
             </tr>
         </table>                    
         
