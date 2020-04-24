@@ -243,7 +243,7 @@ def datos_entrada(Diccionario):
                ]
     
     Valores=['DATOS DE ENTRADA',
-             Capacidad_Hornilla,
+             math.ceil(Capacidad_Hornilla),
              Factor_consumo_bagazo,
              Bagazillo_Prelimpiador,
              Cachaza,

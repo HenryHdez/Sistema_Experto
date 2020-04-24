@@ -39,10 +39,12 @@ def Unir_Informe(nombre):
         merger.append(PdfFileReader('static/pdf/'+file))
     merger.write('static/'+nombre+'.pdf')
     """Borrar datos cargados temporalmente"""
-    #rmtree('static/Temp')
+    rmtree('static/Temp')
     rmtree('static/pdf')
-    #os.mkdir('static/Temp')
+    #rmtree('static/Graficas')
+    os.mkdir('static/Temp')
     os.mkdir('static/pdf')
+    #os.mkdir('static/Graficas')
 
 #Layout del informe
 def Fondo(canvas, Hoja):
