@@ -81,7 +81,7 @@ def datos_entrada(Diccionario):
     CSS_Jugo_Posevaporacion=float(Diccionario['Grados Brix de la caña'])+58
     Tipo_de_camara='Ward'
     Humedad_bagazo=0.15#15%			
-    Exceso_Aire=0.018#1.8%	
+    Exceso_Aire=1.8 #lamda	
     Extraccion=0.6#60%
     Porcentaje_Fibra=0.14#14%
     Temperatura_Ambiente=25#°C			
@@ -184,7 +184,7 @@ def datos_entrada(Diccionario):
                'CSS del jugo posevaporación',		
                'CSS panela',			
                'Tipo de camara',			
-               'Humedad del bagazo	',		
+               'Humedad del bagazo',		
                'Exceso de Aire',			
                'Extraccion',			
                'Porcentaje de Fibra',					
