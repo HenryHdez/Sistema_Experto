@@ -80,7 +80,7 @@ def datos_entrada(Diccionario):
     CSS_Jugo_Clarificado=float(Diccionario['Grados Brix de la caña'])+5
     CSS_Jugo_Posevaporacion=float(Diccionario['Grados Brix de la caña'])+58
     Tipo_de_camara='Ward'
-    Humedad_bagazo=0.15#15%			
+    Humedad_bagazo=0.3#15%			
     Exceso_Aire=1.8 #lamda	
     Extraccion=0.6#60%
     Porcentaje_Fibra=0.14#14%

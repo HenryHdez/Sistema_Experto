@@ -132,7 +132,6 @@ def Cp(T , yco , yco2 , yn2 , yo2 , yh2o ):
     R = 8.314472 #'J/mol ªC  -  KJ/Kmol ªC
     
     MM = MasaMolecular(yco, yco2, yn2, yo2, yh2o)
-    
     if (T + 273.15 > 1000):
     
         CO2 = [4.63659493, 0.00274131991, -0.000000995828531, 1.60373011E-10, -9.16103468E-15, -1696.827307, -1.93534855]
@@ -149,11 +148,11 @@ def Cp(T , yco , yco2 , yn2 , yo2 , yh2o ):
         H2O = [4.19864056, -0.0020364341, 0.00000652040211, -5.48797062E-09, 1.77197817E-12, -1208.90995, -0.849032208]
     
     A_prom=[]
-    for i in range(0,7):
-        A_prom.append(CO2[i]*(yco2 + CO[i])*(yco + O2[i])*(yo2 + N2[i])*(yn2 + H2O[i])*yh2o)
+    for i in range(0,6):
+        A_prom.append(CO2[i]*yco2 + CO[i]*yco + O2[i]*yo2 + N2[i]*yn2 + H2O[i]*yh2o)
     Cpp = 0
     for i in range(0,5):
-        Cpp = Cpp + (A_prom[i] * (((T + 273.15) ** (i))))
+        Cpp = Cpp + (A_prom[i] * (((T + 273.15)**i)))
     Cp = Cpp * R / MM
     return Cp
     
