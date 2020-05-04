@@ -6,6 +6,7 @@ Created on Wed Apr 29 07:52:53 2020
 """
 import math
 import numpy as np
+import Diseno_inicial
 from Modulo1 import *
 from Modulo2 import *
 from Modulo21 import *
@@ -66,11 +67,12 @@ def Calcular_parrillas(Area_Calculada,Capacidad_Hornilla,i,Calor_suministrado,Ti
     Aux=-264.44+(1.03*Temperatura_Flama_Ad)
     Q_Perd_Camara=(Coef_Conduct_Termica*Area_Cam)*((Aux-Temperatura_ambiente)/Esp_Camara)
     return Q_Perd_Camara
-                
-def Propiedades(Diccionario_Entr, Diccionario_Pailas):
-#    print(Diccionario_Entr)
-#    print(Diccionario_Pailas)
+
+#Función para calcular las propiedades de los gases           
+def Propiedades(Calor_transferido):
     #Valores iniciales
+    global Diccionario_Entr
+    global Diccionario_Pailas
     Masa_Bagazo=float(Diccionario_Entr['Capacidad Estimada de la hornilla'])*float(Diccionario_Entr['Factor Consumo Bagazo'])
     Cantidad_Pailas=int(Diccionario_Pailas['Etapas'])   
     Humedad_bagazo=float(Diccionario_Entr['Humedad del bagazo'])
@@ -136,7 +138,7 @@ def Propiedades(Diccionario_Entr, Diccionario_Pailas):
     Velocidad_I=(Flujo_Masico/Densidad_kgm3(CO_producidos_3,CO2_producidos_3,N2_producidos_3,O2_producidos_3,H2O_Totales_3,Presion*101.325,Temperatura_Flama_Ad))/0.32
     #print(Velocidad_I)
     Energia_inicial_Gas=DH_KJKmol(25,Temperatura_Flama_Ad,CO_producidos/1000,CO2_producidos/1000,N2_producidos/1000,O2_producidos/1000,H2O_Totales/1000)/3600
-   #print(Energia_inicial_Gas)
+    #print(Energia_inicial_Gas)
 
     Perdida_total=Energia_inicial_Gas*0.14
     
@@ -149,7 +151,7 @@ def Propiedades(Diccionario_Entr, Diccionario_Pailas):
                                        float(Diccionario_Entr['Temperatura Ambiente']),
                                        Temperatura_Flama_Ad)
     '''>>>>>>>>---------------Calculo de los gases----------------<<<<<<<<<<<<'''
-    Calor_transferido_inicial=Diccionario_Pailas['Calor Nece Calc por Etapa [KW]']#[47.135,59.740,78.743,64.603,57.385,62.503,10.596]#100*(np.random.rand(Cantidad_Pailas))
+    #Calor_transferido_inicial=[47.135,59.740,78.743,64.603,57.385,62.503,10.596]#100*(np.random.rand(Cantidad_Pailas))
     #>>>>>>>>>>>>>>>>>>>>>>>>>>>>Este arreglo inicia por la ultima paila<<<<<<<<<<<<<<<<<<<<<<<
     Gas_Paila=[]
     Gases_Consolidado=[] 
@@ -161,7 +163,7 @@ def Propiedades(Diccionario_Entr, Diccionario_Pailas):
         else:
             Temp1=Temp2
         Gas_Paila.append(Temp1)                                     #Calor antes de la paila
-        aux=Temp1-(0.25*Perdida_total)-Calor_transferido_inicial[i]
+        aux=Temp1-(0.25*Perdida_total)-Calor_transferido[i]
         Gas_Paila.append(aux)        
         mem1= abs(Tcalculada(Temp1,                                 #Temperatura antes de la paila
                              Gas_Total,
@@ -202,8 +204,8 @@ def Propiedades(Diccionario_Entr, Diccionario_Pailas):
     Perimetro=np.random.random(Cantidad_Pailas)                           #Faltan las ecuaciones
     Temperatura_Superficie=np.random.random(Cantidad_Pailas)              #Faltan las ecuaciones
     Emisividad_gases=np.random.random(Cantidad_Pailas)                    #Revisar nomograma
-    Calor_Q_gases=[]
-    for i in range(1):
+    Q_Total_estimado=[]
+    for i in range(Cantidad_Pailas):
     #'''>>>>>>>>---------------Calor por convección----------------<<<<<<<<<<<<'''
         aux=Cp(Temperarura_Gases[i],                                                                                #Calor Especifico a Presión Cte           
                CO_producidos_3,
@@ -249,128 +251,122 @@ def Propiedades(Diccionario_Entr, Diccionario_Pailas):
         Q_Piso=((C_Boltzman*((T_piso**4)-(Temp_Fon**4)))/((1-Emisividad_Fondo_paila)/(Area_Lisa[i]*Emisividad_Fondo_paila)+1/(Area_Lisa[i]*Factor_Forma_Piso)+(1-Emisividad_Ducto)/(Area_Piso_radiante[i]/Emisividad_Ducto)))/1000
         Q_Gas=((C_Boltzman*Area_Lisa[i]*Emisividad_Fondo_paila*Emisividad_gases[i]*(Temperarura_Gases[i]**4-Temp_Fon**4))/(1-(1-Emisividad_Fondo_paila)*(1-Emisividad_gases[i])))/1000
         Q_Total_paila=Q_Paredes+Q_Piso+Q_Gas
-        print(Q_Total_paila)
-        Calor_Q_gases.append([aux, aux2, visc_dina, Coef_teri, vel_gase1, visc_sup1,
-                       visc_cine, n_plant, Diametro_h, n_reynol, Nu1, Nu2, Nu3,
-                       Nu4, Nu5, Coef_conv, Calor_conv, T_pared, T_piso])
-    #print(Calor_Q_gases)
+        Q_Total_estimado.append(Q_Total_paila+Calor_conv)
+    return Q_Total_estimado
 
+'''>>>>>>>>>>>>Concentrancion y Propiedades del jugo según calor cedido por el gas<<<<<<<<<'''
+def Q_Cedido_gas(Calor_estimado, Area_lisa, Espesor_lamina):
+    global Diccionario_Entr
+    global Diccionario_Pailas
+#    La matriz tiene la siguiente disposición 
+#    Lista_Contenido[0]=Calor Transferido desde el gas 
+#    Lista_Contenido[1]=Concentracion de Solidos Inicial
+#    Lista_Contenido[2]=Concentracion de Solidos Final
+#    Lista_Contenido[3]=Concentracion de Solidos Promedio
+#    Lista_Contenido[4]=Masa Jugo Entrada
+#    Lista_Contenido[5]=Temperatura jugo
+#    Lista_Contenido[6]=Viscosidad del Jugo
+#    Lista_Contenido[7]=Tension Superficial
+#    Lista_Contenido[8]=Densidad
+#    Lista_Contenido[9]=Calor Especifico  jugo
+#    Lista_Contenido[10]=Entalpia de Vaporización
+#    Lista_Contenido[11]=Conductividad del jugo
+#    Lista_Contenido[12]=Area Interior Paila
+#    Lista_Contenido[13]=flux Calor Paila
+#    Lista_Contenido[14]=T Pared L Jugo
+#    Lista_Contenido[15]=T Pared L Gas
+    Etapas=int(Diccionario_Pailas['Etapas']) 
+    Lista_Contenido=np.ones((16, Etapas))
+    """Calculo de la hornilla por etapas"""   
+    CSS_Cana=float(Diccionario_Entr['CSS del jugo de Caña'])
+    print(CSS_Cana)
+    Temp_amb=float(Diccionario_Entr['Temperatura Ambiente'])
+    print(Temp_amb)
+    Presion =float(Diccionario_Entr['Presion Atmosferica'])/760.0
+    print(Presion)
+    Tension_superficial=0.05546
+    Lista_Contenido[0]=Calor_estimado
+    Lista_Contenido[12]=Area_lisa  
     
-    
-    
-    
-    """>>>----------Geometrias basadas en el diseño inicial-----<<<<"""
-    
-    #Lista_Geometrias_F[0][Cantidad de pailas]=Area de Flujo
-    #Lista_Geometrias_F[1][Cantidad de pailas]=Perimetro
-    #Lista_Geometrias_F[2][Cantidad de pailas]=Altura del Ducto
-    #Lista_Geometrias_F[3][Cantidad de pailas]=Area Paredes Radiación
-    #Lista_Geometrias_F[4][Cantidad de pailas]=Area Piso Radiación
-    #Lista_Geometrias_F[5][Cantidad de pailas]=Area Paredes Piso y TechoPara Perdidas
-#    Lista_Geometrias_F=[]
-#    Lista_Geometrias_C=[]  
-#    #Se debe cambiar por las formulas para estimar el Area, perimetro ...
-#    for i in range(int(Diccionario_Pailas['Etapas'])):
-#        for j in range (6):
-#            Lista_Geometrias_C.append(float(j))
-#        Lista_Geometrias_F.append(Lista_Geometrias_C)
-#        Lista_Geometrias_C=[] 
-#        
-#    print(Lista_Geometrias_F)
-    
-#    #Supuesto
-#    Area_Chimenea=53.327
-#    Area_Total=105.964	
-#    
-#    Calores_Transferidoas_Qtt=[]
-#    for i in range(int(Diccionario_Pailas['Etapas'])):
-#        Calores_Transferidos_Qtt.append(random.uniform(45, 70))
-#        
-#    print(Calores_Transferidos_Qtt)
-#    
-#    Lista_Contenido_Qtt=[]
-#    Lista_columnas_Qtt=[]  
-#    #Caracteristicas de las celdas de cada columna
-#    #Fila 0 Calor del Gas antes de Paila
-#    #Fila 1 Calor Gas despues paila
-#    #Fila 2 Temperarura antes de Paila
-#    #Fila 3 Temperatura despues de Paila
-#    #Fila 4 Temperatura Bajo la Paila
-#    #Fila 5 Perdidas
-#    #Fila 6 Pedidas según 14%
-#
-#    for i in range(int(Diccionario_Pailas['Etapas'])):
-#        for j in range (7):
-#            Lista_columnas_Qtt.append(float(i+j))
-#        Lista_Contenido_Qtt.append(Lista_columnas_Qtt)
-#        Lista_columnas_Qtt=[] 
-#        
-#    print(Lista_Contenido_Qtt)
-
-
-def EYE_1():
-    Error=0.0
-    tolerancia=0.0
-    Numero_pailas=0.0
-    tolerancia = 0.000001
-    Numero_pailas=np.zeros((5,4))
-    #Numero_pailas = Cells(5, 4) #' valor fijo
-    #Error = Range("M182")
-    
-    while Error > tolerancia:
-        for i in range(0,Numero_pailas):
-            print(9)
-            #Cells(114, i + 4) = Cells(180, i + 4)
-        #Error = Range("M182")
-    print(9)
-
-def EYE_2():
-    Error = 0.0
-    tolerancia = 0.0
-    Xp1 = 0.0
-    Xp2 = 0.0
-    Fx = 0.0
-    Fxc = 0.0
-    Bz = 0.0
-    Bz2 = 0.0
-    Numero_pailas = 0.0
-    #Calor Etapa
-    Iniciales=float(Diccionario_pailas['Calor Nece Calc por Etapa [KW]'])
-#    for i in range(0,Numero_pailas):
-#        #Cells(114, i + 4) = Cells(41, i + 4)
-#        print(1)
-    tolerancia = 0.000001
-    Xp1 = float(Diccionario_Entr['Calor Nece Calc por Etapa [KW]'])
-    #Xp1 = Cells(12, 4) #' valor fijo
-    #CSS jugo concentrado = CSS jugo panela
-    Xp2 = float(Diccionario_Entr['CSS panela'])
-    Error = abs(Xp1 - Xp2)
-    Bz = 3
-    Niter = 0   
-    
-    while Error > tolerancia and Niter < 50.0:
-        Niter = Niter + 1
-        #Range("l183") = Niter
-        
-        #Cells(4, 4) = Bz
-        #EYE_1()
-        #Fx=CSS concentrado - CSS Calculado
-        #Fx = Cells(76, 5) - Cells(12, 4)
-        #Factor de consumo de bagazo
-#        Cells(4, 4) = Bz + tolerancia
-        #EYE_1()
-        #Fxc=CSS concentrado - CSS Calculado
-        #Fxc = Cells(76, 5) - Cells(12, 4)
-        Der = (Fxc - Fx) / tolerancia
-        B = Fx - Der * Bz
-        Bz2 = -B / Der
-        Error = abs(Bz - Bz2)
-        if Error < 0.5:
-            Bz = Bz2
+    for i in range(Etapas-1,-1,-1):
+        if(i==Etapas-1):
+            Lista_Contenido[1][i]=CSS_Cana 
+            Lista_Contenido[4][i]=float(Diccionario_Entr['Jugo pre limpiador'])
         else:
-            if Bz - Bz2 > 0.5:
-                Bz = Bz - 0.5
-            else:
-                Bz = Bz + 0.5
-                
-Propiedades(Diccionario,Diccionario_2)
+            Lista_Contenido[1][i]=Lista_Contenido[2][i+1]
+            Lista_Contenido[4][i]=(Lista_Contenido[4][i+1]*Lista_Contenido[1][i+1]/Lista_Contenido[2][i+1])
+        Lista_Contenido[2][i]=XbrixCl(Lista_Contenido[4][i], 
+                                      Lista_Contenido[1][i], 0, 
+                                      Lista_Contenido[0][i], 
+                                      CSS_Cana,
+                                      Presion,
+                                      Temp_amb)
+        Lista_Contenido[3][i]=(Lista_Contenido[2][i]+Lista_Contenido[1][i])/2           
+        if(i==Etapas-1):
+            Lista_Contenido[5][i]=60.0 
+        else:
+            Lista_Contenido[5][i]=Tjugo(Presion,Lista_Contenido[3][i]) 
+        Temp_amb=Lista_Contenido[5][i]
+        Lista_Contenido[6][i]=(math.exp(-11.229+(3257.5/(Lista_Contenido[5][i]+273.15))+(0.07572*Lista_Contenido[3][i])))/1000                
+        Lista_Contenido[7][i]=Tension_superficial
+        Lista_Contenido[8][i]=(1043+4.854*Lista_Contenido[3][i])-(1.07*Lista_Contenido[5][i])   
+        Lista_Contenido[9][i]=4.18*(1-(0.006*Lista_Contenido[3][i]))                                       
+        Lista_Contenido[10][i]=2492.9-(2.0523*Lista_Contenido[5][i])-(0.0030752*Lista_Contenido[5][i]**2)  
+        Lista_Contenido[11][i]=(0.3815-0.0051*Lista_Contenido[3][i])+(0.001866*Lista_Contenido[5][i]) 
+        Lista_Contenido[13][i]=1000*(Lista_Contenido[0][i]/Lista_Contenido[12][i])     
+        Lista_Contenido[14][i]=Tw(Lista_Contenido[13][i],
+                                  Lista_Contenido[6][i],
+                                  Lista_Contenido[10][i],
+                                  Lista_Contenido[7][i],
+                                  Lista_Contenido[8][i],
+                                  Lista_Contenido[9][i],
+                                  Lista_Contenido[11][i],
+                                  Lista_Contenido[5][i])       
+        Lista_Contenido[15][i]=twg(Espesor_lamina[i], Lista_Contenido[13][i], Lista_Contenido[14][i])
+    print(Lista_Contenido.round(1))   
+    return Calor_estimado
+    
+def Optimizacion(Diccionario_1, Diccionario_2):
+    global Diccionario_Entr
+    global Diccionario_Pailas
+    Diccionario_Entr=Diccionario_1
+    Diccionario_Pailas=Diccionario_2
+    #Parámetros del algoritmo de optimización
+    Iteraciones_Max  = 10
+    Iteracion_actual = 0
+    Error_Minimo     = 0.001
+    Error_actual     = 100
+    #Individuos de la población inicial
+    Diccionario = Diseno_inicial.datos_entrada(Diccionario_Entr,0,0)
+    Calor_0=Propiedades(Diccionario_Pailas['Calor Nece Calc por Etapa [KW]']) 
+    print('Factor Consumo bagazo='+str(Diccionario['Factor Consumo Bagazo']))
+    print('Area parrilla='+str(Diccionario['Area de Parrilla']))
+    print('Q='+str(Calor_0))
+    acu=3
+    while ((Error_Minimo<Error_actual)and(Iteracion_actual<Iteraciones_Max)):
+        Calor_1=Propiedades(Calor_0) 
+        Diccionario = Diseno_inicial.datos_entrada(Diccionario_Entr,Iteracion_actual,acu)
+        print('Factor Consumo bagazo='+str(Diccionario['Factor Consumo Bagazo']))
+        print('Area parrilla='+str(Diccionario['Area de Parrilla']))
+        print('Q='+str(Calor_0))
+        #Calculo del error usando la magnitud del vector
+        Calor_0 = np.array(Calor_0)
+        Calor_1 = np.array(Calor_1) 
+        x0=np.linalg.norm(Calor_0)
+        x1=np.linalg.norm(Calor_1)
+        Error=(x1-x0)/x0
+        Error_actual=abs(Error)
+        if(Error<0):
+            acu=acu-(0.1*np.random.random(1))
+        else:
+            acu=acu+(0.1*np.random.random(1))
+        print('Error='+str(Error))
+        Calor_0=Q_Cedido_gas(Calor_1)
+        Iteracion_actual=Iteracion_actual+1
+    print('Fin algoritmo')
+    
+Area_lisa=[0.614,0.99,1.8,2.176,2.9,5]
+Espesor_lamina=[0.019,0.016,0.016,0.013,0.013,0.013]
+Calor_estimado=[47.135,59.740,78.743,64.603,57.385,62.503]
+Q_Cedido_gas(Calor_estimado, Area_lisa, Espesor_lamina)        
+#Optimizacion(Diccionario, Diccionario_2)

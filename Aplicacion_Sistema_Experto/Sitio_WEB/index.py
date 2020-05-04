@@ -157,7 +157,7 @@ def generar_valores_informe():
     Diccionario.update(Dict_aux)
     Directorio = 'Cana/'+Tipo_cana[index]+'.png'     
     """Calculo de la hornilla"""
-    Diccionario   = Diseno_inicial.datos_entrada(Diccionario)
+    Diccionario   = Diseno_inicial.datos_entrada(Diccionario,0,0)
     Diccionario_2 = Diseno_inicial.Calculo_por_etapas(Diccionario)
     Pailas.Mostrar_pailas(
             Diccionario_2['Volumen de jugo [m^3/kg]'],
@@ -190,7 +190,7 @@ def generar_valores_informe():
             }
     
     """Estimar propiedades de los gases"""
-    Gases.Propiedades(Diccionario,Diccionario_2)
+    Gases.Optimizacion(Diccionario,Diccionario_2)
     """Analisis financiero"""
     Costos_funcionamiento.Variables(float(Diccionario['Capacidad Estimada de la hornilla']),
                                     float(Diccionario['Horas de trabajo al día']), 

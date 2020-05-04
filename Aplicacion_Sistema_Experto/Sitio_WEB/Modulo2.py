@@ -12,10 +12,10 @@ def Tw(Q, visc, Hfg , Tens , Rho , cpjuice , k , Tebll ):
     tp1 = Q / (visc * Hfg * 1000)
     #tp2 = Sqr(Tens / (9.81 * (Rho - 0.521956)))
     tp2 = (Tens / (9.81 * (Rho - 0.521956)))**0.5
-    tp3 = (cpjuice * visc * 1000 / k) ^ alfa
+    tp3 = (cpjuice * visc * 1000 / k) ** alfa
     tp4 = Hfg / cpjuice
     
-    Tw = Csf * ((tp1 * tp2) ^ (1 / 3)) * tp3 * tp4 + Tebll
+    Tw = Csf * ((tp1 * tp2) ** (1 / 3)) * tp3 * tp4 + Tebll
     return Tw
 
 def twg(espesor , flux , twe ):

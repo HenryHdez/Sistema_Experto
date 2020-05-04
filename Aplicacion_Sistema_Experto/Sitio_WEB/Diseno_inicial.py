@@ -59,7 +59,7 @@ def Seleccionar_Molino(Kilos_Hora):
     df.to_excel('static/Temp/Temp.xlsx')
     return sum(E1)/len(E1)
     
-def datos_entrada(Diccionario):
+def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
     """Estos datos se toman directamente del archivo HTML"""
     #Crecimiento del área sembrada en los proximos 5 años		
     #Area de Caña Sembrada Propia			
@@ -141,7 +141,10 @@ def datos_entrada(Diccionario):
     Masa_Bag_Humedo=Masa_Cana-Masa_Jugo
     Humedad_inicial_bagazo=((Masa_Jugo-Masa_Jugo*(Extraccion+Porcentaje_Fibra))-(Masa_Jugo-Masa_Jugo*(Extraccion+Porcentaje_Fibra))*(CSS_Cana/100))/(Masa_Jugo*(1-Extraccion))			
     Masa_Bag_Seco=Masa_Bag_Humedo*((1-Humedad_inicial_bagazo)/(1-Humedad_bagazo))
-    Factor_consumo_bagazo=Masa_Bag_Seco/Capacidad_Hornilla
+    if(iteracion==0):
+        Factor_consumo_bagazo=Masa_Bag_Seco/Capacidad_Hornilla
+    else:
+        Factor_consumo_bagazo=Valor_Algoritmo
     Masa_Bag_Suministrado=Capacidad_Hornilla*Factor_consumo_bagazo
     Presion_atmosferica=760.0*math.exp(-0.0001158*Altura_sitio)
     Temperatura_Ebullicion_Agua=-227.03 + (3816.44/(18.3036 - math.log(7.5*(Presion_atmosferica*(133.3224/1000)))))
