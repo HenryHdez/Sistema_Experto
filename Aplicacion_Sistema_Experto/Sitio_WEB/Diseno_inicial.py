@@ -323,7 +323,7 @@ def Calculo_por_etapas(Diccionario):
     Lista_columnas=[]
     #Etapas es un supuesto de cuantas pailas debe tener la hornilla
     Cana_esperada_hectarea=float(Diccionario['Caña esperada por hectárea'])
-    Etapas=int(round(Cana_esperada_hectarea/10,0))
+    Etapas=6#int(round(Cana_esperada_hectarea/10,0))
     #Saturador "minimo son dos etapas"
     if (Etapas>2):
         Factor_Division=Etapas-2
@@ -406,7 +406,6 @@ def Calculo_por_etapas(Diccionario):
     for j in range (13):
         for i in range (Etapas):
             Lista_Contenido[j][i]=round(Lista_Contenido[j][i],3)
-        
     Etiquetas=[
                'Concentracion de Solidos Inicial [ºBrix]',
                'Concentracion de Solidos Final [ºBrix]',
@@ -421,7 +420,6 @@ def Calculo_por_etapas(Diccionario):
                'Entalpia de Vaporización [KJ/kg]',
                'Masa de Agua a Evaporar [Kg]',
                'Calor Nece Calc por Etapa [KW]']
-    
     Dict_aux=dict(zip(Etiquetas,Lista_Contenido))    
     Dict_aux_2=dict(zip(['Etapas'],[Etapas]))  
     Dict_aux.update(Dict_aux_2)

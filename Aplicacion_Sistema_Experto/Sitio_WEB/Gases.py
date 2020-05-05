@@ -73,6 +73,7 @@ def Propiedades(Calor_transferido):
     #Valores iniciales
     global Diccionario_Entr
     global Diccionario_Pailas
+    Q_Cedido=Q_Cedido_gas(Calor_transferido)
     Masa_Bagazo=float(Diccionario_Entr['Capacidad Estimada de la hornilla'])*float(Diccionario_Entr['Factor Consumo Bagazo'])
     Cantidad_Pailas=int(Diccionario_Pailas['Etapas'])   
     Humedad_bagazo=float(Diccionario_Entr['Humedad del bagazo'])
@@ -197,12 +198,12 @@ def Propiedades(Calor_transferido):
     Emisividad_Ducto=0.96
     Factor_forma_Pared=0.4
     Factor_Forma_Piso=0.2
-    Area_Paredes_radiantes=np.random.random(Cantidad_Pailas)              #Faltan ecuaciones
-    Area_Piso_radiante=np.random.random(Cantidad_Pailas)                  #Faltan ecuaciones
-    Area_Flujo=np.random.random(Cantidad_Pailas)                          #Faltan las ecuaciones
+    Area_Paredes_radiantes=[1.88,2.2,2.291,2.162,2.162,1.6215,1.216125]#np.random.random(Cantidad_Pailas)              #Faltan ecuaciones
+    Area_Piso_radiante=[0.8,0.803,0.803,1.238,1.238,1.238,1.238]#np.random.random(Cantidad_Pailas)                  #Faltan ecuaciones
+    Area_Flujo=[1.150,1.150, 1.150, 0.869	, 0.824, 0.824, 0.824]#np.random.random(Cantidad_Pailas)                          #Faltan las ecuaciones
     Area_Lisa=np.random.random(Cantidad_Pailas)                           #Faltan las ecuaciones
     Perimetro=np.random.random(Cantidad_Pailas)                           #Faltan las ecuaciones
-    Temperatura_Superficie=np.random.random(Cantidad_Pailas)              #Faltan las ecuaciones
+    Temperatura_Superficie=Q_Cedido[15]
     Emisividad_gases=np.random.random(Cantidad_Pailas)                    #Revisar nomograma
     Q_Total_estimado=[]
     for i in range(Cantidad_Pailas):
@@ -255,9 +256,12 @@ def Propiedades(Calor_transferido):
     return Q_Total_estimado
 
 '''>>>>>>>>>>>>Concentrancion y Propiedades del jugo según calor cedido por el gas<<<<<<<<<'''
-def Q_Cedido_gas(Calor_estimado, Area_lisa, Espesor_lamina):
+def Q_Cedido_gas(Calor_estimado):
     global Diccionario_Entr
     global Diccionario_Pailas
+    Area_lisa=[0.614,0.99,1.8,2.176,2.9,5]
+    Espesor_lamina=[0.019,0.016,0.016,0.013,0.013,0.013]
+    #Calor_estimado=[47.135,59.740,78.743,64.603,57.385,62.503,47.135,59.740,78.743,64.603,57.385,62.503]
 #    La matriz tiene la siguiente disposición 
 #    Lista_Contenido[0]=Calor Transferido desde el gas 
 #    Lista_Contenido[1]=Concentracion de Solidos Inicial
@@ -323,8 +327,8 @@ def Q_Cedido_gas(Calor_estimado, Area_lisa, Espesor_lamina):
                                   Lista_Contenido[11][i],
                                   Lista_Contenido[5][i])       
         Lista_Contenido[15][i]=twg(Espesor_lamina[i], Lista_Contenido[13][i], Lista_Contenido[14][i])
-    print(Lista_Contenido.round(1))   
-    return Calor_estimado
+    print(Lista_Contenido.round(2))
+    return Lista_Contenido.round(1) 
     
 def Optimizacion(Diccionario_1, Diccionario_2):
     global Diccionario_Entr
@@ -332,20 +336,22 @@ def Optimizacion(Diccionario_1, Diccionario_2):
     Diccionario_Entr=Diccionario_1
     Diccionario_Pailas=Diccionario_2
     #Parámetros del algoritmo de optimización
-    Iteraciones_Max  = 10
+    Iteraciones_Max  = 300
     Iteracion_actual = 0
     Error_Minimo     = 0.001
     Error_actual     = 100
     #Individuos de la población inicial
     Diccionario = Diseno_inicial.datos_entrada(Diccionario_Entr,0,0)
-    Calor_0=Propiedades(Diccionario_Pailas['Calor Nece Calc por Etapa [KW]']) 
+    #Condiciones iniciales
+    Calor_0=Diccionario_Pailas['Calor Nece Calc por Etapa [KW]']
+    Calor_0=Propiedades(Calor_0)                                                #Estimar calor por etapa
     print('Factor Consumo bagazo='+str(Diccionario['Factor Consumo Bagazo']))
     print('Area parrilla='+str(Diccionario['Area de Parrilla']))
     print('Q='+str(Calor_0))
     acu=3
     while ((Error_Minimo<Error_actual)and(Iteracion_actual<Iteraciones_Max)):
-        Calor_1=Propiedades(Calor_0) 
         Diccionario = Diseno_inicial.datos_entrada(Diccionario_Entr,Iteracion_actual,acu)
+        Calor_1=Propiedades(Calor_0)
         print('Factor Consumo bagazo='+str(Diccionario['Factor Consumo Bagazo']))
         print('Area parrilla='+str(Diccionario['Area de Parrilla']))
         print('Q='+str(Calor_0))
@@ -357,16 +363,14 @@ def Optimizacion(Diccionario_1, Diccionario_2):
         Error=(x1-x0)/x0
         Error_actual=abs(Error)
         if(Error<0):
-            acu=acu-(0.1*np.random.random(1))
+            acu=acu+(0.5*np.random.random(1))
         else:
-            acu=acu+(0.1*np.random.random(1))
+            acu=acu-(0.5*np.random.random(1))
         print('Error='+str(Error))
-        Calor_0=Q_Cedido_gas(Calor_1)
+        print('Iteracion='+str(Iteracion_actual))
+        Calor_0=Calor_1
         Iteracion_actual=Iteracion_actual+1
     print('Fin algoritmo')
     
-Area_lisa=[0.614,0.99,1.8,2.176,2.9,5]
-Espesor_lamina=[0.019,0.016,0.016,0.013,0.013,0.013]
-Calor_estimado=[47.135,59.740,78.743,64.603,57.385,62.503]
-Q_Cedido_gas(Calor_estimado, Area_lisa, Espesor_lamina)        
-#Optimizacion(Diccionario, Diccionario_2)
+     
+Optimizacion(Diccionario, Diccionario_2)

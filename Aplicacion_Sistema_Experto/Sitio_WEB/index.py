@@ -9,7 +9,7 @@ from werkzeug.utils import secure_filename
 import Diseno_inicial
 import Costos_funcionamiento
 import Pailas
-import Gases
+#import Gases
 #from libraries import Pailas
 
 #from fpdf import FPDF, HTMLMixin
@@ -190,16 +190,16 @@ def generar_valores_informe():
             }
     
     """Estimar propiedades de los gases"""
-    Gases.Optimizacion(Diccionario,Diccionario_2)
+#    Gases.Optimizacion(Diccionario,Diccionario_2)
     """Analisis financiero"""
     Costos_funcionamiento.Variables(float(Diccionario['Capacidad Estimada de la hornilla']),
                                     float(Diccionario['Horas de trabajo al día']), 
                                     float(Diccionario['Días de trabajo a la semana']), 
                                     float(Diccionario['Número de moliendas']),
                                     float(Diccionario['Caña molida al mes']))
-    #Costos_funcionamiento.costos()
+    Costos_funcionamiento.costos()
     """Creación del pdf"""
-    #Pailas.Generar_reporte(Diccionario,Diccionario_2)
+    Pailas.Generar_reporte(Diccionario,Diccionario_2)
     
 #Enlaces para la generación del informe
 @app.route('/informe4')
