@@ -116,16 +116,6 @@ def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
     #Capacidad de la hornilla=Masa de panela
     Capacidad_Hornilla=Masa_panela
     
-    #print(Cana_molida_mes)
-    #print(Cana_esperada_hectarea)
-    #print(Area_Cosechada_mes)
-    #print(Cana_molida_semana)
-    #print(Cana_molida_hora)
-    #print(Jugo_Crudo)
-    #print(Jugo_Clarificado)
-    #print(Masa_panela)
-    #print(Capacidad_molino)
-    
     """Calculos para la masa"""
     Masa_Jugo_Clarificado=(CSS_Panela*Capacidad_Hornilla)/CSS_Cana
     Masa_Jugo_Prelimpiador=Masa_Jugo_Clarificado/(1-Cachaza)
@@ -175,11 +165,13 @@ def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
     Q_Etapa_Concentracion=(Masa_A_Concentracion*Q_Especifico_Eva*(Ebullicion_Concentracion-Ebullicion_Evaporacion)+(Masa_A_Concentracion-Capacidad_Hornilla)*Entalpia_Concentracion)/3600
     Total_Etapa=Q_Etapa_Clarificacion+Q_Etapa_Evaporacion+Q_Etapa_Concentracion
     Total_Etapa_F_L=(Masa_Jugo*(Ebullicion_Concentracion-Temperatura_Ambiente)*Q_Especifico_Inicial+Masa_Agua_Evaporar*((Entalpia_Clarificacion+Entalpia_Concentracion)/2))/3600
-       
+    """>>>>>>>>>>>>>>>>Eficiencia<<<<<<<<<<<<<<<<<<<<<<<"""
+    Eficiencia=(Total_Etapa/Calor_Suministrado)*100
     """Ampliación del diccionario"""
     Etiquetas=['DATOS DE ENTRADA',
                'Capacidad Estimada de la hornilla',			
-               'Factor Consumo Bagazo',						
+               'Factor Consumo Bagazo',	
+               'Eficiencia de la hornilla',					
                'Bagazillo en Prelimpiador	',		
                'Cachaza',			
                'CSS del jugo de Caña',			
@@ -248,6 +240,7 @@ def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
     Valores=['DATOS DE ENTRADA',
              math.ceil(Capacidad_Hornilla),
              Factor_consumo_bagazo,
+             Eficiencia,
              Bagazillo_Prelimpiador,
              Cachaza,
              CSS_Cana,
@@ -383,18 +376,14 @@ def Calculo_por_etapas(Diccionario):
         Lista_Contenido[6][i]=Lista_Contenido[3][i]/Lista_Contenido[5][i]
         #Volumen_jugo_L=Volumen_jugo*1000
         Lista_Contenido[7][i]=Lista_Contenido[6][i]*1000.0
-        if(i==0):
+        if(i==Etapas-1):
             #Temperatura_Entrada=Temperatura ambiente
             Lista_Contenido[8][i]=float(Diccionario['Temperatura Ambiente'])        
         else:
             #Temperatura_Entrada=Temperatura_ebullición_agua+0.2209*math.exp(0.0557*Concentracion_solidos_inicial)
-            Lista_Contenido[8][i]=float(Diccionario['Temperatura Ebullición Agua'])+0.2209*math.exp(0.0557*Lista_Contenido[0][i])
-        if(i==0):    
-            #Temperatura_Salida=Supuesta
-            Lista_Contenido[9][i]=60.0        
-        else:    
-            #Temperatura_Salida=G37+0.2209*math.exp(0.0557*Concentracion_solidos_final)
-            Lista_Contenido[9][i]=float(Diccionario['Temperatura Ebullición Agua'])+0.2209*math.exp(0.0557*Lista_Contenido[1][i])    
+            Lista_Contenido[8][i]=Lista_Contenido[9][i+1]   
+        #Temperatura_Salida=G37+0.2209*math.exp(0.0557*Concentracion_solidos_final)
+        Lista_Contenido[9][i]=float(Diccionario['Temperatura Ebullición Agua'])+0.2209*math.exp(0.0557*Lista_Contenido[1][i])    
         #Entalpia_Vaporizacion=(2492.9-(2.0523*Temperatura_Entrada))-(0.0030752*(Temperatura_Entrada**2))
         Lista_Contenido[10][i]=(2492.9-(2.0523*Lista_Contenido[8][i]))-(0.0030752*(Lista_Contenido[8][i]**2))
         #Masa_Agua_Evaporar=Masa_jugo_de_entrada-(Masa_jugo_de_entrada*Concentracion_solidos_inicial/Concentracion_solidos_final)
