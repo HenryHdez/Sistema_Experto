@@ -131,33 +131,30 @@ def Dibujar_Molino(canvas, puntero, Hoja):
     Kilos=Molino['kg/hora'].values
     Diesel=Molino['Diesel'].values
     Electrico=Molino['Electrico'].values
-    Gas=Molino['Gasolina'].values
-    Relacion=Molino['Relación i'].values
     Valor=Molino['Precio'].values
+    canvas.setFillColorRGB(1,0,0)
     canvas.setFont('Helvetica-Bold', 11)
-    canvas.drawString(50,puntero-50,'MARCA')
-    canvas.drawString(120,puntero-50,'MODELO')
-    canvas.drawString(180,puntero-50,'KG/HORA')
-    canvas.drawString(245,puntero-50,'DIESEL')
-    canvas.drawString(295,puntero-50,'ELÉCTRICO')
-    canvas.drawString(365,puntero-50,'GASOLINA')
-    canvas.drawString(435,puntero-50,'RELACION (i)')
-    canvas.drawString(520,puntero-50,'PRECIO')
+    canvas.drawString(50,puntero-50,'VALOR APROXIMADO DE UN MOLINO: ')
+    canvas.drawString(270,puntero-50,"$"+str(math.ceil(sum(Valor)/len(Valor))))
+    canvas.setFillColorRGB(0,0,0)
+    canvas.drawString(340,puntero-80,'POTENCIA DEL MOTOR')
+    canvas.drawString(70,puntero-100,'MARCA')
+    canvas.drawString(149,puntero-100,'MODELO')
+    canvas.drawString(220,puntero-100,'KG/HORA')
+    canvas.drawString(290,puntero-100,'DIESEL O GASOLINA [HP]')
+    canvas.drawString(440,puntero-100,'ELÉCTRICO [HP]')
     canvas.setFont('Helvetica', 11)
-    OF=65
+    OF=115
     for i in range(len(Marca)):
-        canvas.drawString( 49,puntero-OF, str(Marca[i]))
-        canvas.drawString(127,puntero-OF, str(Modelo[i]))
-        canvas.drawString(189,puntero-OF, str(Kilos[i]))
-        canvas.drawString(255,puntero-OF, str(Diesel[i]))
-        canvas.drawString(317,puntero-OF, str(Electrico[i]))
-        canvas.drawString(389,puntero-OF, str(Gas[i]))
-        canvas.drawString(454,puntero-OF, str(Relacion[i]))
-        canvas.drawString(519,puntero-OF, str(Valor[i]))  
+        canvas.drawString(60,puntero-OF, str(Marca[i]))
+        canvas.drawString(141,puntero-OF, str(Modelo[i]))
+        canvas.drawString(230,puntero-OF, str(Kilos[i]))
+        canvas.drawString(350,puntero-OF, str(Diesel[i]))
+        canvas.drawString(470,puntero-OF, str(Electrico[i])) 
         OF=OF+15
     OF=(puntero-OF)-240
     for i in range(len(Modelo)):
-        if((OF<50)or(i==0)):
+        if((OF<200)or(i==0)):
             canvas.setFont('Helvetica-Bold', 11)
             canvas.drawString(300,OF+230,str(Modelo[i]))    
             canvas.drawImage('static/Molinos/'+str(Modelo[i]+'.jpg'), 150, OF, width=320, height=220)

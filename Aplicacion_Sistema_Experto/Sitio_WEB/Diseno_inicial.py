@@ -14,9 +14,8 @@ def Seleccionar_Molino(Kilos_Hora):
     Kilos=Molino['kghora'].values
     Diesel=Molino['Diesel'].values
     Electrico=Molino['Electrico'].values
-    Gas=Molino['Gasolina'].values
-    Relacion=Molino['Relacion'].values
     Valor=Molino['Valor'].values
+    Enlaces=Molino['Link'].values
     Seleccionado=[]
     M1=[]
     M2=[]        
@@ -24,7 +23,6 @@ def Seleccionar_Molino(Kilos_Hora):
     D1=[]    
     E1=[]
     G1=[]
-    R1=[]
     V1=[]
     aux=0
     for i in range (len(Kilos)):
@@ -42,8 +40,7 @@ def Seleccionar_Molino(Kilos_Hora):
         K1.append(Kilos[i])
         D1.append(Diesel[i])    
         E1.append(Electrico[i])
-        G1.append(Gas[i])
-        R1.append(Relacion[i])
+        G1.append(Enlaces[i])
         V1.append(Valor[i])  
         
     datos={'Marca'      :M1,
@@ -51,11 +48,10 @@ def Seleccionar_Molino(Kilos_Hora):
            'kg/hora'    :K1,
            'Diesel'     :D1,
            'Electrico'  :E1,
-           'Gasolina'   :G1,
-           'Relación i' :R1,
+           'Link'       :G1,
            'Precio'     :V1
             }
-    df = pd.DataFrame(datos, columns = ['Marca', 'Modelo', 'kg/hora', 'Diesel', 'Electrico', 'Gasolina', 'Relación i', 'Precio'])
+    df = pd.DataFrame(datos, columns = ['Marca', 'Modelo', 'kg/hora', 'Diesel', 'Electrico','Link', 'Precio'])
     df.to_excel('static/Temp/Temp.xlsx')
     return sum(E1)/len(E1)
     

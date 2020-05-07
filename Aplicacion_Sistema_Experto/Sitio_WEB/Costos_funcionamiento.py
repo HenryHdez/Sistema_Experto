@@ -259,13 +259,8 @@ def costos():
     Cantidad_pailas=Cantidad_pailas[1:]
     """>>>>>>>>>>>>-----------IMPORTAR MOLINOS-------------<<<<<<<<<<<<<<<"""
     Molino=pd.read_excel('static/Temp/Temp.xlsx',skipcolumn = 0,)
-    Marca=Molino['Marca'].values
-    Modelo=Molino['Modelo'].values
-    Kilos=Molino['kg/hora'].values
     Diesel=Molino['Diesel'].values
     Electrico=Molino['Electrico'].values
-    Gas=Molino['Gasolina'].values
-    Relacion=Molino['Relación i'].values
     Valor_M=Molino['Precio'].values      
     """>>>>>>>>>>>>-----------COSTOS DEL PROYECTO-------------<<<<<<<<<<<<"""
     """>>>>>>>>>>>>----------Costos de la hornilla-------------<<<<<<<<<<<<"""
@@ -510,7 +505,7 @@ def costos():
     Etiquetas_produccion=['El diseño incorpora recuperador de calor',
                           'Capacidad de la hornilla',
                           'Costo de funcionamiento del molino por kg (Motor eléctrico)', 
-                          'Costo de funcionamiento del molino por kg (Motor Diesel)', 
+                          'Costo de funcionamiento del molino por kg (Motor Diesel o gasolina)', 
                           'Costo de funcionamiento del controlador por kg',
                           'Costo del kg de caña',
                           'Costo de los insumos para la producción (Cera, Empaques, Clarificante)',
@@ -749,8 +744,6 @@ def costos():
 #    Kilos=Molino['kghora'].values
 #    Diesel=Molino['Diesel'].values
 #    Electrico=Molino['Electrico'].values
-#    Gas=Molino['Gasolina'].values
-#    Relacion=Molino['Relacion'].values
 #    Valor=Molino['Valor'].values
 #    Seleccionado=[]
 #    

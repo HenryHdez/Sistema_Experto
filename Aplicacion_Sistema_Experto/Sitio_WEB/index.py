@@ -5,6 +5,7 @@ from email.mime.application import MIMEApplication
 from email.mime.text import MIMEText
 import smtplib
 import os
+import math
 from werkzeug.utils import secure_filename
 import Diseno_inicial
 import Costos_funcionamiento
@@ -171,23 +172,24 @@ def generar_valores_informe():
     Formulario_3_Valores=[]
     for i in Formulario_3_Etiquetas:
         Formulario_3_Valores.append(Diccionario[i])
-    Diccionario_3=dict(zip(Formulario_3_Etiquetas,Formulario_3_Valores))
-    
+        
     Molino=pd.read_excel('static/Temp/Temp.xlsx',skipcolumn = 0,)
     Marca=Molino['Marca'].values
     Modelo=Molino['Modelo'].values
     Kilos=Molino['kg/hora'].values
     Diesel=Molino['Diesel'].values
     Electrico=Molino['Electrico'].values
-    Gas=Molino['Gasolina'].values
-    Relacion=Molino['Relación i'].values
     Valor=Molino['Precio'].values
-    
+    Enlaces=Molino['Link'].values
     Diccionario_4={'Marca':Marca,
                    'Modelo':Modelo,
                    'Capacidad':Kilos,
-                   'Valor aproximado':Valor
+                   'Disponible en':Enlaces
             }
+
+    Formulario_3_Etiquetas.append('Valor aproximado de un molino')
+    Formulario_3_Valores.append('$'+str(math.ceil(sum(Valor)/len(Valor))))
+    Diccionario_3=dict(zip(Formulario_3_Etiquetas,Formulario_3_Valores))
     
     """Estimar propiedades de los gases"""
 #    Gases.Optimizacion(Diccionario,Diccionario_2)
