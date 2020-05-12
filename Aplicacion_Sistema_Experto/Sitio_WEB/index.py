@@ -45,8 +45,8 @@ def usua():
     global Nivel_Fosforo
     global Nivel_Calidad
     global Nivel_brpane
-    df = pd.read_json("static/Catalogos/Colombia.json")
-    cana=pd.read_excel('static/Catalogos/Variedades.xlsx')
+    df            = pd.read_json("static/Catalogos/Colombia.json")
+    cana          = pd.read_excel('static/Catalogos/Variedades.xlsx')
     Deptos_cana   = cana['Depto'].values
     Ciudad_cana   = cana['Ciudad'].values
     Tipo_cana     = cana['Tipo'].values
@@ -111,12 +111,13 @@ def generar_valores_informe():
     altura_media=amsnm[D_aux.index(Dept)]
     NivelFre=H2O[D_aux.index(Dept)]
     vector=['Nombre de usuario','Departamento','Ciudad','Crecimiento aproximado del área sembrada',
-            'Área caña sembrada','Periodo vegetativo','Caña por esperada hectárea',
+            'Área caña sembrada','Caña por esperada hectárea',
             'Periodo vegetativo','Caña por hectárea esperada','Número de moliendas',
             'Días de trabajo a la semana','Horas de trabajo al día','Variedad de Caña']
+    #---------------->>>>>>>>>"""Calculo del periodo vegetativo"""<<<<<<<<<<<<<<<<<<<
     Formulario_1_Etiquetas=[]
     Formulario_1_Valores=[]
-    a=result.to_dict()
+    a=result.to_dict()        
     for i in a:
         Formulario_1_Etiquetas.append(i)
         Formulario_1_Valores.append(a[i])
@@ -127,8 +128,16 @@ def generar_valores_informe():
     Formulario_1_Valores.append(str(altura_media)+' m')
     Formulario_1_Etiquetas.append('Nivel freático')
     Formulario_1_Valores.append(str(NivelFre)) 
+    #Determinar periodo vegetativo
+    Formulario_1_Etiquetas.append('Periodo vegetativo')
+    if(altura_media<=1200):
+        Formulario_1_Valores.append(str(12))
+    elif (altura_media>1200 and altura_media<=1500):
+        Formulario_1_Valores.append(str(15))
+    else:
+        Formulario_1_Valores.append(str(18))
+        
     Diccionario=dict(zip(Formulario_1_Etiquetas,Formulario_1_Valores))  
-    
     """Creación de la segunda parte del diccionario"""
     a=result.to_dict()
     index=int(a['Variedad de Caña'])-1
@@ -156,7 +165,9 @@ def generar_valores_informe():
     Formulario_2_Valores.append(Deptos_cana[index]+', '+Ciudad_cana[index]) 
     Dict_aux=dict(zip(Formulario_2_Etiquetas,Formulario_2_Valores))
     Diccionario.update(Dict_aux)
-    Directorio = 'Cana/'+Tipo_cana[index]+'.png'     
+    Directorio = 'Cana/'+Tipo_cana[index]+'.png'   
+      
+    """------------>>>>>>>>>>HORNILLA<<<<<<<<<<<<<<<<"""
     """Calculo de la hornilla"""
     Diccionario   = Diseno_inicial.datos_entrada(Diccionario,0,0)
     Diccionario_2 = Diseno_inicial.Calculo_por_etapas(Diccionario)
