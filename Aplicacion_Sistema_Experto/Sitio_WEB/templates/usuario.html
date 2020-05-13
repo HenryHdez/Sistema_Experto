@@ -26,6 +26,7 @@
     <p align="justify" class="lead">Por favor, complete los siguientes campos.</p>
     <hr class="my-4">
     <form action = "http://127.0.0.1:5000/informe" method = "POST">
+
         <table align="center">
             <tr>
                <td style="width:450px"> <b>Nombre de usuario o entidad:</b> </td>
@@ -85,16 +86,51 @@
                <td style="width:450px"> <b>Horas de trabajo al día:</b> </td>
                <td style="width:450px"> <input type = "number" name = "Horas de trabajo al día" style="width : 250px; text-align:center;" value="12" min="1" max="24"/> </td>
             </tr>
+                        
+            <tr>
+                <td style="width:450px"> <b>¿Usted tiene acompañamiento agronómico?</b> </td>
+                <td style="width:450px"> 
+                    <select id="Ocultaritem" style="width : 250px;" onchange="OcultarCSS();">
+                      <option value="NO">NO</option>
+                      <option value="SI">SI</option>
+                    </select>  
+            </tr>
 
+            <tr>
+                <td style="width:450px"><br/></td>
+                <td style="width:450px"><br/></td>
+            </tr>
+                        
+            <tr id="Celdab1">
+                <td style="width:450px"></td>
+                <td style="width:450px"><input class="btn btn-success" type = "submit" value = "Generar informe" /></td>
+            </tr>
+        </table> 
+        
+        <hr class="my-4">
+
+        <table id="Tabla1" align="center" style="visibility:hidden"> 
+        
+            <div id="Titulo" style="visibility:hidden"><H3><b>Complete la siguiguiente información</b></H3></div>
+            
+            <tr>
+               <td style="width:450px"> <br/> </td>
+               <td style="width:450px"> <br/> </td>
+            </tr>
+            
+            <tr>
+               <td style="width:450px"> <b>Cantidad de variedades de caña sembrada</b> </td>
+               <td style="width:450px"> <input type = "number" name = "Cantidad de variedades de caña sembrada" style="width : 250px; text-align:center;" value="1" min="1" max="10"/> </td>
+            </tr>
+                        
             <tr>
                 <td style="width:450px"> <b>Variedad de Caña:</b> </td>
                 <td style="width:450px"> 
-                    <select id="Cana" name="Variedad de Caña" onchange="ActualizarCSS();">
+                    <select id="Cana" style="width : 350px;"name="Variedad de Caña" onchange="ActualizarCSS();">
                         {% for u in Variedad_cana_1 %}
                             <option value= "{{loop.index}}">"{{u}}"</option>"
                         {% endfor %}
                     </select>  
-                    <p style="color:#FF0000";><i>Nota: si no conoce la variedad de caña seleccione: <b>RD75-11, -Valor por defecto-</b>.</i></p> 
             </tr>
             
             <tr>
@@ -109,6 +145,16 @@
             <tr>
                <td style="width:450px"> <b>Concentración de Solidos Solubles (CSS) [°Brix]:</b> </td>
                <td style="width:450px"> <input id="CSS de la caña" type = "text" name = "CSS de la caña" style="width : 250px; text-align:center;" value="17.1" disabled/> </td>
+            </tr>
+
+            <tr>
+                <td style="width:450px"><br/></td>
+                <td style="width:450px"><br/></td>
+            </tr>
+            
+            <tr>
+                <td style="width:450px"></td>
+                <td style="width:450px"><input class="btn btn-success" type = "submit" value = "Generar informe" /></td>
             </tr>
         </table>                    
         
@@ -130,9 +176,6 @@
             {% endfor %}
         </select> 
         <!--Termina el combo oculto-->
-        
-        <!--Botón de ejecución-->
-        <p><input class="btn btn-success" type = "submit" value = "Generar informe" /></p>
     </form>  
     
     <!--Forma de llamar un script desarrollado en javascript-->
@@ -216,5 +259,23 @@
               document.getElementById("Foto").appendChild(x);
 			}     
         </script>			  
+
+        <script type="text/javascript">
+         function OcultarCSS(){
+              //Función para ocultar los elementos de la página
+              var elemento = document.getElementById("Ocultaritem");
+              var ITEM     = elemento.options[elemento.selectedIndex].innerText;
+              if(ITEM=="NO"){
+                  document.getElementById("Tabla1").style.visibility = "hidden";
+                  document.getElementById("Titulo").style.visibility = "hidden";
+                  document.getElementById("Celdab1").style.visibility = "visible";
+                 }
+              else{
+                  document.getElementById("Tabla1").style.visibility = "visible";
+                  document.getElementById("Titulo").style.visibility = "visible";
+                  document.getElementById("Celdab1").style.visibility = "hidden";
+                 }                
+			}     
+        </script>	
 {% endblock %}
 
