@@ -49,8 +49,8 @@ def Unir_Informe(nombre):
 #Layout del informe
 def Fondo(canvas, Hoja):
     #Dibujar logo y membrete de AGROSAVIA
-    canvas.drawImage('static/Iconos/Agrosavia.jpg', 240, 720, width=150, height=40)
-    canvas.drawImage('static/Iconos/Membrete.png' , 0, 0, width=650, height=15)
+    canvas.drawImage('static/Iconos/Agrosavia.jpg', 420, 720, width=150, height=40)
+    canvas.drawImage('static/Iconos/Membrete.png' , 0, 0, width=650, height=240)
     canvas.drawImage('static/Iconos/Membrete2.png', 0, 650, width=150, height=150)   
     canvas.setLineWidth(.3)
     canvas.setFont('Helvetica-Bold', 20)

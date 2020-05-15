@@ -1,0 +1,13 @@
+body {
+    background-image: url('/static/Iconos/Fondo.png');
+    background-color: #66999  
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+.header .navbar {
+  background-color: transparent !important;
+
+}
