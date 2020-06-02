@@ -73,8 +73,8 @@ def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
     Porcentaje_extraccion=0.6       #60%
     Bagazillo_Prelimpiador=0.02 #2%
     Cachaza=0.04 #4%    
-    CSS_Jugo_Clarificado=float(Diccionario['Grados Brix de la caña'])+5
-    CSS_Jugo_Posevaporacion=float(Diccionario['Grados Brix de la caña'])+58
+    CSS_Jugo_Clarificado=float(Diccionario['Grados Brix de la caña (promedio)'])+5
+    CSS_Jugo_Posevaporacion=float(Diccionario['Grados Brix de la caña (promedio)'])+58
     Tipo_de_camara='Ward'
     Humedad_bagazo=0.3#15%			
     Exceso_Aire=1.8 #lamda	
@@ -104,8 +104,8 @@ def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
     #Jugo Clarificado=Jugo_Crudo-((Jugo_Crudo*Bagazillo en Prelimpiador+((Jugo_Crudo-(Jugo_Crudo*Bagazillo en Prelimpiador))*(Cachaza))
     Jugo_Clarificado=Jugo_Crudo-((Jugo_Crudo*Bagazillo_Prelimpiador+((Jugo_Crudo-(Jugo_Crudo*Bagazillo_Prelimpiador))*(Cachaza))))
     #Masa de panela=((Jugo_Clarificado*CSS de la caña))/CCS de la panela)*1000
-    CSS_Cana=float(Diccionario['Grados Brix de la caña'])
-    CSS_Panela=float(Diccionario['Grados Brix de la panela'])
+    CSS_Cana=float(Diccionario['Grados Brix de la caña (promedio)'])
+    CSS_Panela=float(Diccionario['Grados Brix de la panela (promedio)'])
     Masa_panela = (Jugo_Clarificado*CSS_Cana/CSS_Panela)*1000
     #Capacidad del molino=constante*caña molida hora*1000
     Capacidad_molino=Cana_molida_hora*1.3*1000

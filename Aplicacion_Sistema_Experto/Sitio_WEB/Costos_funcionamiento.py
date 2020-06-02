@@ -743,7 +743,7 @@ def costos():
     ###########>>>>>>>>>>>>>>>>>Graficar Retorno a la inversión<<<<<<<<<<<<<<<<<################
     Fig_4,e = plt.subplots(frameon=False)
     l1,=e.plot(lista_valor_panela1,Meses1)
-    l2,=e.plot(lista_valor_panela2,Meses2)
+    l2,=e.plot(lista_valor_panela2,Meses2)   
     e.grid(color='k', linestyle='--', linewidth=1)
     e.set_ylabel('Meses [Funcionamiento de la hornilla]')
     e.set_xlabel('Valor de la panela en pesos')
@@ -752,8 +752,7 @@ def costos():
     for item in [Fig_4,e]:
            item.patch.set_visible(False)
     with open('static/Graficas/RI_Meses.jpg', 'wb') as f:
-        FigureCanvasAgg(Fig_4).print_png(f) 
-    
+        FigureCanvasAgg(Fig_4).print_png(f)     
     plt.close(Fig_1)
     plt.close(Fig_2)
     plt.close(Fig_2a)
@@ -764,6 +763,39 @@ def costos():
     del(Fig_2a)
     del(Fig_3)
     del(Fig_4)
+#    #Exportar a excel
+#    df = pd.DataFrame(range(len(lista_Depreciacion1)),np.array(lista_Depreciacion1)/1000000)
+#    df.to_excel('Depre_con_r.xlsx')
+#    #>>>>>>>>>>>>>>------------><<<<<<<<<<<<<<<<
+#    df = pd.DataFrame(range(len(lista_Depreciacion2)),np.array(lista_Depreciacion2)/1000000)
+#    df.to_excel('Depre_sin_r.xlsx')
+#    #>>>>>>>>>>>>>>------------><<<<<<<<<<<<<<<<
+#    df = pd.DataFrame(range(len(lista_flujo_1)),np.array(lista_flujo_1)/1000000)
+#    df.to_excel('Flujo_con_r.xlsx')
+#    #>>>>>>>>>>>>>>------------><<<<<<<<<<<<<<<<
+#    df = pd.DataFrame(range(len(lista_flujo_2)),np.array(lista_flujo_2)/1000000)
+#    df.to_excel('Flujo_sin_r.xlsx')
+#    #>>>>>>>>>>>>>>------------><<<<<<<<<<<<<<<<
+#    
+#    df = pd.DataFrame(range(len(lista_flujo_1)),np.array(lista_flujo_1)/1000000)
+#    df.to_excel('Flujo_con_r.xlsx')
+#    #>>>>>>>>>>>>>>------------><<<<<<<<<<<<<<<<
+#    df = pd.DataFrame(range(len(lista_flujo_2)),np.array(lista_flujo_2)/1000000)
+#    df.to_excel('Flujo_sin_r.xlsx')
+#    #>>>>>>>>>>>>>>------------><<<<<<<<<<<<<<<<
+#    df = pd.DataFrame([lista_valor_panela1,Anos1])
+#    df.to_excel('Anos_valor_1_con_r.xlsx')
+#    #>>>>>>>>>>>>>>------------><<<<<<<<<<<<<<<<
+#    df = pd.DataFrame([lista_valor_panela2,Anos2])
+#    df.to_excel('Anos_valor_2_sin_r.xlsx')
+#    #>>>>>>>>>>>---------------<<<<<<<<<<<<<<<<<<< 
+#    df = pd.DataFrame([lista_valor_panela1,Meses1])
+#    df.to_excel('Meses_valor_1_con_r.xlsx')
+#    #>>>>>>>>>>>>>>------------><<<<<<<<<<<<<<<<
+#    df = pd.DataFrame([lista_valor_panela2,Meses2])
+#    df.to_excel('Meses_valor_2_sin_r.xlsx')
+#    #>>>>>>>>>>>---------------<<<<<<<<<<<<<<<<<<<    
+    
     sleep(1)
     Generar_reporte_financiero(D_Hornilla, D_Recuperador, D_Operativo, D_Consolidado, D_Produccion, D_Financiero) 
     ############################################################################################

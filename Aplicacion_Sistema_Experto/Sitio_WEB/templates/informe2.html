@@ -1,24 +1,47 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <div class="jumbotron" style="background: rgba(178,176,176,0.5);">
-        <h3><b>DATOS DE LA VARIEDAD DE CAÑA SELECCIONADA</b></h3>
+        <h3><b>DATOS DE LA(S) VARIEDAD(ES) DE CAÑA SELECCIONADA(S)</b></h3>
         <hr class="my-4">
 
-        <table align="center" cellpadding="5" cellspacing="0">
+        <table align="center" cellpadding="0" cellspacing="0">
         {% for id in Etiquetas %}
             <tr>
                <td style="width:450px"> <b>{{ id }}</b> </td>
                <td style="width:450px"> {{ Valores[loop.index-1] }} </td>
             </tr>
         {% endfor %}
-
+        </table>
+        
+        <hr class="my-4">
+        <h3><b>VISTA PREVIA DE LA(S) VARIEDAD(ES) DE CAÑA SELECCIONADA(S)</b></h3>
+        <hr class="my-4">
+        <table align="center" cellpadding="0" cellspacing="0">
+                                      
+            {% for i in range(0,Cant_fotos,2) %}
             <tr>
-                <td style="width:450px"><b>Foto:</b></td>
+
                 <td>
+                    <h5><b>Variedad de caña {{i+1}}</b></h5>
                     <OBJECT id="Foto2">
-                        <img src={{url_for('static', filename=Dir)}} width="300" height="350">
+                        <img src={{url_for('static', filename=Dir[i])}} width="300" height="350">
                     </OBJECT>         
+                </td>  
+
+                <td>
+                    <p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>            
                 </td>
-            </tr> 
+                
+                {%if(i+1 < Cant_fotos)%}
+                <td>
+                    <h5><b>Variedad de caña {{i+2}}</b></h5>
+                    <OBJECT id="Foto3">
+                        <img src={{url_for('static', filename=Dir[i+1])}} width="300" height="350">
+                    </OBJECT>         
+                </td> 
+                {%endif%}
+            </tr>
+            {% endfor %}
+            
         </table>
         </br>
         </br>

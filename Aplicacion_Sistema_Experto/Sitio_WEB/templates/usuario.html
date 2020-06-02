@@ -111,7 +111,7 @@
 
         <table id="Tabla1" align="center" style="visibility:hidden"> 
         
-            <div id="Titulo" style="visibility:hidden"><H3><b>Complete la siguiguiente información</b></H3></div>
+            <div id="Titulo" style="visibility:hidden"><H3><b>Complete la siguiente información</b></H3></div>
             
             <tr>
                <td style="width:450px"> <br/> </td>
@@ -120,32 +120,45 @@
             
             <tr>
                <td style="width:450px"> <b>Cantidad de variedades de caña sembrada</b> </td>
-               <td style="width:450px"> <input type = "number" name = "Cantidad de variedades de caña sembrada" style="width : 250px; text-align:center;" value="1" min="1" max="10"/> </td>
+               <td style="width:450px"> <input id="ECantidadCana" type = "number" name = "Cantidad de variedades de caña sembrada" style="width : 250px; text-align:center;" value="1" min="1" max="10" onchange="CantidadCana();"/> </td>
             </tr>
-                        
+            
+            {%for i in range(1, 11)%}                       
+                <tr>
+                    <td style="width:450px"> <b>Variedad de caña {{i}}:</b> </td>
+                    {%if i==1%}
+                    <td style="width:450px"> 
+                        <select id="Cana_{{i}}" style="width : 250px;" name="Variedad de Caña {{i}}" onchange="ActualizarCSS_{{i}}();">
+                            {% for u in Variedad_cana_1 %}
+                                <option value= "{{loop.index}}">"{{u}}"</option>"
+                            {% endfor %}
+                        </select>  
+                    </td>
+                    {%else%}
+                    <td style="width:450px"> 
+                        <select id="Cana_{{i}}" style="width : 250px;" name="Variedad de Caña {{i}}" onchange="ActualizarCSS_{{i}}();" disabled>
+                            {% for u in Variedad_cana_1 %}
+                                <option value= "{{loop.index}}">"{{u}}"</option>"
+                            {% endfor %}
+                        </select>  
+                    </td>                    
+                    {%endif%}    
+                </tr>
+            {%endfor%}
+            
             <tr>
-                <td style="width:450px"> <b>Variedad de Caña:</b> </td>
-                <td style="width:450px"> 
-                    <select id="Cana" style="width : 350px;"name="Variedad de Caña" onchange="ActualizarCSS();">
-                        {% for u in Variedad_cana_1 %}
-                            <option value= "{{loop.index}}">"{{u}}"</option>"
-                        {% endfor %}
-                    </select>  
+               <td style="width:450px"> <b>Concentración de Solidos Solubles (CSS) de la ultima variedad de caña seleccionada [°Brix]:</b> </td>
+               <td style="width:450px"> <input id="CSS de la caña" type = "text" name = "CSS de la caña" style="width : 250px; text-align:center;" value="17.1" disabled/> </td>
             </tr>
             
             <tr>
-                <td style="width:450px"><b>Vista previa:</b></td>
+                <td style="width:450px"><b>Vista previa de la ultima variedad de caña seleccionada:</b></td>
                 <td>
                     <OBJECT id="Foto">
                         <img src="{{url_for('static', filename='Cana/POJ2878.png')}}" width="200" height="250">
                     </OBJECT>         
                 </td>
             </tr> 
-
-            <tr>
-               <td style="width:450px"> <b>Concentración de Solidos Solubles (CSS) [°Brix]:</b> </td>
-               <td style="width:450px"> <input id="CSS de la caña" type = "text" name = "CSS de la caña" style="width : 250px; text-align:center;" value="17.1" disabled/> </td>
-            </tr>
 
             <tr>
                 <td style="width:450px"><br/></td>
@@ -232,10 +245,77 @@
         </script>     
         
         <script type="text/javascript">
-         function ActualizarCSS() {
-                 var ACSS      = document.getElementById("Cana");
-                 var ITEM      = ACSS.options[ACSS.selectedIndex].value;
+         function ActualizarCSS_1() {
+                 //Función para almacenar el valor de la caña seleccionado
+                 var ACSS      = document.getElementById("Cana_1");
                  var texto     = ACSS.options[ACSS.selectedIndex].innerText;
+                 Mostrar_cana(texto);
+             }
+
+         function ActualizarCSS_2() {
+                 //Función para almacenar el valor de la caña seleccionado
+                 var ACSS      = document.getElementById("Cana_2");
+                 var texto     = ACSS.options[ACSS.selectedIndex].innerText;
+                 Mostrar_cana(texto);
+             }
+
+         function ActualizarCSS_3() {
+                 //Función para almacenar el valor de la caña seleccionado
+                 var ACSS      = document.getElementById("Cana_3");
+                 var texto     = ACSS.options[ACSS.selectedIndex].innerText;
+                 Mostrar_cana(texto);
+             }
+
+         function ActualizarCSS_4() {
+                 //Función para almacenar el valor de la caña seleccionado
+                 var ACSS      = document.getElementById("Cana_4");
+                 var texto     = ACSS.options[ACSS.selectedIndex].innerText;
+                 Mostrar_cana(texto);
+             }
+             
+         function ActualizarCSS_5() {
+                 //Función para almacenar el valor de la caña seleccionado
+                 var ACSS      = document.getElementById("Cana_5");
+                 var texto     = ACSS.options[ACSS.selectedIndex].innerText;
+                 Mostrar_cana(texto);
+             }             
+
+         function ActualizarCSS_6() {
+                 //Función para almacenar el valor de la caña seleccionado
+                 var ACSS      = document.getElementById("Cana_6");
+                 var texto     = ACSS.options[ACSS.selectedIndex].innerText;
+                 Mostrar_cana(texto);
+             }
+
+         function ActualizarCSS_7() {
+                 //Función para almacenar el valor de la caña seleccionado
+                 var ACSS      = document.getElementById("Cana_7");
+                 var texto     = ACSS.options[ACSS.selectedIndex].innerText;
+                 Mostrar_cana(texto);
+             }
+
+         function ActualizarCSS_8() {
+                 //Función para almacenar el valor de la caña seleccionado
+                 var ACSS      = document.getElementById("Cana_8");
+                 var texto     = ACSS.options[ACSS.selectedIndex].innerText;
+                 Mostrar_cana(texto);
+             }
+             
+         function ActualizarCSS_9() {
+                 //Función para almacenar el valor de la caña seleccionado
+                 var ACSS      = document.getElementById("Cana_9");
+                 var texto     = ACSS.options[ACSS.selectedIndex].innerText;
+                 Mostrar_cana(texto);
+             }             
+
+         function ActualizarCSS_10() {
+                 //Función para almacenar el valor de la caña seleccionado
+                 var ACSS      = document.getElementById("Cana_10");
+                 var texto     = ACSS.options[ACSS.selectedIndex].innerText;
+                 Mostrar_cana(texto);
+             }
+                                                    
+         function Mostrar_cana(texto) {
                  var vector1   = texto.split(",");
                  var Var_cana  = vector1[0].substring(1);
                  var Gr_Br1    = vector1[2].replace('\"', ''); 
@@ -277,5 +357,22 @@
                  }                
 			}     
         </script>	
+        
+        <script type="text/javascript">
+         function CantidadCana(){
+              //Función para habilitar la selección de variedades de caña
+              var valor = document.getElementById("ECantidadCana").value; 
+              valor=parseInt(valor, 10)+1;             
+              for (var n = 1; n<=valor; n++) {
+                  var nombre="Cana_"+n;
+                  document.getElementById(nombre).disabled = false;    
+              }             
+              for (var n = valor; n<=11; n++) {
+                  var nombre="Cana_"+n;
+                  document.getElementById(nombre).disabled = true; 
+              }                             
+			}     
+        </script>	
+                
 {% endblock %}
 

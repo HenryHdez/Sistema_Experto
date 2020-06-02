@@ -187,7 +187,7 @@ def Generar_reporte(D1,D2):
                 canvas.drawString(200,650,'--->>>DATOS DEL USUARIO<<<---')
                 canvas.setFont('Helvetica-Bold', 12)
                 canvas.drawString(50,puntero,'Vista de la caña')
-                canvas.drawImage('static/Cana/'+D1['Variedad de Caña']+'.png', 350, puntero-150, width=150, height=150)
+                canvas.drawImage('static/Cana/'+D1['Variedad de Caña 1']+'.png', 350, puntero-150, width=150, height=150)
                 canvas.showPage() #Salto de página
                 #Cortar pdf
                 canvas.save()

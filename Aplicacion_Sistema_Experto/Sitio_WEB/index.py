@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template
+from difflib import SequenceMatcher as SM
 import pandas as pd
 from email.mime.multipart import MIMEMultipart
 from email.mime.application import MIMEApplication
@@ -113,7 +114,7 @@ def generar_valores_informe():
     vector=['Nombre de usuario','Departamento','Ciudad','Crecimiento aproximado del área sembrada',
             'Área caña sembrada','Caña por esperada hectárea',
             'Periodo vegetativo','Caña por hectárea esperada','Número de moliendas',
-            'Días de trabajo a la semana','Horas de trabajo al día','Variedad de Caña']
+            'Días de trabajo a la semana','Horas de trabajo al día','Variedad de Caña 1']
     #---------------->>>>>>>>>"""Calculo del periodo vegetativo"""<<<<<<<<<<<<<<<<<<<
     Formulario_1_Etiquetas=[]
     Formulario_1_Valores=[]
@@ -140,33 +141,51 @@ def generar_valores_informe():
     Diccionario=dict(zip(Formulario_1_Etiquetas,Formulario_1_Valores))  
     """Creación de la segunda parte del diccionario"""
     a=result.to_dict()
-    index=int(a['Variedad de Caña'])-1
+    cantidadcanas=int(a['Cantidad de variedades de caña sembrada'])+1
     Formulario_2_Etiquetas=[]
-    Formulario_2_Valores=[]  
-    Formulario_2_Etiquetas.append('Variedad de Caña')
-    Formulario_2_Valores.append(Tipo_cana[index])    
-    Formulario_2_Etiquetas.append('Grados Brix de la caña')
-    Formulario_2_Valores.append(Grados_Bx[index]) 
-    Formulario_2_Etiquetas.append('pH')
-    Formulario_2_Valores.append(Nivel_pH[index])    
-    Formulario_2_Etiquetas.append('Azúcares reductores (%)')
-    Formulario_2_Valores.append(Nivel_azucar[index]) 
-    Formulario_2_Etiquetas.append('Sacarosa (%)')
-    Formulario_2_Valores.append(Nivel_Sacarosa[index])    
-    Formulario_2_Etiquetas.append('Pureza (%)')
-    Formulario_2_Valores.append(Nivel_pureza[index])  
-    Formulario_2_Etiquetas.append('Fósforo (ppm)')
-    Formulario_2_Valores.append(Nivel_Fosforo[index])    
-    Formulario_2_Etiquetas.append('Calidad de la panela')
-    Formulario_2_Valores.append(Nivel_Calidad[index])  
-    Formulario_2_Etiquetas.append('Grados Brix de la panela')
-    Formulario_2_Valores.append(Nivel_brpane[index])
-    Formulario_2_Etiquetas.append('Posible ubicación')
-    Formulario_2_Valores.append(Deptos_cana[index]+', '+Ciudad_cana[index]) 
+    Formulario_2_Valores=[] 
+    Directorio =[]
+    G_brix_cana=0.0;
+    G_brix_panela=0.0;    
+    for contacana in range(1,cantidadcanas):
+        try:
+            Valor_cana_buscar='Variedad de Caña '+str(contacana)
+            index=int(a[Valor_cana_buscar])-1 
+            Formulario_2_Etiquetas.append(Valor_cana_buscar)
+            Formulario_2_Valores.append(Tipo_cana[index])    
+            Formulario_2_Etiquetas.append('Grados Brix de la caña '+str(contacana))
+            Formulario_2_Valores.append(Grados_Bx[index]) 
+            Formulario_2_Etiquetas.append('pH')
+            Formulario_2_Valores.append(Nivel_pH[index])    
+            Formulario_2_Etiquetas.append('Azúcares reductores (%)')
+            Formulario_2_Valores.append(Nivel_azucar[index]) 
+            Formulario_2_Etiquetas.append('Sacarosa (%)')
+            Formulario_2_Valores.append(Nivel_Sacarosa[index])    
+            Formulario_2_Etiquetas.append('Pureza (%)')
+            Formulario_2_Valores.append(Nivel_pureza[index])  
+            Formulario_2_Etiquetas.append('Fósforo (ppm)')
+            Formulario_2_Valores.append(Nivel_Fosforo[index])    
+            Formulario_2_Etiquetas.append('Calidad de la panela')
+            Formulario_2_Valores.append(Nivel_Calidad[index])  
+            Formulario_2_Etiquetas.append('Grados Brix de la panela '+str(contacana))
+            Formulario_2_Valores.append(Nivel_brpane[index])
+            #Formulario_2_Etiquetas.append('Posible ubicación')
+            #Formulario_2_Valores.append(Deptos_cana[index]+', '+Ciudad_cana[index]) 
+            Formulario_2_Etiquetas.append('>---------------------------------<')
+            Formulario_2_Valores.append('>---------------------------------<')
+            G_brix_cana=G_brix_cana+float(Grados_Bx[index])
+            G_brix_panela=G_brix_panela+float(Nivel_brpane[index])
+            Directorio.append('Cana/'+Tipo_cana[index]+'.png')
+        except:
+            print("Variedad no disponible")
+    G_brix_cana=round(G_brix_cana/len(Directorio),3)       
+    G_brix_panela=round(G_brix_panela/len(Directorio),3)
+    Formulario_2_Etiquetas.append('Grados Brix de la caña (promedio)')
+    Formulario_2_Valores.append(G_brix_cana)
+    Formulario_2_Etiquetas.append('Grados Brix de la panela (promedio)')
+    Formulario_2_Valores.append(G_brix_panela)    
     Dict_aux=dict(zip(Formulario_2_Etiquetas,Formulario_2_Valores))
     Diccionario.update(Dict_aux)
-    Directorio = 'Cana/'+Tipo_cana[index]+'.png'   
-      
     """------------>>>>>>>>>>HORNILLA<<<<<<<<<<<<<<<<"""
     """Calculo de la hornilla"""
     Diccionario   = Diseno_inicial.datos_entrada(Diccionario,0,0)
@@ -234,15 +253,23 @@ def infor2():
     return render_template('informe2.html', 
                            Etiquetas = Formulario_2_Etiquetas, 
                            Valores = Formulario_2_Valores,
-                           Dir = Directorio)  
+                           Dir = Directorio,
+                           Cant_fotos=len(Directorio))  
 
 @app.route('/informe1')
 def infor1():
     global Formulario_1_Etiquetas
     global Formulario_1_Valores
+    #rutina para filtrar y eliminar la palabra variedad de caña
+    lista_etiquetas_filtradas=[]
+    lista_valores_filtrados=[]
+    for i in range(len(Formulario_1_Etiquetas)):
+        if(SM(None, 'Variedad de Caña', Formulario_1_Etiquetas[i]).ratio()<0.85):
+            lista_etiquetas_filtradas.append(Formulario_1_Etiquetas[i])
+            lista_valores_filtrados.append(Formulario_1_Valores[i])              
     return render_template('informe1.html', 
-                           Etiquetas = Formulario_1_Etiquetas, 
-                           Valores = Formulario_1_Valores)     
+                           Etiquetas = lista_etiquetas_filtradas, 
+                           Valores = lista_valores_filtrados)     
     
 @app.route('/informe', methods = ['POST','GET'])
 def infor():
