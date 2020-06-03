@@ -9,6 +9,7 @@ import random
 import time
 import os
 import pandas as pd
+from difflib import SequenceMatcher as SM
 global Cantidad_pailas
 global Lista_de_pailas
 #Cantidad_pailas[0] es plana
@@ -168,6 +169,60 @@ def Dibujar_Molino(canvas, puntero, Hoja):
             canvas.drawImage('static/Molinos/'+str(Modelo[i]+'.jpg'), 150, OF, width=320, height=220)  
             OF=OF-(320)
     return canvas, Hoja
+
+#Función para presentar las variedades de caña en el pdf
+def Dibujar_Canas(canvas, puntero, Hoja):
+    import pandas as pd
+    #Estructura para publicar el molino seleccionado
+    canvas.setFont('Helvetica-Bold', 14)
+    canvas.drawString(200,puntero,'   ')
+    canvas.drawString(200,puntero-20,'   ')
+    canvas.drawString(50,puntero-20,'>>>CARACTERISTICAS DE LAS VARIEDADES DE CAÑA SEMBRADAS<<<')
+    Canas=pd.read_excel('static/Temp/Temp4.xlsx',skipcolumn = 0,)
+    Carpe=pd.read_excel('static/Temp/Temp5.xlsx',skipcolumn = 0,)
+    Eti = Canas.iloc[0].values
+    Val = Canas.iloc[1].values
+    Car = Carpe.iloc[0].values
+    puntero=600
+    for i in range (1,len(Eti)):
+        canvas.setFont('Helvetica-Bold', 12)
+        canvas.drawString(80,puntero,str(Eti[i])) 
+        canvas.setFont('Helvetica', 12)
+        canvas.drawString(360,puntero,str(Val[i]))
+        if(puntero<=110):
+            canvas.showPage()
+            Hoja=Hoja+1
+            Fondo(canvas,Hoja)
+            puntero=650            
+        else:          
+            puntero=puntero-20
+            
+    canvas.showPage()
+    Hoja=Hoja+1
+    Fondo(canvas,Hoja)            
+    canvas.setFont('Helvetica-Bold', 12)
+    puntero=650
+    canvas.drawString(50,puntero,'Vista previa de la(s) variedad(es) de caña seleccionada(s)')
+    puntero=600
+    for i in range (1,len(Car),3):
+        if(i<11):
+            canvas.drawString(75,puntero+5,'Variedad de caña '+str(i))
+            canvas.drawImage('static/'+Car[i], 55, puntero-150, width=150, height=150)
+        if(((i+1)<len(Car)-1)and(i+1<11)):
+            canvas.drawString(245,puntero+5,'Variedad de caña '+str(i+1))
+            canvas.drawImage('static/'+Car[i+1], 225, puntero-150, width=150, height=150)
+        if(((i+2)<=len(Car)-1)and(i+1<11)):
+            canvas.drawString(415,puntero+5,'Variedad de caña '+str(i+2))
+            canvas.drawImage('static/'+Car[i+2], 395, puntero-150, width=150, height=150)
+        if((puntero<=200)and(i>6)):
+            canvas.showPage()
+            Hoja=Hoja+1
+            Fondo(canvas,Hoja)
+            canvas.setFont('Helvetica-Bold', 12)
+            puntero=600            
+        else:          
+            puntero=puntero-200
+    return canvas, Hoja
     
 #Función para generar la parte escrita del informe
 def Generar_reporte(D1,D2):
@@ -186,8 +241,6 @@ def Generar_reporte(D1,D2):
                 canvas.setFont('Helvetica-Bold', 14)
                 canvas.drawString(200,650,'--->>>DATOS DEL USUARIO<<<---')
                 canvas.setFont('Helvetica-Bold', 12)
-                canvas.drawString(50,puntero,'Vista de la caña')
-                canvas.drawImage('static/Cana/'+D1['Variedad de Caña 1']+'.png', 350, puntero-150, width=150, height=150)
                 canvas.showPage() #Salto de página
                 #Cortar pdf
                 canvas.save()
@@ -204,7 +257,7 @@ def Generar_reporte(D1,D2):
                 #Cortar pdf
                 canvas.save()
                 from reportlab.pdfgen import canvas
-                canvas = canvas.Canvas("static/pdf/A4_informe.pdf", pagesize=letter)
+                canvas = canvas.Canvas("static/pdf/A5_informe.pdf", pagesize=letter)
                 #-----
                 Hoja=Hoja+1
                 Fondo(canvas,Hoja)
@@ -213,7 +266,20 @@ def Generar_reporte(D1,D2):
                 canvas.drawString(180,puntero,'--->>>MOLINO PRE-SELECCIONADO<<<---')                
             elif(str(i)=='DATOS DE LA MASA'):
                 canvas,Hoja=Dibujar_Molino(canvas, puntero, Hoja)
-                #Cortar pdf
+                #Cortar pdf                
+                canvas.save()
+
+                from reportlab.pdfgen import canvas
+                canvas = canvas.Canvas("static/pdf/A4_informe.pdf", pagesize=letter)
+                #-----
+                Hoja=Hoja+1
+                Fondo(canvas,Hoja)
+                puntero=650
+                canvas.setFont('Helvetica-Bold', 14)
+                #Variedades de caña sembradas
+                Dibujar_Canas(canvas, puntero, Hoja)
+                
+                ##Sección C
                 canvas.save()
                 from reportlab.pdfgen import canvas
                 canvas = canvas.Canvas("static/pdf/C2_informe.pdf", pagesize=letter)
@@ -227,12 +293,15 @@ def Generar_reporte(D1,D2):
                 canvas.setFont('Helvetica-Bold', 12)
                 canvas.drawString(200,puntero,'--->>>PROPIEDADES DE LOS JUGOS<<<---')                
         else:
-            canvas.setFont('Helvetica-Bold', 12)
-            canvas.drawString(50,puntero,str(i))
-            canvas.setFont('Helvetica', 12)
-            canvas.drawString(350,puntero,str(D1[i]))  
-            
-        if(puntero<=30):
+        #rutina para filtrar string a publicar
+            if(SM(None, 'Variedad de Caña', i).ratio()<0.85):
+                canvas.setFont('Helvetica-Bold', 12)
+                canvas.drawString(50,puntero,str(i))
+                canvas.setFont('Helvetica', 12)
+                canvas.drawString(350,puntero,str(D1[i]))   
+            else:
+                puntero=puntero+20
+        if(puntero<=110):
             canvas.showPage()
             Hoja=Hoja+1
             Fondo(canvas,Hoja)

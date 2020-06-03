@@ -11,11 +11,8 @@ from werkzeug.utils import secure_filename
 import Diseno_inicial
 import Costos_funcionamiento
 import Pailas
+import pandas as pd
 #import Gases
-#from libraries import Pailas
-
-#from fpdf import FPDF, HTMLMixin
-#config = pdfkit.configuration(wkhtmltopdf='C:/Users/hahernandez/.conda/envs/experto/Lib/site-packages/wkhtmltopdf')
 
 app = Flask(__name__)
 uploads_dir = os.path.join(app.instance_path, 'uploads')
@@ -83,6 +80,8 @@ def generar_valores_informe():
     global Formulario_1_Valores
     global Formulario_2_Etiquetas
     global Formulario_2_Valores
+    global Formulario_2a_Etiquetas
+    global Formulario_2a_Valores
     global Directorio
     global Deptos_cana
     global Ciudad_cana
@@ -95,8 +94,6 @@ def generar_valores_informe():
     global Nivel_Fosforo
     global Nivel_Calidad
     global Nivel_brpane
-    global Formulario_2_Etiquetas
-    global Formulario_2_Valores
     global Diccionario 
     global Diccionario_2
     global Diccionario_3
@@ -144,6 +141,8 @@ def generar_valores_informe():
     cantidadcanas=int(a['Cantidad de variedades de caña sembrada'])+1
     Formulario_2_Etiquetas=[]
     Formulario_2_Valores=[] 
+    Formulario_2a_Etiquetas=[]
+    Formulario_2a_Valores=[]
     Directorio =[]
     G_brix_cana=0.0;
     G_brix_panela=0.0;    
@@ -165,8 +164,8 @@ def generar_valores_informe():
             Formulario_2_Valores.append(Nivel_pureza[index])  
             Formulario_2_Etiquetas.append('Fósforo (ppm)')
             Formulario_2_Valores.append(Nivel_Fosforo[index])    
-            Formulario_2_Etiquetas.append('Calidad de la panela')
-            Formulario_2_Valores.append(Nivel_Calidad[index])  
+            #Formulario_2_Etiquetas.append('Calidad de la panela')
+            #Formulario_2_Valores.append(Nivel_Calidad[index])  
             Formulario_2_Etiquetas.append('Grados Brix de la panela '+str(contacana))
             Formulario_2_Valores.append(Nivel_brpane[index])
             #Formulario_2_Etiquetas.append('Posible ubicación')
@@ -178,14 +177,23 @@ def generar_valores_informe():
             Directorio.append('Cana/'+Tipo_cana[index]+'.png')
         except:
             print("Variedad no disponible")
+    #Exportar variedades de caña seleccionadas
+    datos_temp=[Formulario_2_Etiquetas,Formulario_2_Valores]
+    df = pd.DataFrame(datos_temp)
+    df.to_excel('static/Temp/Temp4.xlsx')   
+    datos_temp=[Directorio]
+    df = pd.DataFrame(datos_temp)
+    df.to_excel('static/Temp/Temp5.xlsx')  
+    #Grados brix promedio para publicar en el informe
     G_brix_cana=round(G_brix_cana/len(Directorio),3)       
     G_brix_panela=round(G_brix_panela/len(Directorio),3)
-    Formulario_2_Etiquetas.append('Grados Brix de la caña (promedio)')
-    Formulario_2_Valores.append(G_brix_cana)
-    Formulario_2_Etiquetas.append('Grados Brix de la panela (promedio)')
-    Formulario_2_Valores.append(G_brix_panela)    
-    Dict_aux=dict(zip(Formulario_2_Etiquetas,Formulario_2_Valores))
+    Formulario_2a_Etiquetas.append('Grados Brix de la caña (promedio)')
+    Formulario_2a_Valores.append(G_brix_cana)
+    Formulario_2a_Etiquetas.append('Grados Brix de la panela (promedio)')
+    Formulario_2a_Valores.append(G_brix_panela)    
+    Dict_aux=dict(zip(Formulario_2a_Etiquetas,Formulario_2a_Valores))
     Diccionario.update(Dict_aux)
+    
     """------------>>>>>>>>>>HORNILLA<<<<<<<<<<<<<<<<"""
     """Calculo de la hornilla"""
     Diccionario   = Diseno_inicial.datos_entrada(Diccionario,0,0)

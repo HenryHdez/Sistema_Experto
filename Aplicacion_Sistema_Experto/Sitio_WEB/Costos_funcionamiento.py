@@ -40,7 +40,7 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
     #Genera la vista previa
     from reportlab.lib.pagesizes import letter
     from reportlab.pdfgen import canvas
-    canvas = canvas.Canvas("static/pdf/A5_informe.pdf", pagesize=letter)
+    canvas = canvas.Canvas("static/pdf/A6_informe.pdf", pagesize=letter)
     #Hoja=1
     for k in range(3):
         canvas=Fondo(canvas,"--")
@@ -212,13 +212,13 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
             
     canvas.showPage()
     canvas=Fondo(canvas,"--")
-    canvas.drawImage('static/Graficas/Depreciacion.jpg', 175, 490, width=330, height=230)
-    canvas.drawImage('static/Graficas/Flujo_Caja_1.jpg', 175, 260, width=330, height=230)
-    canvas.drawImage('static/Graficas/Flujo_Caja_2.jpg', 175, 20, width=330, height=230)
+    canvas.drawImage('static/Graficas/Depreciacion.png', 155, 490, width=350, height=250)
+    canvas.drawImage('static/Graficas/Flujo_Caja_1.png', 155, 240, width=350, height=230)
+#    canvas.drawImage('static/Graficas/Flujo_Caja_2.jpg', 175, 20, width=330, height=230)
     canvas.showPage()
     canvas=Fondo(canvas,"--")
-    canvas.drawImage('static/Graficas/RI_Meses.jpg', 175, 490, width=330, height=230)
-    canvas.drawImage('static/Graficas/RI_Anos.jpg', 175, 260, width=330, height=230)                         
+    canvas.drawImage('static/Graficas/RI_Meses.png', 155, 490, width=350, height=250)
+    canvas.drawImage('static/Graficas/RI_Anos.png', 155, 240, width=350, height=250)                         
     canvas.save()
     
 def Variables(Capacidad, Horas, semana, moliendas, Cana_estimada):
@@ -416,14 +416,14 @@ def costos():
     Consolidado_totales_1.append(Total_proyecto-total_recuperador)
     Consolidado_totales_1.insert(0,'Valor aproximado')    
     Etiquetas_Totales=['Descripción',
-                          'Valor total de la construcción de la hornilla',
-                          'Valor total de la construcción del recuperador de calor', 
-                          'Valor total del gasto operativo durante la construcción', 
-                          'Seguro contra gastos imprevistos (2% del total de la construcción de la hornilla)',
-                          'Movilidad',
-                          'Valor total de la construcción con recuperador de calor',
-                          'Valor total de la construcción sin recuperador de calor',
-                          ]
+                       'Valor total de la construcción de la hornilla',
+                       'Valor total de la construcción del recuperador de calor', 
+                       'Valor total del gasto operativo durante la construcción', 
+                       'Seguro contra gastos imprevistos (2% del total de la construcción de la hornilla)',
+                       'Movilidad',
+                       'Valor total de la construcción con recuperador de calor',
+                       'Valor total de la construcción sin recuperador de calor',
+                        ]
     D_Consolidado=dict(zip(Etiquetas_Totales,Consolidado_totales_1))   
     
     mem_capacidad=Capacidad_hornilla
@@ -588,16 +588,16 @@ def costos():
     
     ###########>>>>>>>>>>>>>>>>>>>>>>Graficar Depreciación<<<<<<<<<<<<<<<<<<<<<################
     Fig_1,a = plt.subplots(frameon=False)
-    l1,=a.plot(range(len(lista_Depreciacion1)),np.array(lista_Depreciacion1)/1000000)
-    l2,=a.plot(range(len(lista_Depreciacion2)),np.array(lista_Depreciacion2)/1000000)
+    l1,=a.plot(range(len(lista_Depreciacion1)),np.array(lista_Depreciacion1)/1000000, linewidth=4)
+    l2,=a.plot(range(len(lista_Depreciacion2)),np.array(lista_Depreciacion2)/1000000, linewidth=4)
     a.grid(color='k', linestyle='--', linewidth=1)
-    a.set_ylabel('Depreciación en pesos (X1000000)')
-    a.set_xlabel('Años [Vida útil de la hornilla]')
-    a.set_title('Depreciación de la hornilla')
+    a.set_ylabel('Valor (X $1.000.000)', fontsize=18)
+    a.set_xlabel('Vida útil de la hornilla (Años)', fontsize=18)
+    a.set_title('Depreciación', fontsize=20)
     a.legend([l1, l2],["Con recuperador", "Sin recuperador"])  
     for item in [Fig_1,a]:
            item.patch.set_visible(False)
-    FigureCanvasAgg(Fig_1).print_png('static/Graficas/Depreciacion.jpg')       
+    FigureCanvasAgg(Fig_1).print_png('static/Graficas/Depreciacion.png')       
     ############################################################################################
     
     """>>>>>>>>>>>>>>>>>>>>--------------------FLUJO DE CAJA---------------<<<<<<<<<<<<<<<<<"""
@@ -656,32 +656,37 @@ def costos():
     lim_min=0
     if(m1<m2):
         lim_max=m2
+        l1 =b.barh(range(len(lista_flujo_2)),np.array(lista_flujo_2)/1000000,edgecolor='black',hatch="/")
+        l2 =b.barh(range(len(lista_flujo_1)),np.array(lista_flujo_1)/1000000,edgecolor='black',hatch="o")
     else:
         lim_max=m1
+        l2 =b.barh(range(len(lista_flujo_1)),np.array(lista_flujo_1)/1000000,edgecolor='black',hatch="o")
+        l1 =b.barh(range(len(lista_flujo_2)),np.array(lista_flujo_2)/1000000,edgecolor='black',hatch="/")
     if(m3<m4):
         lim_min=m3
     else:
         lim_min=m4        
-    b.barh(range(len(lista_flujo_1)),np.array(lista_flujo_1)/1000000)
+
     b.set_xlim([lim_min-10,lim_max+10])
     b.grid(color='k', linestyle='--', linewidth=1)
-    b.set_ylabel('Años [Vida útil de la hornilla]')
-    b.set_xlabel('Valor en pesos (X1000000)')
-    b.set_title('Flujo de caja aproximado de la hornilla sin recuperador')
+    b.set_ylabel('Vida útil (Años)', fontsize=18)
+    b.set_xlabel('Valor (X$1.000.000)', fontsize=18)
+    b.set_title('Flujo de caja aproximado', fontsize=20)
+    b.legend([l1, l2],["Con recuperador", "Sin recuperador"])
     for item in [Fig_2,b]:
            item.patch.set_visible(False)    
-    FigureCanvasAgg(Fig_2).print_png('static/Graficas/Flujo_Caja_1.jpg') 
-    #Con recuperador
-    Fig_2a,c = plt.subplots(frameon=False)
-    c.barh(range(len(lista_flujo_2)),np.array(lista_flujo_2)/1000000)
-    c.set_xlim([lim_min-10,lim_max+10])
-    c.grid(color='k', linestyle='--', linewidth=1)
-    c.set_ylabel('Años [Vida útil de la hornilla]')
-    c.set_xlabel('Valor en pesos (X1000000)')
-    c.set_title('Flujo de caja aproximado de la hornilla con recuperador')
-    for item in [Fig_2a,c]:
-           item.patch.set_visible(False)
-    FigureCanvasAgg(Fig_2a).print_png('static/Graficas/Flujo_Caja_2.jpg') 
+    FigureCanvasAgg(Fig_2).print_png('static/Graficas/Flujo_Caja_1.png') 
+#    #Con recuperador
+#    Fig_2a,c = plt.subplots(frameon=False)
+#    c.barh(range(len(lista_flujo_2)),np.array(lista_flujo_2)/1000000)
+#    c.set_xlim([lim_min-10,lim_max+10])
+#    c.grid(color='k', linestyle='--', linewidth=1)
+#    c.set_ylabel('Años [Vida útil de la hornilla]')
+#    c.set_xlabel('Valor en pesos (X1000000)')
+#    c.set_title('Flujo de caja aproximado de la hornilla con recuperador')
+#    for item in [Fig_2a,c]:
+#           item.patch.set_visible(False)
+#    FigureCanvasAgg(Fig_2a).print_png('static/Graficas/Flujo_Caja_2.jpg') 
     ############################################################################################
     """>>>>>>------RETORNO A LA INVERSION----<<<<"""
     Retorno_inversion1=[]  
@@ -729,38 +734,38 @@ def costos():
     #print(Anos)
     ###########>>>>>>>>>>>>>>>>>Graficar Retorno a la inversión<<<<<<<<<<<<<<<<<################
     Fig_3,d = plt.subplots(frameon=False)
-    l1,=d.plot(lista_valor_panela1,Anos1)
-    l2,=d.plot(lista_valor_panela2,Anos2)
+    l1,=d.plot(lista_valor_panela1,Anos1, linewidth=4)
+    l2,=d.plot(lista_valor_panela2,Anos2, linewidth=4)
     d.grid(color='k', linestyle='--', linewidth=1)
-    d.set_ylabel('Años [Funcionamiento de la hornilla]')
-    d.set_xlabel('Valor de la panela en pesos')
-    d.set_title('Retorno a la inversión de la hornilla')
+    d.set_ylabel('Funcionamiento (Años)', fontsize=18)
+    d.set_xlabel('Valor de la panela ($)', fontsize=18)
+    d.set_title('Tiempo de retorno a la inversión', fontsize=20)
     d.legend([l1, l2],["Con recuperador", "Sin recuperador"])
     for item in [Fig_3,d]:
            item.patch.set_visible(False)
-    FigureCanvasAgg(Fig_3).print_png('static/Graficas/RI_Anos.jpg') 
+    FigureCanvasAgg(Fig_3).print_png('static/Graficas/RI_Anos.png') 
     ############################################################################################
     ###########>>>>>>>>>>>>>>>>>Graficar Retorno a la inversión<<<<<<<<<<<<<<<<<################
     Fig_4,e = plt.subplots(frameon=False)
-    l1,=e.plot(lista_valor_panela1,Meses1)
-    l2,=e.plot(lista_valor_panela2,Meses2)   
+    l1,=e.plot(lista_valor_panela1,Meses1, linewidth=4)
+    l2,=e.plot(lista_valor_panela2,Meses2, linewidth=4)   
     e.grid(color='k', linestyle='--', linewidth=1)
-    e.set_ylabel('Meses [Funcionamiento de la hornilla]')
-    e.set_xlabel('Valor de la panela en pesos')
-    e.set_title('Retorno a la inversión de la hornilla')
+    e.set_ylabel('Funcionamiento (Meses)', fontsize=18)
+    e.set_xlabel('Valor de la panela ($)', fontsize=18)
+    e.set_title('Tiempo de retorno a la inversión', fontsize=20)
     e.legend([l1, l2],["Con recuperador", "Sin recuperador"])
     for item in [Fig_4,e]:
            item.patch.set_visible(False)
-    with open('static/Graficas/RI_Meses.jpg', 'wb') as f:
+    with open('static/Graficas/RI_Meses.png', 'wb') as f:
         FigureCanvasAgg(Fig_4).print_png(f)     
     plt.close(Fig_1)
     plt.close(Fig_2)
-    plt.close(Fig_2a)
+#    plt.close(Fig_2a)
     plt.close(Fig_3)
     plt.close(Fig_4)
     del(Fig_1)
     del(Fig_2)
-    del(Fig_2a)
+ #   del(Fig_2a)
     del(Fig_3)
     del(Fig_4)
 #    #Exportar a excel
