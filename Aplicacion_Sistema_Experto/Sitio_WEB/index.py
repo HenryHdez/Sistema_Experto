@@ -204,8 +204,8 @@ def generar_valores_informe():
             "Hornilla: "+Diccionario['Nombre de usuario']+" ("+Diccionario['Departamento']+'-'+Diccionario['Ciudad']+')'
             )
     """Presentar información del molino"""
-    Formulario_3_Etiquetas=['Caña molida al mes', 'Area Cosechada al mes',	 'Caña molida a la semana',		
-                            'Caña Molida por Hora', 'Jugo Crudo',	 'Jugo Clarificado', 'Masa de panela',		
+    Formulario_3_Etiquetas=['Caña molida al mes', 'Área cosechada al mes',	 'Caña molida a la semana',		
+                            'Caña molida por Hora', 'Jugo crudo',	 'Jugo clarificado', 'Masa de panela',		
                             'Capacidad del Molino']
     Formulario_3_Valores=[]
     for i in Formulario_3_Etiquetas:
@@ -232,7 +232,7 @@ def generar_valores_informe():
     """Estimar propiedades de los gases"""
 #    Gases.Optimizacion(Diccionario,Diccionario_2)
     """Analisis financiero"""
-    Costos_funcionamiento.Variables(float(Diccionario['Capacidad Estimada de la hornilla']),
+    Costos_funcionamiento.Variables(float(Diccionario['Capacidad estimada de la hornilla']),
                                     float(Diccionario['Horas de trabajo al día']), 
                                     float(Diccionario['Días de trabajo a la semana']), 
                                     float(Diccionario['Número de moliendas']),
@@ -240,12 +240,42 @@ def generar_valores_informe():
     Costos_funcionamiento.costos()
     """Creación del pdf"""
     Pailas.Generar_reporte(Diccionario,Diccionario_2)
-    
+
+def Convertir(string): 
+    li = list(string.split(",")) 
+    lista_vacia=[]
+    for i in li:
+        i=i.strip(' ')
+        i=i.strip('[')
+        i=i.strip(']')
+        i=i.strip('\'')
+        lista_vacia.append(i)
+    return lista_vacia 
+   
 #Enlaces para la generación del informe
+@app.route('/informe5')
+def infor5():
+    return render_template('informe5.html') 
+
 @app.route('/informe4')
 def infor4():
-    global Diccionario
-    return render_template('informe4.html',result=Diccionario) 
+    Valores_Informe=pd.read_excel('static/Graficas/Temp6.xlsx',skipcolumn = 0,)
+    Consolidado = Valores_Informe.iloc[0].values
+    l1=Convertir(Consolidado[1])
+    l2=Convertir(Consolidado[2])
+    Funcionamie = Valores_Informe.iloc[1].values
+    l5=Convertir(Funcionamie[1])
+    l6=Convertir(Funcionamie[2])
+    l6a=l6[0::2]
+    l6b=l6[1::2]
+    Depreciacio = Valores_Informe.iloc[2].values
+    l3=Convertir(Depreciacio[1])
+    l4=Convertir(Depreciacio[2])
+    l4a=l4[0::2]
+    l4b=l4[1::2]
+    return render_template('informe4.html',eti1=l1,eti2=l2,L1=len(l1),
+                                           eti3=l3,eti4=l4a,eti5=l4b,L2=len(l3),
+                                           eti6=l5,eti7=l6a,eti8=l6b,L3=len(l5)) 
 
 @app.route('/informe3')
 def infor3():

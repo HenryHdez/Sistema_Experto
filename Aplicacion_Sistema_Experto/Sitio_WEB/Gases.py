@@ -73,10 +73,10 @@ def Propiedades(Calor_transferido):
     global Diccionario_Entr
     global Diccionario_Pailas
     Q_Cedido=Q_Cedido_gas(Calor_transferido)
-    Masa_Bagazo=float(Diccionario_Entr['Capacidad Estimada de la hornilla'])*float(Diccionario_Entr['Factor Consumo Bagazo'])
+    Masa_Bagazo=float(Diccionario_Entr['Capacidad estimada de la hornilla'])*float(Diccionario_Entr['Factor de consumo de bagazo'])
     Cantidad_Pailas=int(Diccionario_Pailas['Etapas'])   
     Humedad_bagazo=float(Diccionario_Entr['Humedad del bagazo'])
-    Exceso_aire=float(Diccionario_Entr['Exceso de Aire'])
+    Exceso_aire=float(Diccionario_Entr['Exceso de aire'])
     Temperatura_ambiente=(float(Diccionario_Entr['CSS panela'])*100.0)+273.0
     Eficiencia_Combustion=0.95 #Lo esperado en la combustión    
     Humedad_aire=0.001

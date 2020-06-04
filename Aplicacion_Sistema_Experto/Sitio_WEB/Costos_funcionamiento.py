@@ -158,7 +158,7 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
         puntero_h=puntero_h+400
         for j, vector in enumerate(Valores):
             Texto=str(vector)
-            if((i=='El diseño incorpora recuperador de calor') or (i=='Capacidad de la hornilla')):
+            if((i=='¿El diseño incorpora recuperador de calor?') or (i=='Capacidad de la hornilla')):
                 canvas.setFont('Helvetica-Bold', 11)
             elif(i=='Valor total del kg de caña'):
                 canvas.setFillColorRGB(1,0,0)
@@ -194,7 +194,7 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
         puntero_h=puntero_h+350
         for j, vector in enumerate(Valores):
             Texto=str(vector)
-            if(i=='El diseño incorpora recuperador de calor'):
+            if(i=='¿El diseño incorpora recuperador de calor?'):
                 canvas.setFont('Helvetica-Bold', 11)
             elif(i=='Ingresos anuales aproximados ($)'):
                 canvas.setFillColorRGB(1,0,0)
@@ -212,13 +212,10 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
             
     canvas.showPage()
     canvas=Fondo(canvas,"--")
-    canvas.drawImage('static/Graficas/Depreciacion.png', 155, 490, width=350, height=250)
-    canvas.drawImage('static/Graficas/Flujo_Caja_1.png', 155, 240, width=350, height=230)
-#    canvas.drawImage('static/Graficas/Flujo_Caja_2.jpg', 175, 20, width=330, height=230)
-    canvas.showPage()
-    canvas=Fondo(canvas,"--")
-    canvas.drawImage('static/Graficas/RI_Meses.png', 155, 490, width=350, height=250)
-    canvas.drawImage('static/Graficas/RI_Anos.png', 155, 240, width=350, height=250)                         
+    canvas.drawImage('static/Graficas/Depreciacion.png', 40, 480, width=280, height=200)
+    canvas.drawImage('static/Graficas/Flujo_Caja_1.png', 330, 480, width=280, height=200)
+    canvas.drawImage('static/Graficas/RI_Meses.png', 40, 190, width=280, height=200)
+    canvas.drawImage('static/Graficas/RI_Anos.png', 330, 190, width=280, height=200)                         
     canvas.save()
     
 def Variables(Capacidad, Horas, semana, moliendas, Cana_estimada):
@@ -339,7 +336,7 @@ def costos():
                         'Paila semiesférica', 'Paila semicilindrica', 'Paila semicilindrica sin aletas', 'Paila cuadrada',
                         'Paila cuadrada sin aletas', 'Paila acanalada con canales cuadrados','Paila acanalada con canales cuadrados y sin aletas',
                         'Prelimpiador', 'Tanque recibidor', 'Ladrillos refractarios', 'Pegante', 'Tubo sanitario de 3 pulgadas',
-                        'Codos sanitarios de 3 pulgadas','Valvula de bola de 2 y 1/2 pulgadas', 'Ferula sanitaria de 3 pulgadas',
+                        'Codos sanitarios de 3 pulgadas','Válvula de bola de 2 y 1/2 pulgadas', 'Férula sanitaria de 3 pulgadas',
                         'Abrazadera sanitaria de 3 pulgadas', 'Empaque de silicona de 3 pulgadas (alta temperatura)',
                         'Sección de parrilla', 'Entrada hornilla', 'Descachazado', 'Valor aproximado del molino',
                         'Valor total de la hornilla']
@@ -348,28 +345,28 @@ def costos():
     """>>>>>>>>>>>>----------Costos recuperador------------<<<<<<<<<<<<"""
     Recuperador=pd.read_excel('static/Costos/Recuperador.xlsx')
     Valor_Recuperador=[]
-    b=float(Recuperador['Recuperador Exterior'].values)
+    b=float(Recuperador['Recuperador exterior'].values)
     Cantidad=math.ceil(Total_pailas/30)
     Valor_Recuperador.append([Cantidad, b, b*Cantidad])
-    b=float(Recuperador['Recuperador Interior'].values)	
+    b=float(Recuperador['Recuperador interior'].values)	
     Cantidad=math.ceil(Total_pailas/30)
     Valor_Recuperador.append([Cantidad, b, b*Cantidad])
-    b=float(Recuperador['Serpentín Semicilíndrico'].values)	
+    b=float(Recuperador['Serpentín semi-cilíndrico'].values)	
     Cantidad=Cantidad*2
     Valor_Recuperador.append([Cantidad, b, b*Cantidad])
-    b=float(Recuperador['Serpentín Plano'].values)
+    b=float(Recuperador['Serpentín plano'].values)
     Cantidad=math.ceil(Total_pailas/30)
     Valor_Recuperador.append([Cantidad, b, b*Cantidad])
-    b=float(Recuperador['Tubería y Accesorios'].values)	
+    b=float(Recuperador['Tubería y accesorios'].values)	
     Cantidad=math.ceil(Total_pailas/30)
     Valor_Recuperador.append([Cantidad, b, b*Cantidad])
-    b=float(Recuperador['Ladrillo Chimeneas'].values)	
+    b=float(Recuperador['Ladrillo para las chimeneas'].values)	
     Cantidad=math.ceil(Total_pailas/30)*1000
     Valor_Recuperador.append([Cantidad, b, b*Cantidad])
     b=float(Recuperador['Pegante'].values)	
     Cantidad=math.ceil(Total_pailas/30)*8
     Valor_Recuperador.append([Cantidad, b, b*Cantidad])
-    b=float(Recuperador['Sección Metálica Chimeneas'].values)
+    b=float(Recuperador['Sección metálica para las chimeneas'].values)
     Cantidad=math.ceil(Total_pailas/30)*4
     Valor_Recuperador.append([Cantidad, b, b*Cantidad])
     b=float(Recuperador['Bomba'].values)
@@ -406,7 +403,7 @@ def costos():
                           'Profesional titulado', 'Maestro de obra', 'Obrero', 
                           'Total de gastos operativos']
     D_Operativo=dict(zip(Etiquetas_Operativos,Valor_Operativo))  
-    
+
     """>>>>>>>>>>>>>>-------------TOTALES PROYECTO--------------<<<<<<<<<<<<<<<"""
     Costo_imprevistos=math.ceil(0.02*total_hornilla)
     Consolidado_totales_1=[total_hornilla, total_recuperador, total_operativos, Costo_imprevistos, float(Operativos['Movilidad'])]
@@ -424,7 +421,8 @@ def costos():
                        'Valor total de la construcción con recuperador de calor',
                        'Valor total de la construcción sin recuperador de calor',
                         ]
-    D_Consolidado=dict(zip(Etiquetas_Totales,Consolidado_totales_1))   
+    D_Consolidado=dict(zip(Etiquetas_Totales,Consolidado_totales_1))    
+    L_etiquetas_aux_excel1=[Etiquetas_Totales,Consolidado_totales_1]
     
     mem_capacidad=Capacidad_hornilla
     lista_produccion_1=[]
@@ -499,21 +497,22 @@ def costos():
             lista_produccion_2.insert(0,'SI')
 
     """>>>>>>>>>>>>>>>>>>>>>Codificar rotulo del informe<<<<<<<<<<<<<<<<"""  
-    Etiquetas_produccion=['El diseño incorpora recuperador de calor',
+    Etiquetas_produccion=['¿El diseño incorpora recuperador de calor?',
                           'Capacidad de la hornilla',
                           'Costo de funcionamiento del molino por kg (Motor eléctrico)', 
-                          'Costo de funcionamiento del molino por kg (Motor Diesel o gasolina)', 
+                          'Costo de funcionamiento del molino por kg (Motor diesel o gasolina)', 
                           'Costo de funcionamiento del controlador por kg',
                           'Costo del kg de caña',
-                          'Costo de los insumos para la producción (Cera, Empaques, Clarificante)',
-                          'Costo del Mantenimiento de la hornilla por kg',
-                          'Costo de los operarios kg',
+                          'Costo de los insumos para la producción (Cera-Empaques-Clarificante)',
+                          'Costo del mantenimiento de la hornilla por kg',
+                          'Costo de los operarios por kg',
                           'Valor total del kg de caña'
                           ]
     lista1=[]
     for i in range(len(lista_produccion_1)):
         lista1.append([lista_produccion_1[i], lista_produccion_2[i]])
     D_Produccion=dict(zip(Etiquetas_produccion,lista1))    
+    L_etiquetas_aux_excel2=[Etiquetas_produccion,lista1]
     
     """>>>>>>>>>>>>>>>>>>>>----------------COSTO FINANCIERO---------------------<<<<<<<<<"""
     mem_capacidad=Capacidad_hornilla
@@ -553,11 +552,11 @@ def costos():
                                 t_anos, 
                                 Valor_panela, 
                                 math.ceil(Costo_financiero), 
-                                Depreciacion_anual, 
-                                Produccion_mensual_kg, 
-                                Produccion_anual_kg, 
-                                Valor_Salvamento, 
-                                Ingreso_anual]
+                                round(Depreciacion_anual,0), 
+                                round(Produccion_mensual_kg,0),  
+                                round(Produccion_anual_kg,0),  
+                                round(Valor_Salvamento,0),  
+                                round(Ingreso_anual,0)]
             lista_Depreciacion1=Depreciacion
             lista_financiero_1.insert(0,'NO')
         elif (k==1):
@@ -568,7 +567,7 @@ def costos():
             lista_financiero_2.insert(0,'SI')
             
     """>>>>>>>>>>>>>>>>>>>>>Codificar rotulo del informe<<<<<<<<<<<<<<<<"""  
-    Etiquetas_financiacion=['El diseño incorpora recuperador de calor',
+    Etiquetas_financiacion=['¿El diseño incorpora recuperador de calor?',
                           'Vida útil estimada de la hornilla (años)',
                           'Tasa de interés de la financiación',
                           'Tiempo mínimo para recuperar la inversión (años)', 
@@ -578,13 +577,18 @@ def costos():
                           'Producción mensual (kg)',
                           'Producción anual en (kg)',
                           'Valor de salvamento (5% del total del costo de la hornilla) ($)',
-                          'Ingresos anuales aproximados ($)'                          
+                          'Ingreso anual aproximado ($)'                          
                           ]
     lista1=[]
     for i in range(len(lista_financiero_1)):
         lista1.append([lista_financiero_1[i], lista_financiero_2[i]])
     D_Financiero=dict(zip(Etiquetas_financiacion,lista1)) 
-        
+    
+    L_etiquetas_aux_excel3=[Etiquetas_financiacion,lista1]
+    L_etiquetas_aux_excel=[L_etiquetas_aux_excel1,L_etiquetas_aux_excel2,L_etiquetas_aux_excel3]
+    #Exportar para ver en el formulario html
+    df = pd.DataFrame(L_etiquetas_aux_excel)
+    df.to_excel('static/Graficas/Temp6.xlsx')    
     
     ###########>>>>>>>>>>>>>>>>>>>>>>Graficar Depreciación<<<<<<<<<<<<<<<<<<<<<################
     Fig_1,a = plt.subplots(frameon=False)

@@ -1,8 +1,49 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <div class="jumbotron" style="background: rgba(178,176,176,0.5);">
-        <h3><b>VISTA PREVIA DEL INFORME</b></h3>
+        <h3><b>VISTA PREVIA DEL INFORME ECONÓMICO</b></h3>
         <hr class="my-4">
-        <iframe src="{{url_for('static', filename='/Informe.pdf')}}" width="950" height="1200" frameborder="2"></iframe>
+        <h4><b>VALOR DE LA CONSTRUCCIÓN</b></h4>
+        <hr class="my-4">
+        <table align="center">
+        
+            <tr>
+               <td style="width:600px"> <b>{{ eti1[0] }}</b> </td>
+               <td style="width:300px"> {{ eti2[0] }} </td>
+            </tr>        
+        {% for i in range(1,L1) %}
+            <tr>
+               <td style="width:600px"> <b>{{ eti1[i] }}</b> </td>
+               <td style="width:300px"> $ {{ eti2[i] }} </td>
+            </tr>
+        {% endfor %}
+        </table>
+        
+        <hr class="my-4">
+        <h4><b>VALOR DE FINANCIACIÓN</b></h4>
+        <hr class="my-4">
+        <table align="center">      
+        {% for i in range(0,L2) %}
+            <tr>
+               <td style="width:500px"> <b>{{ eti3[i] }}</b> </td>
+               <td style="width:200px"> {{ eti4[i] }} </td>
+               <td style="width:200px"> {{ eti5[i] }} </td>
+            </tr>
+        {% endfor %} 
+        </table>
+
+        <hr class="my-4">
+        <h4><b>VALOR OPERATIVO</b></h4>
+        <hr class="my-4">
+        <table align="center">      
+        {% for i in range(0,L3) %}
+            <tr>
+               <td style="width:500px"> <b>{{ eti6[i] }}</b> </td>
+               <td style="width:200px"> {{ eti7[i] }} </td>
+               <td style="width:200px"> {{ eti8[i] }} </td>
+            </tr>
+        {% endfor %} 
+        </table>
+                
     </div>
 
 
