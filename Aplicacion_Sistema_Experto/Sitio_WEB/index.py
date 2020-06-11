@@ -13,25 +13,29 @@ import Costos_funcionamiento
 import Pailas
 import pandas as pd
 from firebase import firebase
+from shutil import rmtree
 import base64
 #import Gases
 
 app = Flask(__name__)
 uploads_dir = os.path.join(app.instance_path, 'uploads')
 
-
-
 try:
     os.makedirs(uploads_dir, True)
 except OSError: 
     print('Directorio existente')
     
+  
 #class MyFPDF(FPDF, HTMLMixin):
 #    pass
 
 @app.route('/')
 def index():
-   return render_template('principal.html')
+    try:
+        rmtree('static/pdf2')
+    except OSError: 
+        print('Directorio eliminado')
+    return render_template('principal.html')
 
 #Está función permite llamar al esquema de generar dotas de usuario
 @app.route('/usuario')
@@ -47,7 +51,7 @@ def usua():
     global Nivel_pureza
     global Nivel_Fosforo
     global Nivel_Calidad
-    global Nivel_brpane
+    global Nivel_brpane 
     df            = pd.read_json("static/Catalogos/Colombia.json")
     cana          = pd.read_excel('static/Catalogos/Variedades.xlsx')
     Deptos_cana   = cana['Depto'].values
@@ -199,7 +203,7 @@ def generar_valores_informe():
     Dict_aux=dict(zip(Formulario_2a_Etiquetas,Formulario_2a_Valores))
     Diccionario.update(Dict_aux)
     
-    """------------>>>>>>>>>>HORNILLA<<<<<<<<<<<<<<<<"""
+    """------------>>>>>>>>>>HORNILLA<<<<<<<<<<<<<<<<----------------"""
     """Calculo de la hornilla"""
     Diccionario   = Diseno_inicial.datos_entrada(Diccionario,0,0)
     Diccionario_2 = Diseno_inicial.Calculo_por_etapas(Diccionario)
@@ -252,18 +256,20 @@ def generar_valores_informe():
         Archivo_binario = Archivo_codificado.read()
         Archivo_binario_64 = base64.b64encode(Archivo_binario)
         Mensaje_base_64 = Archivo_binario_64.decode('utf-8')
-        
-    basedatos=firebase.FirebaseApplication('https://experto-6bf16.firebaseio.com/',None)
-    datos={
-           'Nombre':Diccionario['Nombre de usuario'],
-           'Correo':Diccionario['Correo'],
-           'Telefono':Diccionario['Telefono'],
-           'Departamento':Diccionario['Departamento'],
-           'Ciudad':Diccionario['Ciudad'],
-           'Normal': Mensaje_base_64,
-           'Tecnico': Mensaje_base_64
-           }
-    basedatos.post('/experto-6bf16/Clientes',datos)
+    try:    
+        basedatos=firebase.FirebaseApplication('https://experto-6bf16.firebaseio.com/',None)
+        datos={
+               'Nombre':Diccionario['Nombre de usuario'],
+               'Correo':Diccionario['Correo'],
+               'Telefono':Diccionario['Telefono'],
+               'Departamento':Diccionario['Departamento'],
+               'Ciudad':Diccionario['Ciudad'],
+               'Normal': Mensaje_base_64,
+               'Tecnico': Mensaje_base_64
+               }
+        basedatos.post('/experto-6bf16/Clientes',datos)
+    except:
+        print('Error')
 
 def Convertir(string): 
     li = list(string.split(",")) 
@@ -341,6 +347,61 @@ def infor():
         generar_valores_informe()
         return render_template('informe.html') 
 
+
+#Acceso a la base de datos
+@app.route('/acceso')
+def acceso_base():
+   return render_template('acceso.html', aviso="Por favor, complete los siguientes campos.")
+   
+def Leer_pdf_base64(Nombre_pdf, Texto_base64):
+    PDF_Base64 = Texto_base64.encode('utf-8')
+    with open(Nombre_pdf, 'wb') as Archivo_Normal:
+        Archivo_deco = base64.decodebytes(PDF_Base64)
+        Archivo_Normal.write(Archivo_deco)
+    
+@app.route('/base', methods = ['POST','GET'])
+def base_batos():
+    if request.method == 'POST':
+        datos_usuario = request.form
+        Nombre_Usuario=datos_usuario.get('Documentoa')
+        Clave_Usuario=datos_usuario.get('Clavea')
+        if(Nombre_Usuario=="12345" and Clave_Usuario=="0000"):
+            basedatos=firebase.FirebaseApplication('https://agrosavia-f8fd5.firebaseio.com/',None)
+            datos_db=basedatos.get('/agrosavia-f8fd5/Clientes','')
+            Cantidad_Clientes=len(datos_db.values())
+            Etiquetas_Nombres=[]
+            Etiquetas_Correo=[]
+            Etiquetas_Telefono=[]
+            Etiquetas_Departamento=[]
+            Etiquetas_Ciudad=[]
+            Etiquetas_N=[]
+            Etiquetas_T=[]
+            try:
+                os.mkdir('static/pdf2')
+            except OSError: 
+                print('Directorio existente')  
+            for i in range (Cantidad_Clientes):
+                Etiquetas_Nombres.append(list(datos_db.values())[i]['Nombre'])
+                Etiquetas_Correo.append(list(datos_db.values())[i]['Correo'])
+                Etiquetas_Telefono.append(list(datos_db.values())[i]['Telefono'])
+                Etiquetas_Departamento.append(list(datos_db.values())[i]['Departamento'])
+                Etiquetas_Ciudad.append(list(datos_db.values())[i]['Ciudad'])
+                Etiquetas_N.append("pdf2/N_"+str(i)+".pdf")
+                Etiquetas_T.append("pdf2/T_"+str(i)+".pdf")
+                Leer_pdf_base64("static/pdf2/N_"+str(i)+".pdf", list(datos_db.values())[i]['Normal'])
+                Leer_pdf_base64("static/pdf2/T_"+str(i)+".pdf", list(datos_db.values())[i]['Tecnico'])
+            return render_template('base.html',
+                                   Eti1=Etiquetas_Nombres,
+                                   Eti2=Etiquetas_Correo,
+                                   Eti3=Etiquetas_Telefono,
+                                   Eti4=Etiquetas_Departamento,
+                                   Eti5=Etiquetas_Ciudad,
+                                   Eti6=Etiquetas_N,
+                                   Eti7=Etiquetas_T,
+                                   Cant=Cantidad_Clientes)
+        else:
+            return render_template('acceso.html', aviso="Verifique su nombre de usuario o contraseña.")
+        
 #Enlaces para las otras páginas referencias, nosotros, presentación, etc.        
 @app.route('/referencias')
 def refe():

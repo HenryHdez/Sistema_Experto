@@ -1,0 +1,51 @@
+{% extends "layout.html" %} 
+<!-- block permite abreviar la cantidad de codigo y enlazarlo con el layout-->
+{% block lista %}
+      <li class="nav-item">
+        <a class="nav-link" href="/">Principal</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="usuario">Aplicación</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="informe1" aria-disabled="true">Informe</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="contacto">Contacto</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="referencias">Bibliografía</a>
+      </li>   
+      <li class="nav-item">
+        <a class="nav-link" href="nosotros">Acerca de...</a>
+      </li>
+{% endblock %}
+        
+{% block content %}
+    <h1 class="display-4">INGRESO</h1>
+    <p align="justify" class="lead">{{aviso}}</p>
+    <hr class="my-4">
+    <form action = "http://127.0.0.1:5000/base" method = "POST">
+        <table align="center">
+            <tr>
+               <td style="width:450px"> <b>Número del documento de identidad:</b> </td>
+               <td style="width:450px"> <input type = "number" name = "Documentoa" placeholder="1234567" style="width : 250px; text-align:center;" maxlength="15" required/> </td>
+            </tr>
+
+            <tr>
+               <td style="width:450px"> <b>Contraseña:</b> </td>
+               <td style="width:450px"> <input type = "password" name = "Clavea" maxlength="10" placeholder="0000" style="width : 250px; text-align:center;" required/> </td>
+            </tr>
+                                               
+            <tr>
+                <td style="width:450px"></td>
+                <td style="width:450px"><input class="btn btn-success btn-lg" type = "submit" value = "Ingresar" style="width:250px"/></td>
+            </tr>
+
+            <tr>
+                <td style="width:450px"></td>
+                <td style="width:450px"><a class="btn btn-danger btn-lg" href="/" role="button" style="width:250px">Salir</a>
+            </tr>
+        </table>                 
+{% endblock %}
+

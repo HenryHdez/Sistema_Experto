@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+{% block lista %}
+      <li class="nav-item">
+        <a class="nav-link disabled" href="/" aria-disabled="true">Principal</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="usuario" aria-disabled="true">Aplicación</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="informe1" aria-disabled="true">Informe</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="contacto" aria-disabled="true">Contacto</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="referencias" aria-disabled="true">Bibliografía</a>
+      </li>   
+      <li class="nav-item">
+        <a class="nav-link disabled" href="nosotros" aria-disabled="true">Acerca de...</a>
+      </li>
+{% endblock %}
+
+{% block content %}
+        <h1 class="display-4">USUARIOS REGISTRADOS</h1>
+        <p align="justify" class="lead">Está sección contiene información relacionada con los usuarios que han usado la aplicación.</p>
+        <hr class="my-4">    
+        <table align="center">
+            <tr>
+                <th style="width:450px"> <b>Nombre</b> </th>
+                <th style="width:450px"> <b>Correo electrónico</b> </th>
+                <th style="width:450px"> <b>Teléfono</b> </th>
+                <th style="width:450px"> <b>Departamento</b> </th>
+                <th style="width:450px"> <b>Ciudad</b> </th>
+                <th style="width:450px"> <b>Vista del usuario</b> </th>
+                <th style="width:450px"> <b>Vista técnica</b> </th>
+            </tr>
+
+            {%for i in range(Cant)%}
+                <tr>
+                   <td style="width:450px"> {{Eti1[i]}}</td>
+                   <td style="width:450px"> {{Eti2[i]}}</td>
+                   <td style="width:450px"> {{Eti3[i]}}</td>
+                   <td style="width:450px"> {{Eti4[i]}}</td>
+                   <td style="width:450px"> {{Eti5[i]}}</td>
+                   <td style="width:450px"> <a download="Informe_usuario" href={{url_for('static', filename=Eti6[i])}}><img src="{{url_for('static', filename='Iconos/Descarga.png')}}" width="50" height="50" outline="1" border="1" style="border: 1px gray solid" border-radius= "10px"; /></a></td>
+                   <td style="width:450px"> <a download="Informe_tecnico" href={{url_for('static', filename=Eti7[i])}}><img src="{{url_for('static', filename='Iconos/Descarga.png')}}" width="50" height="50" outline="1" border="1" style="border: 1px gray solid" border-radius= "10px"; /></a></td>
+                </tr>
+            {%endfor%}
+         </table>   
+         <br>
+         <a class="btn btn-danger btn-lg" href="/" role="button" style="width:250px">Salir</a>
+         <script language="JavaScript">
+             function clic(element){
+                 GET:  element.value;
+                 }
+         </script>         
+{% endblock %}
+
+
