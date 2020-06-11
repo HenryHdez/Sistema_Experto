@@ -12,10 +12,15 @@ import Diseno_inicial
 import Costos_funcionamiento
 import Pailas
 import pandas as pd
+from firebase import firebase
+import base64
 #import Gases
 
 app = Flask(__name__)
 uploads_dir = os.path.join(app.instance_path, 'uploads')
+
+
+
 try:
     os.makedirs(uploads_dir, True)
 except OSError: 
@@ -240,6 +245,25 @@ def generar_valores_informe():
     Costos_funcionamiento.costos()
     """Creación del pdf"""
     Pailas.Generar_reporte(Diccionario,Diccionario_2)
+    
+    """>>>>>>>>>>>>>>>>Actualizar base de datos<<<<<<<<<<<<<<"""
+    """>>>>>>>>>>>>>>>>Codificar informe en base 64<<<<<<<<<<"""
+    with open("static/Informe.pdf", 'rb') as Archivo_codificado:
+        Archivo_binario = Archivo_codificado.read()
+        Archivo_binario_64 = base64.b64encode(Archivo_binario)
+        Mensaje_base_64 = Archivo_binario_64.decode('utf-8')
+        
+    basedatos=firebase.FirebaseApplication('https://experto-6bf16.firebaseio.com/',None)
+    datos={
+           'Nombre':Diccionario['Nombre de usuario'],
+           'Correo':Diccionario['Correo'],
+           'Telefono':Diccionario['Telefono'],
+           'Departamento':Diccionario['Departamento'],
+           'Ciudad':Diccionario['Ciudad'],
+           'Normal': Mensaje_base_64,
+           'Tecnico': Mensaje_base_64
+           }
+    basedatos.post('/experto-6bf16/Clientes',datos)
 
 def Convertir(string): 
     li = list(string.split(",")) 
