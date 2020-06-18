@@ -23,23 +23,23 @@
         
 {% block content %}
     <h1 class="display-4">FORMULARIO</h1>
-    <p align="justify" class="lead">Por favor, complete los siguientes campos.</p>
+    <p align="justify" class="lead">Por favor, complete los siguientes campos (* indica que el campo es obligatorio).</p>
     <hr class="my-4">
     <form action = "http://127.0.0.1:5000/informe" method = "POST">
 
         <table align="center">
             <tr>
-               <td style="width:450px"> <b>Nombre de usuario o entidad:</b> </td>
+               <td style="width:450px"> <b>Nombre de usuario o entidad*:</b> </td>
                <td style="width:450px"> <input type = "text" name = "Nombre de usuario" placeholder="Ej. AGROSAVIA" style="width : 250px; text-align:center;" maxlength="20" required/> </td>
             </tr>
 
             <tr>
-               <td style="width:450px"> <b>Correo electrónico:</b> </td>
+               <td style="width:450px"> <b>Correo electrónico*:</b> </td>
                <td style="width:450px"> <input type = "email" name = "Correo" maxlength="200" value="@" style="width : 250px; text-align:center;" required/> </td>
             </tr>
 
             <tr>
-               <td style="width:450px"> <b>Número de contacto:</b> </td>
+               <td style="width:450px"> <b>Número de contacto*:</b> </td>
                <td style="width:450px"> <input type = "number" name = "Telefono" maxlength="10" placeholder="Ej. 3121234567" style="width : 250px; text-align:center;" required/> </td>
             </tr>
                                                                         

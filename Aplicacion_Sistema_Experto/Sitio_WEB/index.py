@@ -25,10 +25,6 @@ try:
 except OSError: 
     print('Directorio existente')
     
-  
-#class MyFPDF(FPDF, HTMLMixin):
-#    pass
-
 @app.route('/')
 def index():
     try:
@@ -77,6 +73,12 @@ def usua():
                            Ciudad_cana_1=Ciudad_cana,
                            Variedad_cana_1=Variedad_cana,
                            )      
+def Crear_archivo_base_64(ruta):
+    with open(ruta, 'rb') as Archivo_codificado_1:
+        Archivo_binario_1 = Archivo_codificado_1.read()
+        Archivo_binario_64_1 = base64.b64encode(Archivo_binario_1)
+        Mensaje_base_64_1 = Archivo_binario_64_1.decode('utf-8')
+        return Mensaje_base_64_1
 
 def generar_valores_informe():
     """Está función genera los rotulos de las páginas 1 y 2 del informe en HTML"""
@@ -137,13 +139,15 @@ def generar_valores_informe():
     Formulario_1_Valores.append(str(NivelFre)) 
     #Determinar periodo vegetativo
     Formulario_1_Etiquetas.append('Periodo vegetativo')
-    if(altura_media<=1200):
-        Formulario_1_Valores.append(str(12))
-    elif (altura_media>1200 and altura_media<=1500):
-        Formulario_1_Valores.append(str(15))
-    else:
-        Formulario_1_Valores.append(str(18))
-        
+#""" De acuerdo con el libro descomente los if y comente el calculo exponencial """
+#    if(altura_media<=1200):
+#        Formulario_1_Valores.append(str(12))
+#    elif (altura_media>1200 and altura_media<=1500):
+#        Formulario_1_Valores.append(str(15))
+#    else:
+#        Formulario_1_Valores.append(str(18))
+#   De acuerdo con la formula enviada por la ingeniera.
+    Formulario_1_Valores.append(str(round(math.exp((altura_media+5518.9)/2441.1),0)))  
     Diccionario=dict(zip(Formulario_1_Etiquetas,Formulario_1_Valores))  
     """Creación de la segunda parte del diccionario"""
     a=result.to_dict()
@@ -188,11 +192,11 @@ def generar_valores_informe():
             print("Variedad no disponible")
     #Exportar variedades de caña seleccionadas
     datos_temp=[Formulario_2_Etiquetas,Formulario_2_Valores]
-    df = pd.DataFrame(datos_temp)
-    df.to_excel('static/Temp/Temp4.xlsx')   
+    df1 = pd.DataFrame(datos_temp)
+    df1.to_excel('static/Temp/Temp4.xlsx')   
     datos_temp=[Directorio]
-    df = pd.DataFrame(datos_temp)
-    df.to_excel('static/Temp/Temp5.xlsx')  
+    df1 = pd.DataFrame(datos_temp)
+    df1.to_excel('static/Temp/Temp5.xlsx')  
     #Grados brix promedio para publicar en el informe
     G_brix_cana=round(G_brix_cana/len(Directorio),3)       
     G_brix_panela=round(G_brix_panela/len(Directorio),3)
@@ -247,15 +251,11 @@ def generar_valores_informe():
                                     float(Diccionario['Número de moliendas']),
                                     float(Diccionario['Caña molida al mes']))
     Costos_funcionamiento.costos()
+    
     """Creación del pdf"""
     Pailas.Generar_reporte(Diccionario,Diccionario_2)
-    
-    """>>>>>>>>>>>>>>>>Actualizar base de datos<<<<<<<<<<<<<<"""
-    """>>>>>>>>>>>>>>>>Codificar informe en base 64<<<<<<<<<<"""
-    with open("static/Informe.pdf", 'rb') as Archivo_codificado:
-        Archivo_binario = Archivo_codificado.read()
-        Archivo_binario_64 = base64.b64encode(Archivo_binario)
-        Mensaje_base_64 = Archivo_binario_64.decode('utf-8')
+
+    """>>>>>>>>>>>>>>>>Actualizar base de datos<<<<<<<<<<<<<<"""        
     try:    
         basedatos=firebase.FirebaseApplication('https://experto-6bf16.firebaseio.com/',None)
         datos={
@@ -264,12 +264,12 @@ def generar_valores_informe():
                'Telefono':Diccionario['Telefono'],
                'Departamento':Diccionario['Departamento'],
                'Ciudad':Diccionario['Ciudad'],
-               'Normal': Mensaje_base_64,
-               'Tecnico': Mensaje_base_64
+               'Normal': Crear_archivo_base_64("static/Informe.pdf"),
+               'Tecnico': Crear_archivo_base_64("static/Calculos.pdf")
                }
-        basedatos.post('/experto-6bf16/Clientes',datos)
+        basedatos.post('https://experto-6bf16.firebaseio.com/experto-6bf16/Clientes',datos)
     except:
-        print('Error')
+        print('Error base de datos')
 
 def Convertir(string): 
     li = list(string.split(",")) 
@@ -334,7 +334,7 @@ def infor1():
     for i in range(len(Formulario_1_Etiquetas)):
         if(SM(None, 'Variedad de Caña', Formulario_1_Etiquetas[i]).ratio()<0.85):
             lista_etiquetas_filtradas.append(Formulario_1_Etiquetas[i])
-            lista_valores_filtrados.append(Formulario_1_Valores[i])              
+            lista_valores_filtrados.append(Formulario_1_Valores[i])    
     return render_template('informe1.html', 
                            Etiquetas = lista_etiquetas_filtradas, 
                            Valores = lista_valores_filtrados)     
@@ -347,6 +347,27 @@ def infor():
         generar_valores_informe()
         return render_template('informe.html') 
 
+#Borrar base de datos
+@app.route('/borrar')
+def borrar_base_1():
+    basedatos=firebase.FirebaseApplication('https://experto-6bf16.firebaseio.com/',None)
+    datos_db=basedatos.get('/experto-6bf16/Clientes','')
+    Cantidad_Clientes=len(datos_db.values())
+    for i in range (1,Cantidad_Clientes):
+        basedatos.delete('/experto-6bf16/Clientes/',list(datos_db.keys())[i])
+    return render_template('principal.html')
+
+@app.route('/borrar2', methods = ['POST','GET'])
+def borrar_base_2():
+    if request.method == 'POST':
+        Eliminar = request.form
+        basedatos=firebase.FirebaseApplication('https://experto-6bf16.firebaseio.com/',None)
+        datos_db=basedatos.get('/experto-6bf16/Clientes','')
+        Cantidad_Clientes=len(datos_db.values())
+        for i in range (1,Cantidad_Clientes):
+            if(Eliminar.get('CH_'+str(i))=='on'):
+                basedatos.delete('/experto-6bf16/Clientes/',list(datos_db.keys())[i])
+    return render_template('principal.html')
 
 #Acceso a la base de datos
 @app.route('/acceso')
@@ -366,8 +387,8 @@ def base_batos():
         Nombre_Usuario=datos_usuario.get('Documentoa')
         Clave_Usuario=datos_usuario.get('Clavea')
         if(Nombre_Usuario=="12345" and Clave_Usuario=="0000"):
-            basedatos=firebase.FirebaseApplication('https://agrosavia-f8fd5.firebaseio.com/',None)
-            datos_db=basedatos.get('/agrosavia-f8fd5/Clientes','')
+            basedatos=firebase.FirebaseApplication('https://experto-6bf16.firebaseio.com/',None)
+            datos_db=basedatos.get('https://experto-6bf16.firebaseio.com/experto-6bf16/Clientes','')
             Cantidad_Clientes=len(datos_db.values())
             Etiquetas_Nombres=[]
             Etiquetas_Correo=[]

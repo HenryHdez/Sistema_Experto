@@ -104,7 +104,7 @@ def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
     #Jugo Clarificado=Jugo_Crudo-((Jugo_Crudo*Bagacillo en Prelimpiador+((Jugo_Crudo-(Jugo_Crudo*Bagacillo en Prelimpiador))*(Cachaza))
     Jugo_Clarificado=Jugo_Crudo-((Jugo_Crudo*Bagazillo_Prelimpiador+((Jugo_Crudo-(Jugo_Crudo*Bagazillo_Prelimpiador))*(Cachaza))))
     #Masa de panela=((Jugo_Clarificado*CSS de la caña))/CCS de la panela)*1000
-    CSS_Cana=float(Diccionario['Grados Brix de la caña (promedio)'])
+    CSS_Cana=float(Diccionario['Grados Brix de la caña (promedio)']) *0.6
     CSS_Panela=float(Diccionario['Grados Brix de la panela (promedio)'])
     Masa_panela = (Jugo_Clarificado*CSS_Cana/CSS_Panela)*1000
     #Capacidad del molino=constante*caña molida hora*1000

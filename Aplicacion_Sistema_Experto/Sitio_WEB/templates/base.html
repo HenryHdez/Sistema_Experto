@@ -23,37 +23,38 @@
 {% block content %}
         <h1 class="display-4">USUARIOS REGISTRADOS</h1>
         <p align="justify" class="lead">Está sección contiene información relacionada con los usuarios que han usado la aplicación.</p>
-        <hr class="my-4">    
-        <table align="center">
-            <tr>
-                <th style="width:450px"> <b>Nombre</b> </th>
-                <th style="width:450px"> <b>Correo electrónico</b> </th>
-                <th style="width:450px"> <b>Teléfono</b> </th>
-                <th style="width:450px"> <b>Departamento</b> </th>
-                <th style="width:450px"> <b>Ciudad</b> </th>
-                <th style="width:450px"> <b>Vista del usuario</b> </th>
-                <th style="width:450px"> <b>Vista técnica</b> </th>
-            </tr>
-
-            {%for i in range(Cant)%}
-                <tr>
-                   <td style="width:450px"> {{Eti1[i]}}</td>
-                   <td style="width:450px"> {{Eti2[i]}}</td>
-                   <td style="width:450px"> {{Eti3[i]}}</td>
-                   <td style="width:450px"> {{Eti4[i]}}</td>
-                   <td style="width:450px"> {{Eti5[i]}}</td>
-                   <td style="width:450px"> <a download="Informe_usuario" href={{url_for('static', filename=Eti6[i])}}><img src="{{url_for('static', filename='Iconos/Descarga.png')}}" width="50" height="50" outline="1" border="1" style="border: 1px gray solid" border-radius= "10px"; /></a></td>
-                   <td style="width:450px"> <a download="Informe_tecnico" href={{url_for('static', filename=Eti7[i])}}><img src="{{url_for('static', filename='Iconos/Descarga.png')}}" width="50" height="50" outline="1" border="1" style="border: 1px gray solid" border-radius= "10px"; /></a></td>
+        <hr class="my-4"> 
+        <form action = "http://127.0.0.1:5000/borrar2" method = "POST">   
+            <table align="center">
+                <tr align="center">
+                    <th style="width:450px" align="center"> <b>Nombre</b> </th>
+                    <th style="width:450px" align="center"> <b>Correo electrónico</b> </th>
+                    <th style="width:450px" align="center"> <b>Teléfono</b> </th>
+                    <th style="width:450px" align="center"> <b>Departamento</b> </th>
+                    <th style="width:450px" align="center"> <b>Ciudad</b> </th>
+                    <th style="width:450px" align="center"> <b>Usuario</b> </th>
+                    <th style="width:450px" align="center"> <b>Técnico</b> </th>
+                    <th style="width:450px" align="center"> <b>Eliminar</b> </th>
                 </tr>
-            {%endfor%}
-         </table>   
-         <br>
-         <a class="btn btn-danger btn-lg" href="/" role="button" style="width:250px">Salir</a>
-         <script language="JavaScript">
-             function clic(element){
-                 GET:  element.value;
-                 }
-         </script>         
+    
+                {%for i in range(1,Cant)%}
+                    <tr align="center">
+                       <td style="width:450px" align="center"> {{Eti1[i]}}</td>
+                       <td style="width:450px" align="center"> {{Eti2[i]}}</td>
+                       <td style="width:450px" align="center"> {{Eti3[i]}}</td>
+                       <td style="width:450px" align="center"> {{Eti4[i]}}</td>
+                       <td style="width:450px" align="center"> {{Eti5[i]}}</td>
+                       <td style="width:450px" align="center"> <a download="Informe_usuario" href={{url_for('static', filename=Eti6[i])}}><img src="{{url_for('static', filename='Iconos/D1.png')}}" width="50" height="50" outline="1" border="1" style="border: 1px gray solid" border-radius= "10px"; /></a></td>
+                       <td style="width:450px" align="center"> <a download="Informe_tecnico" href={{url_for('static', filename=Eti7[i])}}><img src="{{url_for('static', filename='Iconos/D2.png')}}" width="50" height="50" outline="1" border="1" style="border: 1px gray solid" border-radius= "10px"; /></a></td>
+                       <td style="width:450px" align="center"> <input type="checkbox" id="CH_{{i}}" name="CH_{{i}}"></td>
+                    </tr>
+                {%endfor%}
+             </table>   
+             <br>
+             <a class="btn btn-info btn-lg" href="/" role="button" style="width:250px">Salir</a>
+             <input class="btn btn-warning btn-lg" type = "submit" value = "Borrar seleccionados" style="width:250px"/>
+             <a class="btn btn-danger btn-lg" href="/borrar" role="button" style="width:250px">Borrar todo</a>
+        </form>	
 {% endblock %}
 
 

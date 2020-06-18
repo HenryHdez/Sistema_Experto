@@ -17,22 +17,17 @@ global Horas_trabajo_al_dia
 from time import sleep
 ###Rutinas para generar el pdf del costo
 #Layout del informe
-def Fondo(canvas, Hoja):
+def Fondo(canvas):
     #Dibujar logo y membrete de AGROSAVIA
     canvas.drawImage('static/Iconos/Agrosavia.jpg', 420, 720, width=150, height=40)
     canvas.drawImage('static/Iconos/Membrete.png' , 0, 0, width=650, height=240)
     canvas.drawImage('static/Iconos/Membrete2.png', 0, 650, width=150, height=150)   
     canvas.setLineWidth(.3)
     canvas.setFont('Helvetica-Bold', 20)
-#    if(Hoja=="--"):
-#        canvas.drawString(275,700,"INFORME:")
-#        canvas.drawString(125,678,"DISEÑO PRELIMINAR DE UNA HORNILLA")
-#        canvas.line(0,670,680,670)
-#        canvas.line(0,665,680,665)
     tiempo = time.asctime(time.localtime(time.time()))
     canvas.setFont('Helvetica-Bold', 7)
     canvas.drawString(520,5,str(tiempo))
-    canvas.drawString(10,5,"Hoja: "+str(Hoja))
+    #canvas.drawString(10,5,"Hoja: "+str(Hoja))
     return canvas
 
 #Función para generar la parte escrita del informe
@@ -40,10 +35,10 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
     #Genera la vista previa
     from reportlab.lib.pagesizes import letter
     from reportlab.pdfgen import canvas
-    canvas = canvas.Canvas("static/pdf/A6_informe.pdf", pagesize=letter)
+    canvas = canvas.Canvas("static/pdf01/A6_informe.pdf", pagesize=letter)
     #Hoja=1
     for k in range(3):
-        canvas=Fondo(canvas,"--")
+        canvas=Fondo(canvas)
         canvas.setFont('Helvetica-Bold', 12)
         """----------->>>>>>> Publicar Calculos por etapa<<<<<<<<<<<------------"""
         #Publicar calculos de la hornilla
@@ -85,7 +80,7 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
             puntero_h=50
             if(puntero_v<=30):
                 canvas.showPage()
-                Fondo(canvas,"--")
+                Fondo(canvas)
                 puntero_v=640
         if(k==0):
             canvas.setFillColorRGB(0,0,0)
@@ -94,7 +89,7 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
             canvas.setFont('Helvetica-Oblique', 10)
             canvas.drawString(puntero_h, puntero_v-10, "Nota: El acero usado en la construcción de la hornilla es inoxidable.") 
             canvas.showPage()
-            Fondo(canvas,"--") 
+            Fondo(canvas) 
             canvas.setFont('Helvetica-Bold', 14)
             canvas.drawString(140,680,'--->>>COSTO DEL RECUPERADOR DE CALOR<<<---')
             puntero_v=640
@@ -138,11 +133,11 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
         puntero_h=50
         if(puntero_v<=30):
             canvas.showPage()
-            Fondo(canvas,"--")
+            Fondo(canvas)
             puntero_v=640
             
     canvas.showPage()
-    canvas=Fondo(canvas,"--")
+    canvas=Fondo(canvas)
     canvas.setFillColorRGB(0,0,0)       
     canvas.setFont('Helvetica-Bold', 14)
     puntero_v=680
@@ -173,7 +168,7 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
         puntero_h=50
         if(puntero_v<=30):
             canvas.showPage()
-            Fondo(canvas,"--")
+            Fondo(canvas)
             puntero_v=640
     canvas.setFillColorRGB(0,0,0)
     canvas.setFont('Helvetica-Oblique', 10)
@@ -207,11 +202,11 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
         puntero_h=50
         if(puntero_v<=30):
             canvas.showPage()
-            Fondo(canvas,"--")
+            Fondo(canvas)
             puntero_v=640
             
     canvas.showPage()
-    canvas=Fondo(canvas,"--")
+    canvas=Fondo(canvas)
     canvas.drawImage('static/Graficas/Depreciacion.png', 40, 480, width=280, height=200)
     canvas.drawImage('static/Graficas/Flujo_Caja_1.png', 330, 480, width=280, height=200)
     canvas.drawImage('static/Graficas/RI_Meses.png', 40, 190, width=280, height=200)
@@ -326,6 +321,9 @@ def costos():
     Valor_Hornilla.append([Cantidad, a, a*Cantidad])
     Valor_molino=math.ceil(sum(Valor_M)/len(Valor_M))
     Valor_Hornilla.append([1,Valor_molino,1*Valor_molino])
+    a=float(Hornilla['Base molino'].values)	
+    Valor_base_mol=math.ceil(a)
+    Valor_Hornilla.append([1,Valor_base_mol,1*Valor_base_mol])
     #>>>>>>>>>>>>>>>>>>>>>>>>>total gastos de la hornilla
     total_hornilla=math.ceil(estimar_total(Valor_Hornilla))
     Valor_Hornilla.append([' ',' ',total_hornilla])
@@ -338,7 +336,7 @@ def costos():
                         'Prelimpiador', 'Tanque recibidor', 'Ladrillos refractarios', 'Pegante', 'Tubo sanitario de 3 pulgadas',
                         'Codos sanitarios de 3 pulgadas','Válvula de bola de 2 y 1/2 pulgadas', 'Férula sanitaria de 3 pulgadas',
                         'Abrazadera sanitaria de 3 pulgadas', 'Empaque de silicona de 3 pulgadas (alta temperatura)',
-                        'Sección de parrilla', 'Entrada hornilla', 'Descachazado', 'Valor aproximado del molino',
+                        'Sección de parrilla', 'Entrada hornilla', 'Descachazado', 'Valor aproximado del molino', 'Valor aproximado de la base del molino',
                         'Valor total de la hornilla']
     D_Hornilla=dict(zip(Etiquetas_Hornilla,Valor_Hornilla))  
 
@@ -592,8 +590,8 @@ def costos():
     
     ###########>>>>>>>>>>>>>>>>>>>>>>Graficar Depreciación<<<<<<<<<<<<<<<<<<<<<################
     Fig_1,a = plt.subplots(frameon=False)
-    l1,=a.plot(range(len(lista_Depreciacion1)),np.array(lista_Depreciacion1)/1000000, linewidth=4)
-    l2,=a.plot(range(len(lista_Depreciacion2)),np.array(lista_Depreciacion2)/1000000, linewidth=4)
+    l1,=a.plot(range(len(lista_Depreciacion2)),np.array(lista_Depreciacion2)/1000000, linewidth=4)
+    l2,=a.plot(range(len(lista_Depreciacion1)),np.array(lista_Depreciacion1)/1000000, linewidth=4)
     a.grid(color='k', linestyle='--', linewidth=1)
     a.set_ylabel('Valor (X $1.000.000)', fontsize=18)
     a.set_xlabel('Vida útil de la hornilla (Años)', fontsize=18)
@@ -610,6 +608,9 @@ def costos():
     lista_costo_produccion_2=[] 
     lista_flujo_1=[]  
     lista_flujo_2=[] 
+    #Ruido del flujo de caja
+    Ruido=(lista_financiero_2[10]/4)*np.random.rand(Vida_util_anos_horn)
+    mem_ruido=0
     for k in range(2):
         if(k==0):
             Total_proyecto=mem_total_proyecto-total_recuperador
@@ -619,6 +620,7 @@ def costos():
             Valor_Salvamento=lista_financiero_1[9]
             Ingreso_anual=lista_financiero_1[10]   
             Costo_total_kg=lista_produccion_1[9]
+            mem_ruido=Ingreso_anual
         elif (k==1):
             Total_proyecto=mem_total_proyecto
             Costo_financiero=lista_financiero_2[5]
@@ -627,6 +629,7 @@ def costos():
             Valor_Salvamento=lista_financiero_2[9]
             Ingreso_anual=lista_financiero_2[10]   
             Costo_total_kg=lista_produccion_2[9]
+            mem_ruido=Ingreso_anual
         #Depreciación Anual, Mtto, Ingresos, Flujo de caja
         Estado_caja=[0, 0, 0, Valor_Salvamento-(Total_proyecto+Costo_financiero)]
         Lista_caja=[]
@@ -639,6 +642,7 @@ def costos():
                          Produccion_anual_kg*Costo_total_kg, 
                          Ingreso_anual, 
                          Ingreso_anual-(Depreciacion_anual+(Produccion_anual_kg*Costo_total_kg))]
+            Ingreso_anual=mem_ruido-Ruido[ano]
             Lista_caja.append(Estado_caja)
             Costo_produccion.append(Estado_caja[1])
             flujo_caja.append(Estado_caja[3])
@@ -735,7 +739,6 @@ def costos():
     lista_valor_panela2=MB[:,0]
     Anos2=MB[:,5]
     Meses2=MB[:,6]
-    #print(Anos)
     ###########>>>>>>>>>>>>>>>>>Graficar Retorno a la inversión<<<<<<<<<<<<<<<<<################
     Fig_3,d = plt.subplots(frameon=False)
     l1,=d.plot(lista_valor_panela1,Anos1, linewidth=4)
