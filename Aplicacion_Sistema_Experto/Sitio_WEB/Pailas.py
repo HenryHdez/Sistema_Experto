@@ -9,6 +9,8 @@ import random
 import time
 import os
 import pandas as pd
+from Costos_funcionamiento import Formato_Moneda
+from Costos_funcionamiento import Fondo
 from difflib import SequenceMatcher as SM
 global Cantidad_pailas
 global Lista_de_pailas
@@ -35,9 +37,20 @@ def Unir_Informe(nombre, ruta_carp, borrar_F):
     listaPdfs = os.listdir(ruta_carp)
     listaPdfs
     merger = PdfFileMerger()
-    for file in listaPdfs:
-        merger.append(PdfFileReader(ruta_carp+file))
-    merger.write('static/'+nombre+'.pdf')
+    if(borrar_F!=2 and borrar_F!=3):
+        for file in listaPdfs:
+            merger.append(PdfFileReader(ruta_carp+file))
+        merger.write('static/'+nombre+'.pdf')
+    else:
+        caracter=' '
+        if(borrar_F==2):
+            caracter='A'
+        elif(borrar_F==3):
+            caracter='B'
+        for file in listaPdfs:
+            if(file[0]==caracter):
+                merger.append(PdfFileReader(ruta_carp+file))
+        merger.write('static/'+nombre+'.pdf')
     """Borrar datos cargados temporalmente"""
     if(borrar_F==1):
         rmtree('static/Temp')
@@ -46,21 +59,8 @@ def Unir_Informe(nombre, ruta_carp, borrar_F):
         os.mkdir('static/Temp')
         os.mkdir('static/pdf01')
         os.mkdir('static/pdf02')
-
-#Layout del informe
-def Fondo(canvas):
-    #Dibujar logo y membrete de AGROSAVIA
-    canvas.drawImage('static/Iconos/Agrosavia.jpg', 420, 720, width=150, height=40)
-    canvas.drawImage('static/Iconos/Membrete.png' , 0, 0, width=650, height=240)
-    canvas.drawImage('static/Iconos/Membrete2.png', 0, 650, width=150, height=150)   
-    canvas.setLineWidth(.3)
-    canvas.setFont('Helvetica-Bold', 20)
-    tiempo = time.asctime(time.localtime(time.time()))
-    canvas.setFont('Helvetica-Bold', 7)
-    canvas.drawString(520,5,str(tiempo))
-    #canvas.drawString(10,5,"Hoja: "+str(Hoja))
-    return canvas
-
+    
+        
 #Función para generar las portadas
 def Generar_portada():
     #Espacio de trabajo disponible desde 20 hasta 650
@@ -71,10 +71,9 @@ def Generar_portada():
     Fondo(canvas)
     canvas.drawImage('static/Iconos/Fondo_portada.png', 80, 150, width=500, height=350)
     canvas.setFont('Helvetica-Bold', 30)
-    canvas.drawString(20,550,'           PARÁMETROS DE DISEÑO     ') 
-    canvas.drawString(20,515,'      Y ESQUEMAS MECÁNICOS PARA   ') 
-    canvas.drawString(20,480,'LA CONSTRUCCIÓN DE UNA HORNILLA  ') 
-    canvas.drawString(20,445,'   PARA LA PRODUCCIÓN DE PANELA  ')
+    canvas.drawString(20,520,'              PROPUESTA DE VALOR     ') 
+    canvas.drawString(20,480,'           PARA LA CONSTRUCCIÓN   ') 
+    canvas.drawString(20,440,'                  DE UNA HORNILLA')
     canvas.setFont('Helvetica', 24)
     canvas.drawString(220,280,' Presentado por:')
     canvas.drawString(220,255,'   AGROSAVIA') 
@@ -88,8 +87,8 @@ def Generar_portada():
     canvas.drawImage('static/Iconos/Fondo_otros.png', 50, 220, width=500, height=350)
     canvas.setFont('Helvetica-Bold', 30)
     canvas.drawString(20,450,'                         SECCIÓN 1:     ') 
-    canvas.drawString(20,415,'              DATOS DEL USUARIO E   ') 
-    canvas.drawString(20,380,'          INFORMACIÓN FINANCIERA  ') 
+    canvas.drawString(20,415,'              INFORMACIÓN TÉCNICA   ') 
+    canvas.drawString(20,380,'                     Y FINANCIERA  ') 
     canvas.showPage() #Salto de página    
     canvas.save()
     #Sección 2
@@ -98,8 +97,9 @@ def Generar_portada():
     Fondo(canvas)
     canvas.drawImage('static/Iconos/Fondo_otros.png', 50, 220, width=500, height=350)
     canvas.setFont('Helvetica-Bold', 30)
-    canvas.drawString(20,390,'                         SECCIÓN 2:     ') 
-    canvas.drawString(20,355,'                PLANOS MECÁNICOS   ') 
+    canvas.drawString(20,450,'                         SECCIÓN 2:     ') 
+    canvas.drawString(20,415,'              DIAGRAMAS MECÁNICOS   ') 
+    canvas.drawString(20,380,'                      DE LAS PAILAS  ') 
     canvas.showPage() #Salto de página    
     canvas.save()
     #Sección 3
@@ -119,7 +119,7 @@ def Dibujar_Molino(canvas, puntero):
     canvas.setFont('Helvetica-Bold', 14)
     canvas.drawString(200,puntero,'   ')
     canvas.drawString(200,puntero-20,'   ')
-    canvas.drawString(190,puntero-20,'>>>MOLINOS DISPONIBLES<<<')
+    canvas.drawString(210,puntero-20,'>>>MOLINOS DISPONIBLES<<<')
     Molino=pd.read_excel('static/Temp/Temp.xlsx',skipcolumn = 0,)
     
     Marca=Molino['Marca'].values
@@ -131,7 +131,7 @@ def Dibujar_Molino(canvas, puntero):
     canvas.setFillColorRGB(1,0,0)
     canvas.setFont('Helvetica-Bold', 11)
     canvas.drawString(50,puntero-50,'VALOR APROXIMADO DE UN MOLINO: ')
-    canvas.drawString(270,puntero-50,"$"+str(math.ceil(sum(Valor)/len(Valor))))
+    canvas.drawString(270,puntero-50,Formato_Moneda(sum(Valor)/len(Valor), "$", 2))
     canvas.setFillColorRGB(0,0,0)
     canvas.drawString(340,puntero-80,'POTENCIA DEL MOTOR')
     canvas.drawString(70,puntero-100,'MARCA')
@@ -150,7 +150,7 @@ def Dibujar_Molino(canvas, puntero):
         OF=OF+15
     OF=(puntero-OF)-240
     for i in range(len(Modelo)):
-        if((OF<200)or(i==0)):
+        if(((OF<200)or(i==0))and(i<len(Modelo)-1)):
             canvas.setFont('Helvetica-Bold', 11)
             canvas.drawString(300,OF+230,str(Modelo[i]))    
             canvas.drawImage('static/Molinos/'+str(Modelo[i]+'.jpg'), 150, OF, width=320, height=220)
@@ -171,7 +171,7 @@ def Dibujar_Canas(canvas, puntero):
     canvas.setFont('Helvetica-Bold', 14)
     canvas.drawString(200,puntero,'   ')
     canvas.drawString(200,puntero-20,'   ')
-    canvas.drawString(50,puntero-20,'>>>CARACTERISTICAS DE LAS VARIEDADES DE CAÑA SEMBRADAS<<<')
+    canvas.drawString(50,puntero-20,'>>>CARACTERÍSTICAS DE LAS VARIEDADES DE CAÑA SEMBRADAS<<<')
     Canas=pd.read_excel('static/Temp/Temp4.xlsx',skipcolumn = 0,)
     Carpe=pd.read_excel('static/Temp/Temp5.xlsx',skipcolumn = 0,)
     Eti = Canas.iloc[0].values
@@ -251,7 +251,7 @@ def Generar_reporte(D1,D2):
                 Fondo(canvas)
                 puntero=650
                 canvas.setFont('Helvetica-Bold', 14)
-                canvas.drawString(180,puntero,'--->>>MOLINO PRE-SELECCIONADO<<<---')                
+                canvas.drawString(70,puntero,'--->>>PARÁMETROS USADOS PARA SELECCIONAR UN MOLINO<<<---')                
             elif(str(i)=='DATOS DE LA MASA'):
                 canvas=Dibujar_Molino(canvas, puntero)
                 #Cortar pdf                
@@ -282,9 +282,37 @@ def Generar_reporte(D1,D2):
         #rutina para filtrar string a publicar
             if(SM(None, 'Variedad de Caña', i).ratio()<0.85):
                 canvas.setFont('Helvetica-Bold', 12)
-                canvas.drawString(50,puntero,str(i))
+                if (str(i)!='Jugo crudo' and str(i)!='Jugo clarificado'):
+                    canvas.drawString(50,puntero,str(i))
                 canvas.setFont('Helvetica', 12)
-                canvas.drawString(350,puntero,str(D1[i]))   
+                #Arrglo para asignar unidades y mostrarlas en el informe
+                if (str(i)=='Área caña sembrada'):
+                    canvas.drawString(350,puntero,str(D1[i])+" ha") 
+                elif (str(i)=='Crecimiento aproximado del área sembrada'):
+                    canvas.drawString(350,puntero,str(D1[i])+" ha")
+                elif (str(i)=='Caña esperada por hectárea'):
+                    canvas.drawString(350,puntero,str(D1[i])+" T/ha")
+                elif (str(i)=='Número de moliendas'):
+                    canvas.drawString(350,puntero,str(D1[i])+" semanal(es)")                    
+                elif (str(i)=='Periodo vegetativo'):
+                    canvas.drawString(350,puntero,str(D1[i])+" mes(es)")                    
+                elif (str(i)=='Caña molida al mes'):
+                    canvas.drawString(350,puntero,str(D1[i])+" T/mes") 
+                elif (str(i)=='Área cosechada al mes'):
+                    canvas.drawString(350,puntero,str(D1[i])+" ha/mes") 
+                elif (str(i)=='Caña molida a la semana'):
+                    canvas.drawString(350,puntero,str(D1[i])+" T/semana") 
+                elif (str(i)=='Caña molida por Hora'):
+                    canvas.drawString(350,puntero,str(D1[i])+" T/hora") 
+                elif (str(i)=='Jugo crudo' or str(i)=='Jugo clarificado'):
+                    #No hacer nada para que no publique 
+                    puntero=puntero+20
+                elif (str(i)=='Masa de panela'):
+                    canvas.drawString(350,puntero,str(D1[i])+" kg/hora")  
+                elif (str(i)=='Capacidad del Molino'):
+                    canvas.drawString(350,puntero,str(D1[i])+" kg/hora (Calculado)") 
+                else:
+                    canvas.drawString(350,puntero,str(D1[i]))
             else:
                 puntero=puntero+20
         if(puntero<=110):
@@ -340,13 +368,16 @@ def Generar_reporte(D1,D2):
     #Gruardas informe en pdf
     Generar_portada()
     canvas.save()
-    Unir_Informe('Informe', 'static/pdf01/', 0)
-    Unir_Informe('Calculos', 'static/pdf02/', 1)
+    Unir_Informe('Informe_WEB', 'static/pdf01/', 2)
+    Unir_Informe('Planos_WEB', 'static/pdf01/', 3)
+    Unir_Informe('Calculos_WEB', 'static/pdf02/', 0)
+    Unir_Informe('Informe', 'static/pdf01/', 1)
+    
 
 def Dibujar_planta():
     from reportlab.lib.pagesizes import letter
     from reportlab.pdfgen import canvas
-    canvas = canvas.Canvas("static/B2_Planos_planta.pdf", pagesize=letter)
+    canvas = canvas.Canvas("static/Planta_WEB.pdf", pagesize=letter)
     canvas.drawImage('static/Planta/Camara.png', 0, 0, width=610, height=790)
     canvas.showPage()
     canvas.drawImage('static/Planta/Chimenea.png', 0, 0, width=610, height=790)
@@ -808,6 +839,7 @@ def Mostrar_pailas(Vol_aux, Etapas, Sitio):
                       H_fl,H_fn,A,L,H,Hc,lista_par[1],lista_par[2],lista_par[0],lista_par[5],
                       lista_par[4],lista_par[6],lista_par[8],lista_par[7],bool(Tipo_paila[1][i])
                       )
+        
         """Eliminar comentarios para probar el algoritmo de optimización"""
         #Comprobar_diseno(Volumen,i,int(Tipo_paila[0][i]),H_fl,H_fn,A,L,H,Hc,bool(Tipo_paila[1][i]))
         #print("________>>>>>>>>>>>>>____________")

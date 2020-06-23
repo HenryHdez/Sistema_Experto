@@ -73,6 +73,7 @@ def usua():
                            Ciudad_cana_1=Ciudad_cana,
                            Variedad_cana_1=Variedad_cana,
                            )      
+    
 def Crear_archivo_base_64(ruta):
     with open(ruta, 'rb') as Archivo_codificado_1:
         Archivo_binario_1 = Archivo_codificado_1.read()
@@ -239,7 +240,7 @@ def generar_valores_informe():
             }
 
     Formulario_3_Etiquetas.append('Valor aproximado de un molino')
-    Formulario_3_Valores.append('$'+str(math.ceil(sum(Valor)/len(Valor))))
+    Formulario_3_Valores.append(Costos_funcionamiento.Formato_Moneda(sum(Valor)/len(Valor), "$", 2))
     Diccionario_3=dict(zip(Formulario_3_Etiquetas,Formulario_3_Valores))
     
     """Estimar propiedades de los gases"""
@@ -257,17 +258,19 @@ def generar_valores_informe():
 
     """>>>>>>>>>>>>>>>>Actualizar base de datos<<<<<<<<<<<<<<"""        
     try:    
-        basedatos=firebase.FirebaseApplication('https://experto-6bf16.firebaseio.com/',None)
+        basedatos=firebase.FirebaseApplication('https://panela-ac2ce.firebaseio.com/',None)
         datos={
                'Nombre':Diccionario['Nombre de usuario'],
                'Correo':Diccionario['Correo'],
                'Telefono':Diccionario['Telefono'],
                'Departamento':Diccionario['Departamento'],
                'Ciudad':Diccionario['Ciudad'],
-               'Normal': Crear_archivo_base_64("static/Informe.pdf"),
-               'Tecnico': Crear_archivo_base_64("static/Calculos.pdf")
+               'Usuario': Crear_archivo_base_64("static/Informe_WEB.pdf"),
+               'Planos': Crear_archivo_base_64("static/Planos_WEB.pdf"),
+               'Recinto': Crear_archivo_base_64("static/Planta_WEB.pdf"),
+               'Calculos': Crear_archivo_base_64("static/Calculos_WEB.pdf")
                }
-        basedatos.post('https://experto-6bf16.firebaseio.com/experto-6bf16/Clientes',datos)
+        basedatos.post('https://panela-ac2ce.firebaseio.com/Clientes',datos)
     except:
         print('Error base de datos')
 
@@ -281,7 +284,14 @@ def Convertir(string):
         i=i.strip('\'')
         lista_vacia.append(i)
     return lista_vacia 
-   
+
+def Convertir_lista(li,ini):
+    for i in range(ini,len(li)):
+        try:
+            li[i]=Costos_funcionamiento.Formato_Moneda(float(li[i]), "$", 2)
+        except:
+            li[i]
+    return(li)
 #Enlaces para la generación del informe
 @app.route('/informe5')
 def infor5():
@@ -303,6 +313,13 @@ def infor4():
     l4=Convertir(Depreciacio[2])
     l4a=l4[0::2]
     l4b=l4[1::2]
+    l2=Convertir_lista(l2,1)
+    l4a[1:7]=Convertir_lista(l4a[1:7],3)
+    l4b[1:7]=Convertir_lista(l4b[1:7],3)
+    l4a[8:11]=Convertir_lista(l4a[8:11],1)
+    l4b[8:11]=Convertir_lista(l4b[8:11],1)
+    l6a=Convertir_lista(l6a,1)
+    l6b=Convertir_lista(l6b,1)
     return render_template('informe4.html',eti1=l1,eti2=l2,L1=len(l1),
                                            eti3=l3,eti4=l4a,eti5=l4b,L2=len(l3),
                                            eti6=l5,eti7=l6a,eti8=l6b,L3=len(l5)) 
@@ -350,23 +367,23 @@ def infor():
 #Borrar base de datos
 @app.route('/borrar')
 def borrar_base_1():
-    basedatos=firebase.FirebaseApplication('https://experto-6bf16.firebaseio.com/',None)
-    datos_db=basedatos.get('/experto-6bf16/Clientes','')
+    basedatos=firebase.FirebaseApplication('https://panela-ac2ce.firebaseio.com/',None)
+    datos_db=basedatos.get('https://panela-ac2ce.firebaseio.com/Clientes','')
     Cantidad_Clientes=len(datos_db.values())
     for i in range (1,Cantidad_Clientes):
-        basedatos.delete('/experto-6bf16/Clientes/',list(datos_db.keys())[i])
+        basedatos.delete('https://panela-ac2ce.firebaseio.com/Clientes',list(datos_db.keys())[i])
     return render_template('principal.html')
 
 @app.route('/borrar2', methods = ['POST','GET'])
 def borrar_base_2():
     if request.method == 'POST':
         Eliminar = request.form
-        basedatos=firebase.FirebaseApplication('https://experto-6bf16.firebaseio.com/',None)
-        datos_db=basedatos.get('/experto-6bf16/Clientes','')
+        basedatos=firebase.FirebaseApplication('https://panela-ac2ce.firebaseio.com/',None)
+        datos_db=basedatos.get('https://panela-ac2ce.firebaseio.com/Clientes','')
         Cantidad_Clientes=len(datos_db.values())
         for i in range (1,Cantidad_Clientes):
             if(Eliminar.get('CH_'+str(i))=='on'):
-                basedatos.delete('/experto-6bf16/Clientes/',list(datos_db.keys())[i])
+                basedatos.delete('https://panela-ac2ce.firebaseio.com/Clientes',list(datos_db.keys())[i])
     return render_template('principal.html')
 
 #Acceso a la base de datos
@@ -387,38 +404,48 @@ def base_batos():
         Nombre_Usuario=datos_usuario.get('Documentoa')
         Clave_Usuario=datos_usuario.get('Clavea')
         if(Nombre_Usuario=="12345" and Clave_Usuario=="0000"):
-            basedatos=firebase.FirebaseApplication('https://experto-6bf16.firebaseio.com/',None)
-            datos_db=basedatos.get('https://experto-6bf16.firebaseio.com/experto-6bf16/Clientes','')
+            
+            basedatos=firebase.FirebaseApplication('https://panela-ac2ce.firebaseio.com/',None)
+            datos_db=basedatos.get('https://panela-ac2ce.firebaseio.com/Clientes','')
             Cantidad_Clientes=len(datos_db.values())
             Etiquetas_Nombres=[]
             Etiquetas_Correo=[]
             Etiquetas_Telefono=[]
             Etiquetas_Departamento=[]
             Etiquetas_Ciudad=[]
-            Etiquetas_N=[]
-            Etiquetas_T=[]
+            Etiquetas_U=[]
+            Etiquetas_P=[]
+            Etiquetas_R=[]
+            Etiquetas_C=[]
             try:
                 os.mkdir('static/pdf2')
             except OSError: 
-                print('Directorio existente')  
+                print('Directorio existente') 
+                
             for i in range (Cantidad_Clientes):
                 Etiquetas_Nombres.append(list(datos_db.values())[i]['Nombre'])
                 Etiquetas_Correo.append(list(datos_db.values())[i]['Correo'])
                 Etiquetas_Telefono.append(list(datos_db.values())[i]['Telefono'])
                 Etiquetas_Departamento.append(list(datos_db.values())[i]['Departamento'])
                 Etiquetas_Ciudad.append(list(datos_db.values())[i]['Ciudad'])
-                Etiquetas_N.append("pdf2/N_"+str(i)+".pdf")
-                Etiquetas_T.append("pdf2/T_"+str(i)+".pdf")
-                Leer_pdf_base64("static/pdf2/N_"+str(i)+".pdf", list(datos_db.values())[i]['Normal'])
-                Leer_pdf_base64("static/pdf2/T_"+str(i)+".pdf", list(datos_db.values())[i]['Tecnico'])
+                Etiquetas_U.append("pdf2/U_"+str(i)+".pdf")
+                Etiquetas_P.append("pdf2/P_"+str(i)+".pdf")
+                Etiquetas_R.append("pdf2/R_"+str(i)+".pdf")
+                Etiquetas_C.append("pdf2/C_"+str(i)+".pdf")
+                Leer_pdf_base64("static/pdf2/U_"+str(i)+".pdf", list(datos_db.values())[i]['Usuario'])
+                Leer_pdf_base64("static/pdf2/P_"+str(i)+".pdf", list(datos_db.values())[i]['Planos'])
+                Leer_pdf_base64("static/pdf2/R_"+str(i)+".pdf", list(datos_db.values())[i]['Recinto'])
+                Leer_pdf_base64("static/pdf2/C_"+str(i)+".pdf", list(datos_db.values())[i]['Calculos'])
             return render_template('base.html',
                                    Eti1=Etiquetas_Nombres,
                                    Eti2=Etiquetas_Correo,
                                    Eti3=Etiquetas_Telefono,
                                    Eti4=Etiquetas_Departamento,
                                    Eti5=Etiquetas_Ciudad,
-                                   Eti6=Etiquetas_N,
-                                   Eti7=Etiquetas_T,
+                                   Eti6=Etiquetas_U,
+                                   Eti7=Etiquetas_P,
+                                   Eti8=Etiquetas_R,
+                                   Eti9=Etiquetas_C,
                                    Cant=Cantidad_Clientes)
         else:
             return render_template('acceso.html', aviso="Verifique su nombre de usuario o contraseña.")

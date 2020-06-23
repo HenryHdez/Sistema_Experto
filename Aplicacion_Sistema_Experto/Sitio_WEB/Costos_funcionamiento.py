@@ -30,6 +30,26 @@ def Fondo(canvas):
     #canvas.drawString(10,5,"Hoja: "+str(Hoja))
     return canvas
 
+#Cambiar formato a miles
+def Formato_Moneda(num, simbolo, n_decimales):
+    n_decimales = abs(n_decimales) #abs asegura que los dec. sean positivos.
+    num = round(num, n_decimales) #Redondear a los decimales indicados
+    num, dec = str(num).split(".") #Se divide el numero en cadenas y convierte en String
+    dec += "0" * (n_decimales - len(dec)) #Concatenar ceros a la cadena
+    num = num[::-1] #Inversion del vector para agregar comas
+    l = [num[pos:pos+3][::-1] for pos in range(0,50,3) if (num[pos:pos+3])] #Separador de miles
+    l.reverse() #Invierte nuevamente
+    num = str.join(",", l) #unir string por comas
+    try: #eliminar parte negativa
+        if num[0:2] == "-,":
+            num = "-%s" % num[2:]
+    except IndexError:
+        pass
+    #si no se especifican decimales, se retorna un numero entero.
+    if not n_decimales:
+        return "%s %s" % (simbolo, num)
+    return "%s %s.%s" % (simbolo, num, dec)
+    
 #Función para generar la parte escrita del informe
 def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
     #Genera la vista previa
@@ -62,18 +82,18 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
             for j, vector in enumerate(Valores):
                 Texto=str(vector)
                 if(i=='Nombre'):
-                    canvas.setFont('Helvetica-Bold', 11)
+                    canvas.setFont('Helvetica-Bold', 9)
                 elif((i=='Valor total de la hornilla') 
                         or (i=='Valor total del recuperador de calor') 
                         or (i=='Total de gastos operativos')):
                     canvas.setFillColorRGB(1,0,0)
-                    canvas.setFont('Helvetica-Bold', 11)
+                    canvas.setFont('Helvetica-Bold', 9)
                     if(j>1):
-                        Texto="$"+Texto
+                        Texto=Formato_Moneda(float(Texto), "$", 2)
                 else:
-                    canvas.setFont('Helvetica', 11)
+                    canvas.setFont('Helvetica', 9)
                     if(j>0):
-                        Texto="$"+Texto
+                        Texto=Formato_Moneda(float(Texto), "$", 2)
                 canvas.drawString(puntero_h, puntero_v, Texto) 
                 puntero_h=puntero_h+80
             puntero_v=puntero_v-15
@@ -100,13 +120,13 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
             canvas.drawString(puntero_h, puntero_v, "Nota: El acero usado en la construcción del recuperador de calor es inoxidable.")
             canvas.setFont('Helvetica-Bold', 14)
             puntero_v=puntero_v-40
-            canvas.drawString(215, puntero_v,'--->>>GASTOS OPERATIVOS<<<---')  
+            canvas.drawString(202, puntero_v,'--->>>GASTOS OPERATIVOS<<<---')  
             puntero_v=puntero_v-40
     
     canvas.setFillColorRGB(0,0,0)       
     canvas.setFont('Helvetica-Bold', 14)
     puntero_v=puntero_v-40
-    canvas.drawString(215, puntero_v,'--->>>CONSOLIDADO PARCIAL<<<---')  
+    canvas.drawString(200, puntero_v,'--->>>CONSOLIDADO PARCIAL<<<---')  
     puntero_v=puntero_v-40
     Diccionario=D4
     Etiquetas=list(dict.keys(Diccionario))
@@ -115,18 +135,18 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
         canvas.drawString(puntero_h, puntero_v, i)
         #Función para dibujar los valores de la Tabla    
         Valores=Diccionario[i]
-        puntero_h=puntero_h+450
+        puntero_h=puntero_h+425
         Texto=str(Valores)
         if(i=='Descripción'):
             canvas.setFont('Helvetica-Bold', 11)
         elif((i=='Valor total de la construcción con recuperador de calor') 
                 or (i=='Valor total de la construcción sin recuperador de calor')):
             canvas.setFillColorRGB(1,0,0)
-            canvas.setFont('Helvetica-Bold', 11)
-            Texto="$"+Texto
+            canvas.setFont('Helvetica-Bold', 9)
+            Texto=Formato_Moneda(float(Texto), "$", 2)
         else:
-            canvas.setFont('Helvetica', 11)
-            Texto="$"+Texto
+            canvas.setFont('Helvetica', 9)
+            Texto=Formato_Moneda(float(Texto), "$", 2)
         canvas.drawString(puntero_h, puntero_v, Texto) 
         canvas.setFillColorRGB(0,0,0)
         puntero_v=puntero_v-15
@@ -141,7 +161,7 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
     canvas.setFillColorRGB(0,0,0)       
     canvas.setFont('Helvetica-Bold', 14)
     puntero_v=680
-    canvas.drawString(90, puntero_v,'--->>>COSTO DE FUNCIONAMIENTO DE LA HORNILLA POR KG<<<---')  
+    canvas.drawString(80, puntero_v,'--->>>COSTO DE FUNCIONAMIENTO DE LA HORNILLA POR KG<<<---')  
     puntero_v=640
     Diccionario=D5
     Etiquetas=list(dict.keys(Diccionario))
@@ -153,15 +173,15 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
         puntero_h=puntero_h+400
         for j, vector in enumerate(Valores):
             Texto=str(vector)
-            if((i=='¿El diseño incorpora recuperador de calor?') or (i=='Capacidad de la hornilla')):
+            if((i=='¿El diseño incorpora recuperador de calor?') or (i=='Capacidad de la hornilla [kg/h]')):
                 canvas.setFont('Helvetica-Bold', 11)
             elif(i=='Valor total del kg de caña'):
                 canvas.setFillColorRGB(1,0,0)
-                canvas.setFont('Helvetica-Bold', 11)
-                Texto="$"+Texto
+                canvas.setFont('Helvetica-Bold', 9)
+                Texto=Formato_Moneda(float(Texto), "$", 2)
             else:
-                canvas.setFont('Helvetica', 11)
-                Texto="$"+Texto
+                canvas.setFont('Helvetica', 9)
+                Texto=Formato_Moneda(float(Texto), "$", 2)
             canvas.drawString(puntero_h, puntero_v, Texto) 
             puntero_h=puntero_h+80
         puntero_v=puntero_v-15
@@ -173,7 +193,9 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
     canvas.setFillColorRGB(0,0,0)
     canvas.setFont('Helvetica-Oblique', 10)
     puntero_v=puntero_v-10
-    canvas.drawString(puntero_h, puntero_v, "Nota: Si el molino implementa un motor eléctrico ignore el costo del motor Diesel o viceversa.")
+    canvas.drawString(puntero_h, puntero_v, "Nota: Cuando el diseño de la hornilla incorpora recuperador de calor se estima un aumento de la capacidad de la")
+    puntero_v=puntero_v-10
+    canvas.drawString(puntero_h, puntero_v, "hornilla hasta de un 40%.")
     canvas.setFont('Helvetica-Bold', 14)
     puntero_v=puntero_v-40
     canvas.drawString(180, puntero_v,'--->>>GASTOS DE FINANCIACIÓN<<<---')  
@@ -181,7 +203,7 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
 
     Diccionario=D6
     Etiquetas=list(dict.keys(Diccionario))
-    for i in Etiquetas:
+    for numero_i, i in enumerate (Etiquetas, start=0):
         canvas.setFont('Helvetica-Bold', 11)
         canvas.drawString(puntero_h, puntero_v, i)
         #Función para dibujar los valores de la Tabla    
@@ -190,13 +212,19 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
         for j, vector in enumerate(Valores):
             Texto=str(vector)
             if(i=='¿El diseño incorpora recuperador de calor?'):
-                canvas.setFont('Helvetica-Bold', 11)
+                canvas.setFont('Helvetica-Bold', 9)
             elif(i=='Ingresos anuales aproximados ($)'):
                 canvas.setFillColorRGB(1,0,0)
-                canvas.setFont('Helvetica-Bold', 11)          
+                canvas.setFont('Helvetica-Bold', 9)          
             else:
-                canvas.setFont('Helvetica', 11)
-            canvas.drawString(puntero_h, puntero_v, Texto) 
+                canvas.setFont('Helvetica', 9)
+            if(numero_i<4 or (numero_i>6 and numero_i<9)):
+                canvas.drawString(puntero_h, puntero_v, Texto) 
+            else:
+                try:
+                    canvas.drawString(puntero_h, puntero_v, Formato_Moneda(float(Texto), "$", 2)) 
+                except:
+                    print(Texto)
             puntero_h=puntero_h+80
         puntero_v=puntero_v-15
         puntero_h=50
@@ -257,29 +285,31 @@ def costos():
     Total_pailas=sum(Cantidad_pailas)
     Hornilla=pd.read_excel('static/Costos/Hornilla.xlsx')   
     #>>>>>>>>>Pailas<<<<<<<<<#
-    a=float(Hornilla['plana'].values)
-    Valor_Hornilla.append([Cantidad_pailas[0], a, a*Cantidad_pailas[0]])
-    a=float(Hornilla['plana SA'].values)
-    Valor_Hornilla.append([Cantidad_pailas[1], a, a*Cantidad_pailas[1]])
-    a=float(Hornilla['pirotubular circular'].values)
-    Valor_Hornilla.append([Cantidad_pailas[2], a, a*Cantidad_pailas[2]])
-    a=float(Hornilla['pirotubular circular SA'].values)
-    Valor_Hornilla.append([Cantidad_pailas[3], a, a*Cantidad_pailas[3]])
-    a=float(Hornilla['semiesférica'].values)
-    Valor_Hornilla.append([Cantidad_pailas[4], a, a*Cantidad_pailas[4]])
-    a=float(Hornilla['semicilindrica'].values)
-    Valor_Hornilla.append([Cantidad_pailas[5], a, a*Cantidad_pailas[5]])
-    a=float(Hornilla['semicilindrica SA'].values)
-    Valor_Hornilla.append([Cantidad_pailas[6], a, a*Cantidad_pailas[6]])
-    a=float(Hornilla['cuadrada'].values)
-    Valor_Hornilla.append([Cantidad_pailas[7], a, a*Cantidad_pailas[7]])
-    a=float(Hornilla['cuadrada SA'].values)
-    Valor_Hornilla.append([Cantidad_pailas[8], a, a*Cantidad_pailas[8]])
-    a=float(Hornilla['acanalada'].values)
-    Valor_Hornilla.append([Cantidad_pailas[9], a, a*Cantidad_pailas[9]])
-    a=float(Hornilla['acanalada SA'].values)
-    Valor_Hornilla.append([Cantidad_pailas[10], a, a*Cantidad_pailas[10]])
+    Pailas_disponibles_1=['plana', 'plana SA', 'pirotubular circular','pirotubular circular SA',
+                        'semiesférica', 'semicilindrica', 'semicilindrica SA', 'cuadrada', 'cuadrada SA',
+                        'acanalada', 'acanalada SA']
+    Pailas_disponibles_2=['Paila plana', 'Paila plana sin aletas', 'Paila pirotubular circular', 
+                          'Paila pirotubular sin aletas', 'Paila semiesférica', 'Paila semicilindrica', 
+                          'Paila semicilindrica sin aletas', 'Paila cuadrada', 'Paila cuadrada sin aletas', 
+                          'Paila acanalada con canales cuadrados','Paila acanalada con canales cuadrados y sin aletas']
+    Etiquetas_Hornilla=['Nombre']
+    #Crear un vector con la cantidad de pailas
+    for pun_i in range(len(Pailas_disponibles_1)):
+        if(Cantidad_pailas[pun_i]>0):
+            a=float(Hornilla[Pailas_disponibles_1[pun_i]].values)
+            Valor_Hornilla.append([Cantidad_pailas[pun_i], a, a*Cantidad_pailas[pun_i]])  
+            Etiquetas_Hornilla.append(Pailas_disponibles_2[pun_i])
+    
     #>>>>>>>>>>Otros accesorios de la hornilla<<<<<<<<<<<<<#
+    Accesorios_disponibles=['Prelimpiador', 'Tanque recibidor', 'Ladrillos refractarios', 'Pegante', 'Tubo sanitario de 3 pulgadas',
+                        'Codos sanitarios de 3 pulgadas','Válvula de bola de 2 y 1/2 pulgadas', 'Férula sanitaria de 3 pulgadas',
+                        'Abrazadera sanitaria de 3 pulgadas', 'Empaque de silicona de 3 pulgadas (alta temperatura)',
+                        'Sección de parrilla', 'Entrada hornilla', 'Descachazado', 'Valor aproximado del molino', 'Valor aproximado de la base del molino',
+                        'Valor total de la hornilla']
+    #vector de accesorios
+    for pun_i in range(len(Accesorios_disponibles)):
+        Etiquetas_Hornilla.append(Accesorios_disponibles[pun_i])    
+    #Establecimiento de factores para el calculo de elementos
     a=float(Hornilla['Prelimpiador'].values)
     Cantidad=math.ceil(Total_pailas/20)
     Valor_Hornilla.append([Cantidad, a, a*Cantidad])
@@ -327,20 +357,11 @@ def costos():
     #>>>>>>>>>>>>>>>>>>>>>>>>>total gastos de la hornilla
     total_hornilla=math.ceil(estimar_total(Valor_Hornilla))
     Valor_Hornilla.append([' ',' ',total_hornilla])
-    Valor_Hornilla.insert(0,['Cantidad', 'Valor unitario', 'Valor Total'])
     """>>>>>>>>>>>>>>>>>>>>>Codificar rotulo del informe<<<<<<<<<<<<<<<<"""
-    Etiquetas_Hornilla=['Nombre',
-                        'Paila plana', 'Paila plana sin aletas', 'Paila pirotubular circular', 'Paila pirotubular sin aletas',
-                        'Paila semiesférica', 'Paila semicilindrica', 'Paila semicilindrica sin aletas', 'Paila cuadrada',
-                        'Paila cuadrada sin aletas', 'Paila acanalada con canales cuadrados','Paila acanalada con canales cuadrados y sin aletas',
-                        'Prelimpiador', 'Tanque recibidor', 'Ladrillos refractarios', 'Pegante', 'Tubo sanitario de 3 pulgadas',
-                        'Codos sanitarios de 3 pulgadas','Válvula de bola de 2 y 1/2 pulgadas', 'Férula sanitaria de 3 pulgadas',
-                        'Abrazadera sanitaria de 3 pulgadas', 'Empaque de silicona de 3 pulgadas (alta temperatura)',
-                        'Sección de parrilla', 'Entrada hornilla', 'Descachazado', 'Valor aproximado del molino', 'Valor aproximado de la base del molino',
-                        'Valor total de la hornilla']
+    Valor_Hornilla.insert(0,['Cantidad', 'Valor unitario', 'Valor Total'])
     D_Hornilla=dict(zip(Etiquetas_Hornilla,Valor_Hornilla))  
 
-    """>>>>>>>>>>>>----------Costos recuperador------------<<<<<<<<<<<<"""
+    """>>>>>>>>>>>>----------Costos recuperador de calor------------<<<<<<<<<<<<"""
     Recuperador=pd.read_excel('static/Costos/Recuperador.xlsx')
     Valor_Recuperador=[]
     b=float(Recuperador['Recuperador exterior'].values)
@@ -397,8 +418,7 @@ def costos():
     """>>>>>>>>>>>>>>>>>>>>>Codificar rotulo del informe<<<<<<<<<<<<<<<<"""
     Valor_Operativo.append([' ',' ',total_operativos])
     Valor_Operativo.insert(0,['Cantidad', 'Valor unitario', 'Valor Total'])    
-    Etiquetas_Operativos=['Nombre',
-                          'Profesional titulado', 'Maestro de obra', 'Obrero', 
+    Etiquetas_Operativos=['Nombre', 'Profesional titulado', 'Maestro de obra', 'Obrero', 
                           'Total de gastos operativos']
     D_Operativo=dict(zip(Etiquetas_Operativos,Valor_Operativo))  
 
@@ -496,7 +516,7 @@ def costos():
 
     """>>>>>>>>>>>>>>>>>>>>>Codificar rotulo del informe<<<<<<<<<<<<<<<<"""  
     Etiquetas_produccion=['¿El diseño incorpora recuperador de calor?',
-                          'Capacidad de la hornilla',
+                          'Capacidad de la hornilla [kg/h]',
                           'Costo de funcionamiento del molino por kg (Motor eléctrico)', 
                           'Costo de funcionamiento del molino por kg (Motor diesel o gasolina)', 
                           'Costo de funcionamiento del controlador por kg',
@@ -569,13 +589,13 @@ def costos():
                           'Vida útil estimada de la hornilla (años)',
                           'Tasa de interés de la financiación',
                           'Tiempo mínimo para recuperar la inversión (años)', 
-                          'Valor de la panela actualmente ($)', 
-                          'Costo financiero ($)',
-                          'Depreciación anual ($)',
+                          'Valor de la panela actualmente ', 
+                          'Costo financiero',
+                          'Depreciación anual',
                           'Producción mensual (kg)',
                           'Producción anual en (kg)',
-                          'Valor de salvamento (5% del total del costo de la hornilla) ($)',
-                          'Ingreso anual aproximado ($)'                          
+                          'Valor de salvamento (5% del total del costo de la hornilla)',
+                          'Ingreso anual aproximado'                          
                           ]
     lista1=[]
     for i in range(len(lista_financiero_1)):

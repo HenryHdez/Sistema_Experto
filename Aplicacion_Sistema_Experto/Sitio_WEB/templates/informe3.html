@@ -2,19 +2,43 @@
     <div class="jumbotron" style="background: rgba(178,176,176,0.5);">
         <h3><b>INFORMACIÓN DE(L O LOS) MOLINO(S) PRE-SELECCIONADO(S)</b></h3>
         <hr class="my-4">
-
+        <p class="lead"><b>Parámetros de selección de un molino de acuerdo con los cálculos de la hornilla.</b></p>
         <table align="center">
-        {% for id, item in result.items() %}
+        {% for i, item in result.items() %}
             <tr>
-               <td style="width:450px"> <b>{{ id }}</b> </td>
-               <td style="width:450px"> {{ item }} </td>
-            </tr>
+                {%if i=="Caña molida al mes"%}
+                   <td style="width:450px"> <b>{{ i }}</b> </td>
+                   <td style="width:450px"> {{ item }} T/mes </td>
+                {%elif i=="Área cosechada al mes"%}
+                   <td style="width:450px"> <b>{{ i }}</b> </td>
+                   <td style="width:450px"> {{ item }} ha/mes </td>
+                {%elif i=="Caña molida a la semana"%}
+                   <td style="width:450px"> <b>{{ i }}</b> </td>
+                   <td style="width:450px"> {{ item }} T/semana </td>
+                {%elif i=="Caña molida por Hora"%}
+                   <td style="width:450px"> <b>{{ i }}</b> </td>
+                   <td style="width:450px"> {{ item }} T/hora </td>
+                {%elif i=="Masa de panela"%}
+                   <td style="width:450px"> <b>{{ i }}</b> </td>
+                   <td style="width:450px"> {{ item }} kg/hora </td>
+                {%elif i=="Capacidad del Molino"%}
+                   <td style="width:450px"> <b>{{ i }}</b> </td>
+                   <td style="width:450px"> {{ item }} kg/hora (calculado)</td>
+                {%elif i=='Jugo crudo' or i=='Jugo clarificado'%}
+                   <td style="width:450px">  </td>
+                   <td style="width:450px">  </td>                
+                {%else%}
+                   <td style="width:450px"> <b>{{ i }}</b> </td>
+                   <td style="width:450px"> {{ item }} </td>
+                {% endif %}
+            </tr>            
         {% endfor %}
         </table>
         
         </br>
         </br>
-        <p class="lead"><b>DISPONIBLES SEGÚN LAS ESPECIFICACIONES TÉCNICAS</b></p>
+        <hr class="my-4">
+        <p class="lead"><b>Disponibles a nivel comercial de acuerdo con los cálculos.</b></p>
         
         <table align="center">
         {% for id, item in Molinos.items() %}
