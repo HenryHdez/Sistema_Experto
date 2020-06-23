@@ -257,22 +257,22 @@ def generar_valores_informe():
     Pailas.Generar_reporte(Diccionario,Diccionario_2)
 
     """>>>>>>>>>>>>>>>>Actualizar base de datos<<<<<<<<<<<<<<"""        
-    try:    
-        basedatos=firebase.FirebaseApplication('https://panela-ac2ce.firebaseio.com/',None)
-        datos={
-               'Nombre':Diccionario['Nombre de usuario'],
-               'Correo':Diccionario['Correo'],
-               'Telefono':Diccionario['Telefono'],
-               'Departamento':Diccionario['Departamento'],
-               'Ciudad':Diccionario['Ciudad'],
-               'Usuario': Crear_archivo_base_64("static/Informe_WEB.pdf"),
-               'Planos': Crear_archivo_base_64("static/Planos_WEB.pdf"),
-               'Recinto': Crear_archivo_base_64("static/Planta_WEB.pdf"),
-               'Calculos': Crear_archivo_base_64("static/Calculos_WEB.pdf")
-               }
-        basedatos.post('https://panela-ac2ce.firebaseio.com/Clientes',datos)
-    except:
-        print('Error base de datos')
+#    try:    
+#        basedatos=firebase.FirebaseApplication('https://panela-ac2ce.firebaseio.com/',None)
+#        datos={
+#               'Nombre':Diccionario['Nombre de usuario'],
+#               'Correo':Diccionario['Correo'],
+#               'Telefono':Diccionario['Telefono'],
+#               'Departamento':Diccionario['Departamento'],
+#               'Ciudad':Diccionario['Ciudad'],
+#               'Usuario': Crear_archivo_base_64("static/Informe_WEB.pdf"),
+#               'Planos': Crear_archivo_base_64("static/Planos_WEB.pdf"),
+#               'Recinto': Crear_archivo_base_64("static/Planta_WEB.pdf"),
+#               'Calculos': Crear_archivo_base_64("static/Calculos_WEB.pdf")
+#               }
+#        basedatos.post('https://panela-ac2ce.firebaseio.com/Clientes',datos)
+#    except:
+#        print('Error base de datos')
 
 def Convertir(string): 
     li = list(string.split(",")) 
@@ -385,6 +385,19 @@ def borrar_base_2():
             if(Eliminar.get('CH_'+str(i))=='on'):
                 basedatos.delete('https://panela-ac2ce.firebaseio.com/Clientes',list(datos_db.keys())[i])
     return render_template('principal.html')
+
+#Mineria de datos
+@app.route('/presentar1')
+def mineria1():   
+   return render_template('presentar1.html')
+
+@app.route('/presentar2')
+def mineria2():   
+   return render_template('presentar2.html')
+
+@app.route('/presentar3')
+def mineria3():   
+   return render_template('presentar3.html')
 
 #Acceso a la base de datos
 @app.route('/acceso')
