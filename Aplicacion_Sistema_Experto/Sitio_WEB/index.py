@@ -15,6 +15,7 @@ import pandas as pd
 from firebase import firebase
 from shutil import rmtree
 import base64
+import pyodbc
 #import Gases
 
 app = Flask(__name__)
@@ -273,6 +274,30 @@ def generar_valores_informe():
 #        basedatos.post('https://panela-ac2ce.firebaseio.com/Clientes',datos)
 #    except:
 #        print('Error base de datos')
+    try:
+        #Configurar la conexión
+        cnxn = pyodbc.connect(driver='{SQL Server Native Client 11.0}', 
+                      host='COMOSDSQL08\MSSQL2016DSC', 
+                      database='SistemaExpertoPanela', 
+                      user='WebSisExpPanela', 
+                      password='sIuusnOsE9bLlx7g60Mz')
+        cursor = cnxn.cursor()
+        #Datos a enviar
+        usuarios = (Diccionario['Nombre de usuario'],
+                    Diccionario['Correo'],
+                    int(Diccionario['Telefono']),
+                    Diccionario['Departamento'], 
+                    Diccionario['Ciudad'], 
+                    Crear_archivo_base_64("static/Informe_WEB.pdf"), 
+                    Crear_archivo_base_64("static/Planos_WEB.pdf"), 
+                    Crear_archivo_base_64("static/Planta_WEB.pdf"), 
+                    Crear_archivo_base_64("static/Calculos_WEB.pdf"))
+        #Correr la base de datos en sql
+        cursor.execute("INSERT INTO Clientes (Nombre, Correo, Telefono, Departamento, Ciudad, Usuario, Planos, Recinto, Calculos) VALUES (?,?,?,?,?,?,?,?,?)", usuarios)
+        cnxn.commit()
+        cnxn.close()
+    except:
+        print('Error base de datos')
 
 def Convertir(string): 
     li = list(string.split(",")) 
@@ -367,12 +392,24 @@ def infor():
 #Borrar base de datos
 @app.route('/borrar')
 def borrar_base_1():
-    basedatos=firebase.FirebaseApplication('https://panela-ac2ce.firebaseio.com/',None)
-    datos_db=basedatos.get('https://panela-ac2ce.firebaseio.com/Clientes','')
-    Cantidad_Clientes=len(datos_db.values())
-    for i in range (1,Cantidad_Clientes):
-        basedatos.delete('https://panela-ac2ce.firebaseio.com/Clientes',list(datos_db.keys())[i])
-    return render_template('principal.html')
+    try:
+        cnxn = pyodbc.connect(driver='{SQL Server Native Client 11.0}', 
+                      host='COMOSDSQL08\MSSQL2016DSC', 
+                      database='SistemaExpertoPanela', 
+                      user='WebSisExpPanela', 
+                      password='sIuusnOsE9bLlx7g60Mz')
+        cursor = cnxn.cursor()
+        cursor.execute("DELETE FROM Clientes WHERE CONVERT(NVARCHAR(MAX), Nombre)!='NO_BORRAR'")
+        cnxn.commit()
+        cnxn.close()
+    except:
+        print('Error')
+#    basedatos=firebase.FirebaseApplication('https://panela-ac2ce.firebaseio.com/',None)
+#    datos_db=basedatos.get('https://panela-ac2ce.firebaseio.com/Clientes','')
+#    Cantidad_Clientes=len(datos_db.values())
+#    for i in range (1,Cantidad_Clientes):
+#        basedatos.delete('https://panela-ac2ce.firebaseio.com/Clientes',list(datos_db.keys())[i])
+#    return render_template('principal.html')
 
 @app.route('/borrar2', methods = ['POST','GET'])
 def borrar_base_2():
@@ -417,10 +454,7 @@ def base_batos():
         Nombre_Usuario=datos_usuario.get('Documentoa')
         Clave_Usuario=datos_usuario.get('Clavea')
         if(Nombre_Usuario=="12345" and Clave_Usuario=="0000"):
-            
-            basedatos=firebase.FirebaseApplication('https://panela-ac2ce.firebaseio.com/',None)
-            datos_db=basedatos.get('https://panela-ac2ce.firebaseio.com/Clientes','')
-            Cantidad_Clientes=len(datos_db.values())
+            #Creación de variables a utilizar
             Etiquetas_Nombres=[]
             Etiquetas_Correo=[]
             Etiquetas_Telefono=[]
@@ -430,25 +464,59 @@ def base_batos():
             Etiquetas_P=[]
             Etiquetas_R=[]
             Etiquetas_C=[]
+            Cantidad_Clientes=0
             try:
                 os.mkdir('static/pdf2')
             except OSError: 
                 print('Directorio existente') 
+            #Consulta de la base de datos
+            cnxn = pyodbc.connect(driver='{SQL Server Native Client 11.0}', 
+                          host='COMOSDSQL08\MSSQL2016DSC', 
+                          database='SistemaExpertoPanela', 
+                          user='WebSisExpPanela', 
+                          password='sIuusnOsE9bLlx7g60Mz')
+            cursor = cnxn.cursor()
+            db_1=cursor.execute("SELECT * FROM Clientes")
+            #Creación de listas
+            for listas_1 in db_1:
+                Etiquetas_Nombres.append(listas_1[0])
+                Etiquetas_Correo.append(listas_1[1])
+                Etiquetas_Telefono.append(listas_1[2])
+                Etiquetas_Departamento.append(listas_1[3])
+                Etiquetas_Ciudad.append(listas_1[4])
+                Etiquetas_U.append("pdf2/U_"+str(Cantidad_Clientes)+".pdf")
+                Etiquetas_P.append("pdf2/P_"+str(Cantidad_Clientes)+".pdf")
+                Etiquetas_R.append("pdf2/R_"+str(Cantidad_Clientes)+".pdf")
+                Etiquetas_C.append("pdf2/C_"+str(Cantidad_Clientes)+".pdf")
+                Cantidad_Clientes=Cantidad_Clientes+1
+                Leer_pdf_base64("static/pdf2/U_"+str(Cantidad_Clientes)+".pdf", listas_1[5])
+                Leer_pdf_base64("static/pdf2/P_"+str(Cantidad_Clientes)+".pdf", listas_1[6])
+                Leer_pdf_base64("static/pdf2/R_"+str(Cantidad_Clientes)+".pdf", listas_1[7])
+                Leer_pdf_base64("static/pdf2/C_"+str(Cantidad_Clientes)+".pdf", listas_1[8])                        
+            cnxn.commit()
+            cnxn.close()  
+          
+#            basedatos=firebase.FirebaseApplication('https://panela-ac2ce.firebaseio.com/',None)
+#            datos_db=basedatos.get('https://panela-ac2ce.firebaseio.com/Clientes','')
+#            Cantidad_Clientes=len(datos_db.values())
+
+
                 
-            for i in range (Cantidad_Clientes):
-                Etiquetas_Nombres.append(list(datos_db.values())[i]['Nombre'])
-                Etiquetas_Correo.append(list(datos_db.values())[i]['Correo'])
-                Etiquetas_Telefono.append(list(datos_db.values())[i]['Telefono'])
-                Etiquetas_Departamento.append(list(datos_db.values())[i]['Departamento'])
-                Etiquetas_Ciudad.append(list(datos_db.values())[i]['Ciudad'])
-                Etiquetas_U.append("pdf2/U_"+str(i)+".pdf")
-                Etiquetas_P.append("pdf2/P_"+str(i)+".pdf")
-                Etiquetas_R.append("pdf2/R_"+str(i)+".pdf")
-                Etiquetas_C.append("pdf2/C_"+str(i)+".pdf")
-                Leer_pdf_base64("static/pdf2/U_"+str(i)+".pdf", list(datos_db.values())[i]['Usuario'])
-                Leer_pdf_base64("static/pdf2/P_"+str(i)+".pdf", list(datos_db.values())[i]['Planos'])
-                Leer_pdf_base64("static/pdf2/R_"+str(i)+".pdf", list(datos_db.values())[i]['Recinto'])
-                Leer_pdf_base64("static/pdf2/C_"+str(i)+".pdf", list(datos_db.values())[i]['Calculos'])
+#            for i in range (Cantidad_Clientes):
+#                Etiquetas_Nombres.append(list(datos_db.values())[i]['Nombre'])
+#                Etiquetas_Correo.append(list(datos_db.values())[i]['Correo'])
+#                Etiquetas_Telefono.append(list(datos_db.values())[i]['Telefono'])
+#                Etiquetas_Departamento.append(list(datos_db.values())[i]['Departamento'])
+#                Etiquetas_Ciudad.append(list(datos_db.values())[i]['Ciudad'])
+#                Etiquetas_U.append("pdf2/U_"+str(i)+".pdf")
+#                Etiquetas_P.append("pdf2/P_"+str(i)+".pdf")
+#                Etiquetas_R.append("pdf2/R_"+str(i)+".pdf")
+#                Etiquetas_C.append("pdf2/C_"+str(i)+".pdf")
+#                Leer_pdf_base64("static/pdf2/U_"+str(i)+".pdf", list(datos_db.values())[i]['Usuario'])
+#                Leer_pdf_base64("static/pdf2/P_"+str(i)+".pdf", list(datos_db.values())[i]['Planos'])
+#                Leer_pdf_base64("static/pdf2/R_"+str(i)+".pdf", list(datos_db.values())[i]['Recinto'])
+#                Leer_pdf_base64("static/pdf2/C_"+str(i)+".pdf", list(datos_db.values())[i]['Calculos'])
+                
             return render_template('base.html',
                                    Eti1=Etiquetas_Nombres,
                                    Eti2=Etiquetas_Correo,
