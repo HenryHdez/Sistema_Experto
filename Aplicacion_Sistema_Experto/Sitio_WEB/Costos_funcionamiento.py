@@ -122,7 +122,6 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
             puntero_v=puntero_v-40
             canvas.drawString(202, puntero_v,'--->>>GASTOS OPERATIVOS<<<---')  
             puntero_v=puntero_v-40
-    
     canvas.setFillColorRGB(0,0,0)       
     canvas.setFont('Helvetica-Bold', 14)
     puntero_v=puntero_v-40

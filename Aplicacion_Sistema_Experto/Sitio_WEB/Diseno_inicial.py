@@ -312,7 +312,7 @@ def Calculo_por_etapas(Diccionario):
     Lista_columnas=[]
     #Etapas es un supuesto de cuantas pailas debe tener la hornilla
     Cana_esperada_hectarea=float(Diccionario['Caña esperada por hectárea'])
-    Etapas=6#int(round(Cana_esperada_hectarea/10,0))
+    Etapas=10#int(round(Cana_esperada_hectarea/10,0))
     #Saturador "minimo son dos etapas"
     if (Etapas>2):
         Factor_Division=Etapas-2

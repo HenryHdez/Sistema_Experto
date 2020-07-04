@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, url_for
 from difflib import SequenceMatcher as SM
 import pandas as pd
 from email.mime.multipart import MIMEMultipart
@@ -16,6 +16,12 @@ from firebase import firebase
 from shutil import rmtree
 import base64
 import pyodbc
+import numpy as np
+import Doc_latex
+from rpy2.robjects import r
+from rpy2.robjects import numpy2ri
+from flask_caching import Cache
+from time import sleep
 #import Gases
 
 app = Flask(__name__)
@@ -25,9 +31,17 @@ try:
     os.makedirs(uploads_dir, True)
 except OSError: 
     print('Directorio existente')
-    
+
+@app.after_request
+def after_request(response):
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, public, max-age=0"
+    response.headers["Expires"] = '0'
+    response.headers["Pragma"] = "no-cache"
+    return response
+
 @app.route('/')
 def index():
+    
     try:
         rmtree('static/pdf2')
     except OSError: 
@@ -254,10 +268,17 @@ def generar_valores_informe():
                                     float(Diccionario['Caña molida al mes']))
     Costos_funcionamiento.costos()
     
+    """Generar portada"""
+    Eficiencia_hornilla="20" #Cambiar
+    Doc_latex.Documento_Latex.portada(Diccionario,Eficiencia_hornilla)
+    Doc_latex.Documento_Latex.seccion1(Diccionario,Diccionario_2)
+    Doc_latex.Documento_Latex.generar_pdf()
+    sleep(1)
     """Creación del pdf"""
-    Pailas.Generar_reporte(Diccionario,Diccionario_2)
+    #Pailas.Generar_reporte(Diccionario,Diccionario_2)
 
     """>>>>>>>>>>>>>>>>Actualizar base de datos<<<<<<<<<<<<<<"""        
+
 #    try:    
 #        basedatos=firebase.FirebaseApplication('https://panela-ac2ce.firebaseio.com/',None)
 #        datos={
@@ -274,30 +295,16 @@ def generar_valores_informe():
 #        basedatos.post('https://panela-ac2ce.firebaseio.com/Clientes',datos)
 #    except:
 #        print('Error base de datos')
-    try:
-        #Configurar la conexión
-        cnxn = pyodbc.connect(driver='{SQL Server Native Client 11.0}', 
-                      host='COMOSDSQL08\MSSQL2016DSC', 
-                      database='SistemaExpertoPanela', 
-                      user='WebSisExpPanela', 
-                      password='sIuusnOsE9bLlx7g60Mz')
-        cursor = cnxn.cursor()
-        #Datos a enviar
-        usuarios = (Diccionario['Nombre de usuario'],
-                    Diccionario['Correo'],
-                    int(Diccionario['Telefono']),
-                    Diccionario['Departamento'], 
-                    Diccionario['Ciudad'], 
-                    Crear_archivo_base_64("static/Informe_WEB.pdf"), 
-                    Crear_archivo_base_64("static/Planos_WEB.pdf"), 
-                    Crear_archivo_base_64("static/Planta_WEB.pdf"), 
-                    Crear_archivo_base_64("static/Calculos_WEB.pdf"))
-        #Correr la base de datos en sql
-        cursor.execute("INSERT INTO Clientes (Nombre, Correo, Telefono, Departamento, Ciudad, Usuario, Planos, Recinto, Calculos) VALUES (?,?,?,?,?,?,?,?,?)", usuarios)
-        cnxn.commit()
-        cnxn.close()
-    except:
-        print('Error base de datos')
+    usuarios = (Diccionario['Nombre de usuario'],
+                Diccionario['Correo'],
+                int(Diccionario['Telefono']),
+                Diccionario['Departamento'], 
+                Diccionario['Ciudad'], 
+                Crear_archivo_base_64("static/Informe_WEB.pdf"), 
+                Crear_archivo_base_64("static/Planos_WEB.pdf"), 
+                Crear_archivo_base_64("static/Planta_WEB.pdf"), 
+                Crear_archivo_base_64("static/Calculos_WEB.pdf"))
+    #Operaciones_db(2,usuarios)
 
 def Convertir(string): 
     li = list(string.split(",")) 
@@ -389,44 +396,94 @@ def infor():
         generar_valores_informe()
         return render_template('informe.html') 
 
-#Borrar base de datos
-@app.route('/borrar')
-def borrar_base_1():
+#Operar base de datos
+def Operaciones_db(Operacion, usuarios):
+    db_1=[]
+    r_b=[]
+    Cadena_sql= "DELETE FROM Clientes WHERE ID IN "
     try:
+        #Consulta de la base de datos
         cnxn = pyodbc.connect(driver='{SQL Server Native Client 11.0}', 
                       host='COMOSDSQL08\MSSQL2016DSC', 
                       database='SistemaExpertoPanela', 
                       user='WebSisExpPanela', 
                       password='sIuusnOsE9bLlx7g60Mz')
         cursor = cnxn.cursor()
-        cursor.execute("DELETE FROM Clientes WHERE CONVERT(NVARCHAR(MAX), Nombre)!='NO_BORRAR'")
+        if(Operacion==0):
+            base_temp=cursor.execute("SELECT * FROM Clientes")
+            for tdb in base_temp:
+                    db_1.append(tdb)
+        elif(Operacion==1):
+            cursor.execute("DELETE FROM Clientes WHERE CONVERT(NVARCHAR(MAX), Nombre)!='NO_BORRAR'")
+        elif(Operacion==2):
+            cursor.execute("INSERT INTO Clientes (Nombre, Correo, Telefono, Departamento, Ciudad, Usuario, Planos, Recinto, Calculos) VALUES (?,?,?,?,?,?,?,?,?)", usuarios)
+        elif(Operacion==3):
+            base_temp=cursor.execute("SELECT * FROM Clientes")
+            for i,tdb in enumerate(base_temp, start=0):
+                try:
+                    if(usuarios.get('CH_'+str(tdb[0]))=='on'):
+                        r_b.append(str(tdb[0]))
+                except:
+                    print('No existe')
+            T1=str(r_b).replace("[","(")
+            T1=T1.replace("]",")")
+            Cadena_sql=Cadena_sql+T1
+            cursor.execute(Cadena_sql)
         cnxn.commit()
         cnxn.close()
+        return db_1
     except:
-        print('Error')
+        print('Error db') 
+
+#Borrar base de datos
+@app.route('/borrar')
+def borrar_base_1():
+    #Borrar base de datos
+    Operaciones_db(1,0)
 #    basedatos=firebase.FirebaseApplication('https://panela-ac2ce.firebaseio.com/',None)
 #    datos_db=basedatos.get('https://panela-ac2ce.firebaseio.com/Clientes','')
 #    Cantidad_Clientes=len(datos_db.values())
 #    for i in range (1,Cantidad_Clientes):
 #        basedatos.delete('https://panela-ac2ce.firebaseio.com/Clientes',list(datos_db.keys())[i])
-#    return render_template('principal.html')
+    return render_template('principal.html')
 
 @app.route('/borrar2', methods = ['POST','GET'])
 def borrar_base_2():
     if request.method == 'POST':
-        Eliminar = request.form
-        basedatos=firebase.FirebaseApplication('https://panela-ac2ce.firebaseio.com/',None)
-        datos_db=basedatos.get('https://panela-ac2ce.firebaseio.com/Clientes','')
-        Cantidad_Clientes=len(datos_db.values())
-        for i in range (1,Cantidad_Clientes):
-            if(Eliminar.get('CH_'+str(i))=='on'):
-                basedatos.delete('https://panela-ac2ce.firebaseio.com/Clientes',list(datos_db.keys())[i])
+        Eliminar = request.form    
+        Operaciones_db(3,Eliminar)
+#        basedatos=firebase.FirebaseApplication('https://panela-ac2ce.firebaseio.com/',None)
+#        datos_db=basedatos.get('https://panela-ac2ce.firebaseio.com/Clientes','')
+#        Cantidad_Clientes=len(datos_db.values())
+#        for i in range (1,Cantidad_Clientes):
+#            if(Eliminar.get('CH_'+str(i))=='on'):
+#                basedatos.delete('https://panela-ac2ce.firebaseio.com/Clientes',list(datos_db.keys())[i])
     return render_template('principal.html')
 
 #Mineria de datos
+#@cache.memoize('/presentar')
+@app.route('/presentar')
+def mineria():   
+    numpy2ri.activate()
+    x = "c(1,2,3,3,3,2,2,2,2,1,3,3,3,3,3,3,3,3,2,2,3,3,2,2,1,4,4,2,3,1,2,2)"
+    r('''      
+        rm(list = ls())        
+        library(ggplot2) 
+        library(sf)
+        library(GADMTools)
+        library(mapview)
+        COL <- gadm_sf_loadCountries("COL", level=1 )'''+"\n"+
+        'COL[["sf"]][["Cantidad de hornillas"]]<-'+x+"\n"+
+     '''
+        m1=COL$sf %>% mapview(zcol = "Cantidad de hornillas", legend = TRUE, col.regions = COL[["sf"]][["Cantidad de hornillas"]])
+        mapshot(m1, url = paste0(getwd(), "/static/mapas/map1A.html"))
+     '''
+    )
+    return render_template('presentar.html')
+
 @app.route('/presentar1')
-def mineria1():   
-   return render_template('presentar1.html')
+def mineria1():
+    return render_template('presentar1.html')
 
 @app.route('/presentar2')
 def mineria2():   
@@ -455,6 +512,7 @@ def base_batos():
         Clave_Usuario=datos_usuario.get('Clavea')
         if(Nombre_Usuario=="12345" and Clave_Usuario=="0000"):
             #Creación de variables a utilizar
+            Etiquetas_ID=[]
             Etiquetas_Nombres=[]
             Etiquetas_Correo=[]
             Etiquetas_Telefono=[]
@@ -470,31 +528,28 @@ def base_batos():
             except OSError: 
                 print('Directorio existente') 
             #Consulta de la base de datos
-            cnxn = pyodbc.connect(driver='{SQL Server Native Client 11.0}', 
-                          host='COMOSDSQL08\MSSQL2016DSC', 
-                          database='SistemaExpertoPanela', 
-                          user='WebSisExpPanela', 
-                          password='sIuusnOsE9bLlx7g60Mz')
-            cursor = cnxn.cursor()
-            db_1=cursor.execute("SELECT * FROM Clientes")
+            db=Operaciones_db(0,0)
             #Creación de listas
-            for listas_1 in db_1:
-                Etiquetas_Nombres.append(listas_1[0])
-                Etiquetas_Correo.append(listas_1[1])
-                Etiquetas_Telefono.append(listas_1[2])
-                Etiquetas_Departamento.append(listas_1[3])
-                Etiquetas_Ciudad.append(listas_1[4])
+            for listas_1 in db:
+                Etiquetas_ID.append(listas_1[0])
+                Etiquetas_Nombres.append(listas_1[1])
+                Etiquetas_Correo.append(listas_1[2])
+                Etiquetas_Telefono.append(listas_1[3])
+                Etiquetas_Departamento.append(listas_1[4])
+                Etiquetas_Ciudad.append(listas_1[5])
                 Etiquetas_U.append("pdf2/U_"+str(Cantidad_Clientes)+".pdf")
                 Etiquetas_P.append("pdf2/P_"+str(Cantidad_Clientes)+".pdf")
                 Etiquetas_R.append("pdf2/R_"+str(Cantidad_Clientes)+".pdf")
                 Etiquetas_C.append("pdf2/C_"+str(Cantidad_Clientes)+".pdf")
                 Cantidad_Clientes=Cantidad_Clientes+1
-                Leer_pdf_base64("static/pdf2/U_"+str(Cantidad_Clientes)+".pdf", listas_1[5])
-                Leer_pdf_base64("static/pdf2/P_"+str(Cantidad_Clientes)+".pdf", listas_1[6])
-                Leer_pdf_base64("static/pdf2/R_"+str(Cantidad_Clientes)+".pdf", listas_1[7])
-                Leer_pdf_base64("static/pdf2/C_"+str(Cantidad_Clientes)+".pdf", listas_1[8])                        
-            cnxn.commit()
-            cnxn.close()  
+                try:
+                    Leer_pdf_base64("static/pdf2/U_"+str(Cantidad_Clientes)+".pdf", listas_1[6])
+                    Leer_pdf_base64("static/pdf2/P_"+str(Cantidad_Clientes)+".pdf", listas_1[7])
+                    Leer_pdf_base64("static/pdf2/R_"+str(Cantidad_Clientes)+".pdf", listas_1[8])
+                    Leer_pdf_base64("static/pdf2/C_"+str(Cantidad_Clientes)+".pdf", listas_1[9])         
+                except:
+                    print('Error archivo')
+
           
 #            basedatos=firebase.FirebaseApplication('https://panela-ac2ce.firebaseio.com/',None)
 #            datos_db=basedatos.get('https://panela-ac2ce.firebaseio.com/Clientes','')
@@ -516,8 +571,8 @@ def base_batos():
 #                Leer_pdf_base64("static/pdf2/P_"+str(i)+".pdf", list(datos_db.values())[i]['Planos'])
 #                Leer_pdf_base64("static/pdf2/R_"+str(i)+".pdf", list(datos_db.values())[i]['Recinto'])
 #                Leer_pdf_base64("static/pdf2/C_"+str(i)+".pdf", list(datos_db.values())[i]['Calculos'])
-                
             return render_template('base.html',
+                                   Eti0=Etiquetas_ID,
                                    Eti1=Etiquetas_Nombres,
                                    Eti2=Etiquetas_Correo,
                                    Eti3=Etiquetas_Telefono,
@@ -591,4 +646,5 @@ def contac_rta():
         return render_template('respuesta.html',rta="ERROR AL ENVIAR EL MENSAJE (INTENTE NUEVAMENTE).")
     
 if __name__ == '__main__':
-   app.run()
+    app.run()
+    
