@@ -23,7 +23,7 @@
                 <td>
                     <h5><b>Variedad de caña {{i+1}}</b></h5>
                     <OBJECT id="Foto2">
-                        <img src={{url_for('static', filename=Dir[i])}} width="300" height="350">
+                        <img src={{url_for('static', filename='Latex/'+'Latex/'+Dir[i])}} width="300" height="350">
                     </OBJECT>         
                 </td>  
 
@@ -35,7 +35,7 @@
                 <td>
                     <h5><b>Variedad de caña {{i+2}}</b></h5>
                     <OBJECT id="Foto3">
-                        <img src={{url_for('static', filename=Dir[i+1])}} width="300" height="350">
+                        <img src={{url_for('static', filename='Latex/'+Dir[i+1])}} width="300" height="350">
                     </OBJECT>         
                 </td> 
                 {%endif%}

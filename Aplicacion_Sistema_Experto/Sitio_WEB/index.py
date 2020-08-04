@@ -41,7 +41,6 @@ def after_request(response):
 
 @app.route('/')
 def index():
-    
     try:
         rmtree('static/pdf2')
     except OSError: 
@@ -275,7 +274,7 @@ def generar_valores_informe():
     Doc_latex.Documento_Latex.generar_pdf()
     sleep(1)
     """Creación del pdf"""
-    #Pailas.Generar_reporte(Diccionario,Diccionario_2)
+    Pailas.Generar_reporte(Diccionario,Diccionario_2)
 
     """>>>>>>>>>>>>>>>>Actualizar base de datos<<<<<<<<<<<<<<"""        
 
@@ -401,39 +400,41 @@ def Operaciones_db(Operacion, usuarios):
     db_1=[]
     r_b=[]
     Cadena_sql= "DELETE FROM Clientes WHERE ID IN "
-    try:
+   # try:
         #Consulta de la base de datos
-        cnxn = pyodbc.connect(driver='{SQL Server Native Client 11.0}', 
-                      host='COMOSDSQL08\MSSQL2016DSC', 
-                      database='SistemaExpertoPanela', 
-                      user='WebSisExpPanela', 
-                      password='sIuusnOsE9bLlx7g60Mz')
-        cursor = cnxn.cursor()
-        if(Operacion==0):
-            base_temp=cursor.execute("SELECT * FROM Clientes")
-            for tdb in base_temp:
-                    db_1.append(tdb)
-        elif(Operacion==1):
-            cursor.execute("DELETE FROM Clientes WHERE CONVERT(NVARCHAR(MAX), Nombre)!='NO_BORRAR'")
-        elif(Operacion==2):
-            cursor.execute("INSERT INTO Clientes (Nombre, Correo, Telefono, Departamento, Ciudad, Usuario, Planos, Recinto, Calculos) VALUES (?,?,?,?,?,?,?,?,?)", usuarios)
-        elif(Operacion==3):
-            base_temp=cursor.execute("SELECT * FROM Clientes")
-            for i,tdb in enumerate(base_temp, start=0):
-                try:
-                    if(usuarios.get('CH_'+str(tdb[0]))=='on'):
-                        r_b.append(str(tdb[0]))
-                except:
-                    print('No existe')
-            T1=str(r_b).replace("[","(")
-            T1=T1.replace("]",")")
-            Cadena_sql=Cadena_sql+T1
-            cursor.execute(Cadena_sql)
-        cnxn.commit()
-        cnxn.close()
-        return db_1
-    except:
-        print('Error db') 
+    cnxn = pyodbc.connect(driver='{SQL Server Native Client 11.0}', 
+                  host='COMOSDSQL08\MSSQL2016DSC', 
+                  database='SistemaExpertoPanela', 
+                  user='WebSisExpPanela', 
+                  password='sIuusnOsE9bLlx7g60Mz')
+    cursor = cnxn.cursor()
+    if(Operacion==0):
+        print("Algo2")
+        base_temp=cursor.execute("SELECT * FROM Clientes")
+        for tdb in base_temp:
+                db_1.append(tdb)
+    elif(Operacion==1):
+        cursor.execute("DELETE FROM Clientes WHERE CONVERT(NVARCHAR(MAX), Nombre)!='NO_BORRAR'")
+    elif(Operacion==2):
+        print("acceso")
+        cursor.execute("INSERT INTO Clientes (Nombre, Correo, Telefono, Departamento, Ciudad, Usuario, Planos, Recinto, Calculos) VALUES (?,?,?,?,?,?,?,?,?)", usuarios)
+    elif(Operacion==3):
+        base_temp=cursor.execute("SELECT * FROM Clientes")
+        for i,tdb in enumerate(base_temp, start=0):
+            try:
+                if(usuarios.get('CH_'+str(tdb[0]))=='on'):
+                    r_b.append(str(tdb[0]))
+            except:
+                print('No existe')
+        T1=str(r_b).replace("[","(")
+        T1=T1.replace("]",")")
+        Cadena_sql=Cadena_sql+T1
+        cursor.execute(Cadena_sql)
+    cnxn.commit()
+    cnxn.close()
+    return db_1
+   # except:
+   #     print('Error db') 
 
 #Borrar base de datos
 @app.route('/borrar')

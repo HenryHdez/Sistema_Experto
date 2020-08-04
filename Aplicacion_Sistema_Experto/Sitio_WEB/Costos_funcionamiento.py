@@ -735,6 +735,8 @@ def costos():
             Ingreso_esperado=Valor_panela*Produccion_anual_kg
             Ganancia_Acumulada=Ingreso_esperado-i
             Valor_Proyecto=round(flujo_caja[0],3)
+            if(Ganancia_Acumulada==0):
+                Ganancia_Acumulada=0.1
             Tiempo_anos=round(-Valor_Proyecto/Ganancia_Acumulada,3)
             Estado_retorno=[Valor_panela, 
                             i, 

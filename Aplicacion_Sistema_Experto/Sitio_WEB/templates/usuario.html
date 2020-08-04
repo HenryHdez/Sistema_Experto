@@ -168,7 +168,7 @@
                 <td style="width:450px"><b>Vista previa de la última variedad de caña seleccionada:</b></td>
                 <td>
                     <OBJECT id="Foto">
-                        <img src="{{url_for('static', filename='Cana/POJ2878.png')}}" width="200" height="250">
+                        <img src="{{url_for('static', filename='/Latex/Cana/POJ2878.png')}}" width="200" height="250">
                     </OBJECT>         
                 </td>
             </tr> 
@@ -346,7 +346,7 @@
               while (element.firstChild){element.removeChild(element.firstChild);} 
               //Crear contenido del objeto Foto
               var x = document.createElement("IMG");
-              x.setAttribute("src", "static/Cana/"+Nombre_Foto);
+              x.setAttribute("src", "static/Latex/Cana/"+Nombre_Foto);
               x.setAttribute('height', '250px');
               x.setAttribute('width', '200px');    	
               document.getElementById("Foto").appendChild(x);

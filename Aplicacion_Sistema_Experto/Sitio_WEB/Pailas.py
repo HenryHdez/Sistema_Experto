@@ -153,14 +153,14 @@ def Dibujar_Molino(canvas, puntero):
         if(((OF<200)or(i==0))and(i<len(Modelo)-1)):
             canvas.setFont('Helvetica-Bold', 11)
             canvas.drawString(300,OF+230,str(Modelo[i]))    
-            canvas.drawImage('static/Molinos/'+str(Modelo[i]+'.jpg'), 150, OF, width=320, height=220)
+            canvas.drawImage('static/Latex/Molinos/'+str(Modelo[i]+'.jpg'), 150, OF, width=320, height=220)
             canvas.showPage() #Salto de página
             Fondo(canvas)
             OF=450
         else:
             canvas.setFont('Helvetica-Bold', 11)
             canvas.drawString(300,OF+230,str(Modelo[i]))    
-            canvas.drawImage('static/Molinos/'+str(Modelo[i]+'.jpg'), 150, OF, width=320, height=220)  
+            canvas.drawImage('static/Latex/Molinos/'+str(Modelo[i]+'.jpg'), 150, OF, width=320, height=220)  
             OF=OF-(320)
     return canvas   
     
@@ -199,13 +199,13 @@ def Dibujar_Molino(canvas, puntero):
 #    for i in range (1,len(Car),3):
 #        if(i<11):
 #            canvas.drawString(75,puntero+5,'Variedad de caña '+str(i))
-#            canvas.drawImage('static/'+Car[i], 55, puntero-150, width=150, height=150)
+#            canvas.drawImage('static/Latex/'+Car[i], 55, puntero-150, width=150, height=150)
 #        if(((i+1)<len(Car)-1)and(i+1<11)):
 #            canvas.drawString(245,puntero+5,'Variedad de caña '+str(i+1))
-#            canvas.drawImage('static/'+Car[i+1], 225, puntero-150, width=150, height=150)
+#            canvas.drawImage('static/Latex/'+Car[i+1], 225, puntero-150, width=150, height=150)
 #        if(((i+2)<=len(Car)-1)and(i+1<11)):
 #            canvas.drawString(415,puntero+5,'Variedad de caña '+str(i+2))
-#            canvas.drawImage('static/'+Car[i+2], 395, puntero-150, width=150, height=150)
+#            canvas.drawImage('static/Latex/'+Car[i+2], 395, puntero-150, width=150, height=150)
 #        if((puntero<=200)and(i>6)):
 #            canvas.showPage()
 #            Fondo(canvas)
@@ -228,6 +228,7 @@ def Generar_reporte(D1,D2):
         if(str(i)=='DATOS DE ENTRADA' or str(i)=='CAPACIDAD MOLINO' or 
            str(i)=='DATOS DE LA MASA' or str(i)=='PROPIEDADES DE LOS JUGOS'):
             if(str(i)=='DATOS DE ENTRADA'):
+                print('Algo')
 #                canvas.setFont('Helvetica-Bold', 14)
 #                canvas.drawString(200,650,'--->>>DATOS DEL USUARIO<<<---')
 #                canvas.setFont('Helvetica-Bold', 12)
@@ -240,31 +241,32 @@ def Generar_reporte(D1,D2):
 #                Fondo(canvas)
 #                puntero=650
 #                canvas.setFont('Helvetica-Bold', 14)
-                canvas.drawString(90,puntero,'--->>>DATOS USADOS PARA EL CÁLCULO DE LA HORNILLA<<<---')
+                #canvas.drawString(90,puntero,'--->>>DATOS USADOS PARA EL CÁLCULO DE LA HORNILLA<<<---')
             elif(str(i)=='CAPACIDAD MOLINO'):
-                canvas.showPage() #Salto de página
+                print('Algo')
+                #canvas.showPage() #Salto de página
                 #Cortar pdf
-                canvas.save()
-                from reportlab.pdfgen import canvas
-                canvas = canvas.Canvas("static/pdf01/A5_informe.pdf", pagesize=letter)
+                #canvas.save()
+                #from reportlab.pdfgen import canvas
+                #canvas = canvas.Canvas("static/pdf01/A5_informe.pdf", pagesize=letter)
                 #-----
-                Fondo(canvas)
-                puntero=650
-                canvas.setFont('Helvetica-Bold', 14)
-                canvas.drawString(70,puntero,'--->>>PARÁMETROS USADOS PARA SELECCIONAR UN MOLINO<<<---')                
+                #Fondo(canvas)
+                #puntero=650
+                #canvas.setFont('Helvetica-Bold', 14)
+                #canvas.drawString(70,puntero,'--->>>PARÁMETROS USADOS PARA SELECCIONAR UN MOLINO<<<---')                
             elif(str(i)=='DATOS DE LA MASA'):
-                canvas=Dibujar_Molino(canvas, puntero)
+                #canvas=Dibujar_Molino(canvas, puntero)
                 #Cortar pdf                
-                canvas.save()
+                #canvas.save()
 
-                from reportlab.pdfgen import canvas
-                canvas = canvas.Canvas("static/pdf01/A4_informe.pdf", pagesize=letter)
+                #from reportlab.pdfgen import canvas
+                #canvas = canvas.Canvas("static/pdf01/A4_informe.pdf", pagesize=letter)
                 #-----
-                Fondo(canvas)
-                puntero=650
-                canvas.setFont('Helvetica-Bold', 14)
+                #Fondo(canvas)
+                #puntero=650
+                #canvas.setFont('Helvetica-Bold', 14)
                 #Variedades de caña sembradas
-                Dibujar_Canas(canvas, puntero)
+                #Dibujar_Canas(canvas, puntero)
                 ##Sección C
                 canvas.save()
                 from reportlab.pdfgen import canvas
@@ -385,6 +387,19 @@ def Dibujar_planta():
     canvas.showPage()
     canvas.drawImage('static/Planta/Planta.png', 0, 0, width=610, height=790)
     canvas.save()
+    
+def Dibujar_planta_2():
+    from reportlab.lib.pagesizes import letter
+    from reportlab.pdfgen import canvas
+    canvas = canvas.Canvas("static/pdf01/Planta_WEB.pdf", pagesize=letter)
+    canvas.drawImage('static/Planta/Camara.png', 0, 0, width=610, height=790)
+    canvas.showPage()
+    canvas.drawImage('static/Planta/Chimenea.png', 0, 0, width=610, height=790)
+    canvas.showPage()
+    canvas.drawImage('static/Planta/Ducto.png', 0, 0, width=610, height=790)
+    canvas.showPage()
+    canvas.drawImage('static/Planta/Planta.png', 0, 0, width=610, height=790)
+    canvas.save()   
     
 #Funcion para dibujar planos acotados
 def Crear_plano_pdf(directorio_imagen, Nombre_archivo, Nombre_Usuario, Nombre_Paila, Valores_plano, valores_eliminar):
@@ -854,6 +869,7 @@ def Mostrar_pailas(Vol_aux, Etapas, Sitio):
         #print(str(iteraciones))
         #print(str(f)) 
     Dibujar_planta()
+    Dibujar_planta_2()
     df = pd.DataFrame([Lista_de_pailas, Cantidad_pailas])
     df.to_excel('static/Temp/Temp2.xlsx')
     Cantidad_pailas=[0,0,0,0,0,0,0,0,0,0,0]
