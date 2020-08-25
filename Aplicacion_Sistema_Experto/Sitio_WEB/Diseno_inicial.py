@@ -6,6 +6,7 @@ Created on Wed Apr  8 11:38:48 2020
 """
 import math
 import pandas as pd
+
 """----->>>>Selección del molino<<<<----"""
 def Seleccionar_Molino(Kilos_Hora):
     Molino=pd.read_excel('static/Catalogos/Molinos.xlsx')
@@ -69,7 +70,7 @@ def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
     #CSS Panela	
     #Altura del Sitio	
     
-    """Nota: los valores de estas variables son supuestos (Estas son otras variables de entrada)"""
+    """Nota: los valores de estas variables son supuestos (Estas son otras variables de entrada al modelo)"""
     Porcentaje_extraccion=0.6       #60%
     Bagazillo_Prelimpiador=0.02 #2%
     Cachaza=0.04 #4%    
@@ -84,7 +85,7 @@ def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
     Altura_sitio=float(Diccionario['Altura media sobre el nivel del mar'].replace(" m", ""))
     """Fin de los datos supuestos entrada"""
     
-    """Calculo de la capacidad del molino"""		
+    """Cálculo de la capacidad del molino"""		
     #Área de caña sembrada para el calculo
     Crecimiento=float(Diccionario['Crecimiento aproximado del área sembrada'])
     Crecimiento=Crecimiento+float(Diccionario['Área caña sembrada'])
@@ -112,7 +113,7 @@ def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
     #Capacidad de la hornilla=Masa de panela
     Capacidad_Hornilla=Masa_panela
     
-    """Calculos para la masa"""
+    """Cálculos para la masa de panela"""
     Masa_Jugo_Clarificado=(CSS_Panela*Capacidad_Hornilla)/CSS_Cana
     Masa_Jugo_Prelimpiador=Masa_Jugo_Clarificado/(1-Cachaza)
     Masa_Cachaza=Masa_Jugo_Prelimpiador*Cachaza

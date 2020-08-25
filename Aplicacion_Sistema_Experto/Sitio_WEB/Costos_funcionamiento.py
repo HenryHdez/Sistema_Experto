@@ -4,17 +4,20 @@ Created on Mon Apr 20 10:08:42 2020
 
 @author: hahernandez
 """
+"""----------->>>>>Librerias para crear la ambientación del grafico de costo<<<<<<<------"""
+from matplotlib.backends.backend_agg import FigureCanvasAgg
+from time import sleep
+import time
 import xlrd
 import math
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_agg import FigureCanvasAgg
-import time
+#Definición de las variables globales
 global Capacidad_hornilla
 global Molino_seleccionado
 global Horas_trabajo_al_dia
-from time import sleep
+
 ###Rutinas para generar el pdf del costo
 #Layout del informe
 def Fondo(canvas):
@@ -674,21 +677,21 @@ def costos():
 
     ###########>>>>>>>>>>>>>>>>>>>>>>Graficar flujo de caja<<<<<<<<<<<<<<<<<<<<<################
     #Sin recuperador
-    Fig_2,b = plt.subplots(frameon=False)
-    m1=max(np.array(lista_flujo_1)/1000000)
-    m2=max(np.array(lista_flujo_2)/1000000)
-    m3=min(np.array(lista_flujo_1)/1000000)
-    m4=min(np.array(lista_flujo_2)/1000000)   
+    Fig_2,b = plt.subplots(frameon=False)#, figsize=(8,10))
+    m1=max(np.array(lista_flujo_1)/(1000000))
+    m2=max(np.array(lista_flujo_2)/(1000000))
+    m3=min(np.array(lista_flujo_1)/(1000000))
+    m4=min(np.array(lista_flujo_2)/(1000000))   
     lim_max=0
     lim_min=0
     if(m1<m2):
         lim_max=m2
-        l1 =b.barh(range(len(lista_flujo_2)),np.array(lista_flujo_2)/1000000,edgecolor='black',hatch="/")
-        l2 =b.barh(range(len(lista_flujo_1)),np.array(lista_flujo_1)/1000000,edgecolor='black',hatch="o")
+        l1 =b.barh(range(len(lista_flujo_2)),np.array(lista_flujo_2)/(1000000),edgecolor='black',hatch="/")
+        l2 =b.barh(range(len(lista_flujo_1)),np.array(lista_flujo_1)/(1000000),edgecolor='black',hatch="o")
     else:
         lim_max=m1
-        l2 =b.barh(range(len(lista_flujo_1)),np.array(lista_flujo_1)/1000000,edgecolor='black',hatch="o")
-        l1 =b.barh(range(len(lista_flujo_2)),np.array(lista_flujo_2)/1000000,edgecolor='black',hatch="/")
+        l2 =b.barh(range(len(lista_flujo_1)),np.array(lista_flujo_1)/(1000000),edgecolor='black',hatch="o")
+        l1 =b.barh(range(len(lista_flujo_2)),np.array(lista_flujo_2)/(1000000),edgecolor='black',hatch="/")
     if(m3<m4):
         lim_min=m3
     else:
@@ -696,10 +699,13 @@ def costos():
 
     b.set_xlim([lim_min-10,lim_max+10])
     b.grid(color='k', linestyle='--', linewidth=1)
-    b.set_ylabel('Vida útil (Años)', fontsize=18)
-    b.set_xlabel('Valor (X$1.000.000)', fontsize=18)
+    #plt.setp(b.get_xticklabels(), fontsize=18, rotation=45)
+   # plt.setp(b.get_yticklabels(), fontsize=18)
+    b.set_ylabel('Tiempo (Años)', fontsize=22)
+    b.set_xlabel('Costo * ($1.000.000)', fontsize=22)
     b.set_title('Flujo de caja aproximado', fontsize=20)
-    b.legend([l1, l2],["Con recuperador", "Sin recuperador"])
+    #b.legend([l1, l2],["Burner with head recovery", "Simple burner"], fontsize=14)
+    b.legend([l1, l2],["Con recuperador", "Sin recuperador"], fontsize=14)
     for item in [Fig_2,b]:
            item.patch.set_visible(False)    
     FigureCanvasAgg(Fig_2).print_png('static/Graficas/Flujo_Caja_1.png') 
@@ -761,14 +767,20 @@ def costos():
     Anos2=MB[:,5]
     Meses2=MB[:,6]
     ###########>>>>>>>>>>>>>>>>>Graficar Retorno a la inversión<<<<<<<<<<<<<<<<<################
-    Fig_3,d = plt.subplots(frameon=False)
+    Fig_3,d = plt.subplots(frameon=False)#, figsize=(8,10))
     l1,=d.plot(lista_valor_panela1,Anos1, linewidth=4)
     l2,=d.plot(lista_valor_panela2,Anos2, linewidth=4)
     d.grid(color='k', linestyle='--', linewidth=1)
+    d.set_ylabel('Time (years)', fontsize=20)
+    d.set_xlabel('NCS value (USD)', fontsize=20)    
+#    plt.setp(d.get_xticklabels(), fontsize=16, rotation=45)
+#    plt.setp(d.get_yticklabels(), fontsize=16)
+
+    
     d.set_ylabel('Funcionamiento (Años)', fontsize=18)
     d.set_xlabel('Valor de la panela ($)', fontsize=18)
     d.set_title('Tiempo de retorno a la inversión', fontsize=20)
-    d.legend([l1, l2],["Con recuperador", "Sin recuperador"])
+    d.legend([l1, l2],["Con recuperador", "Sin recuperador"], fontsize=14)
     for item in [Fig_3,d]:
            item.patch.set_visible(False)
     FigureCanvasAgg(Fig_3).print_png('static/Graficas/RI_Anos.png') 
