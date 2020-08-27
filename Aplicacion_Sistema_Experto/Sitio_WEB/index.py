@@ -296,7 +296,7 @@ def generar_valores_informe():
                 Crear_archivo_base_64("static/Planos_WEB.pdf"), 
                 Crear_archivo_base_64("static/Planta_WEB.pdf"), 
                 Crear_archivo_base_64("static/Calculos_WEB.pdf"))
-    Operaciones_db(2,usuarios)        #Usar base de datos
+    #Operaciones_db(2,usuarios)        #Usar base de datos
 
 #Filtrar caracteres desconocidos de las cadenas de texto de los archivos temporales
 def Convertir(string): 

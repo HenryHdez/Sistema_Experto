@@ -355,7 +355,6 @@ def Calculo_por_etapas(Diccionario):
             else:
                 Lista_Contenido[1][i]=((Lista_Contenido[0][0]-Lista_Contenido[0][Etapas-2])/Factor_Division)+Lista_Contenido[0][i]
     
-    
     for i in range(Etapas-1,-1,-1):
         #Concentración promedio=(Concentracion_solidos_inicial+Concentracion_solidos_final)/2
         Lista_Contenido[2][i]=(Lista_Contenido[0][i]+Lista_Contenido[1][i])/2

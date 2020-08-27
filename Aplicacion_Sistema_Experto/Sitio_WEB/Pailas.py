@@ -147,77 +147,11 @@ def Dibujar_Molino(canvas, puntero):
     
 #Función para generar la parte escrita del informe
 def Generar_reporte(D1,D2):
-    #Genera la vista previa
+    """----------->>>>>>> Publicar Calculos por etapa<<<<<<<<<<<------------"""
     from reportlab.lib.pagesizes import letter
     from reportlab.pdfgen import canvas
-    canvas = canvas.Canvas("static/pdf01/A3_informe.pdf", pagesize=letter)
-    #Espacio de trabajo disponible desde 20 hasta 650
-    puntero=630
-    Fondo(canvas)
-    for i in D1:
-        if(str(i)=='DATOS DE ENTRADA' or str(i)=='CAPACIDAD MOLINO' or 
-           str(i)=='DATOS DE LA MASA' or str(i)=='PROPIEDADES DE LOS JUGOS'):
-               
-            if(str(i)=='DATOS DE LA MASA'):
-                ##Sección C
-                canvas.save()
-                from reportlab.pdfgen import canvas
-                canvas = canvas.Canvas("static/pdf02/C2_informe.pdf", pagesize=letter)
-                #-----
-                Fondo(canvas)
-                puntero=650
-                canvas.setFont('Helvetica-Bold', 12)
-                canvas.drawString(200,puntero,'--->>>PROPIEDADES DE LA MASA<<<---')
-            else:
-                canvas.setFont('Helvetica-Bold', 12)
-                canvas.drawString(200,puntero,'--->>>PROPIEDADES DE LOS JUGOS<<<---')                
-        else:
-        #rutina para filtrar string a publicar
-            if(SM(None, 'Variedad de Caña', i).ratio()<0.85):
-                canvas.setFont('Helvetica-Bold', 12)
-                if (str(i)!='Jugo crudo' and str(i)!='Jugo clarificado'):
-                    canvas.drawString(50,puntero,str(i))
-                canvas.setFont('Helvetica', 12)
-                #Arrglo para asignar unidades y mostrarlas en el informe
-                if (str(i)=='Área caña sembrada'):
-                    canvas.drawString(350,puntero,str(D1[i])+" ha") 
-                elif (str(i)=='Crecimiento aproximado del área sembrada'):
-                    canvas.drawString(350,puntero,str(D1[i])+" ha")
-                elif (str(i)=='Caña esperada por hectárea'):
-                    canvas.drawString(350,puntero,str(D1[i])+" T/ha")
-                elif (str(i)=='Número de moliendas'):
-                    canvas.drawString(350,puntero,str(D1[i])+" semanal(es)")                    
-                elif (str(i)=='Periodo vegetativo'):
-                    canvas.drawString(350,puntero,str(D1[i])+" mes(es)")                    
-                elif (str(i)=='Caña molida al mes'):
-                    canvas.drawString(350,puntero,str(D1[i])+" T/mes") 
-                elif (str(i)=='Área cosechada al mes'):
-                    canvas.drawString(350,puntero,str(D1[i])+" ha/mes") 
-                elif (str(i)=='Caña molida a la semana'):
-                    canvas.drawString(350,puntero,str(D1[i])+" T/semana") 
-                elif (str(i)=='Caña molida por Hora'):
-                    canvas.drawString(350,puntero,str(D1[i])+" T/hora") 
-                elif (str(i)=='Jugo crudo' or str(i)=='Jugo clarificado'):
-                    #No hacer nada para que no publique 
-                    puntero=puntero+20
-                elif (str(i)=='Masa de panela'):
-                    canvas.drawString(350,puntero,str(D1[i])+" kg/hora")  
-                elif (str(i)=='Capacidad del Molino'):
-                    canvas.drawString(350,puntero,str(D1[i])+" kg/hora (Calculado)") 
-                else:
-                    canvas.drawString(350,puntero,str(D1[i]))
-            else:
-                puntero=puntero+20
-        if(puntero<=110):
-            canvas.showPage()
-            Fondo(canvas)
-            puntero=650            
-        else:          
-            puntero=puntero-20
-    
-    """----------->>>>>>> Publicar Calculos por etapa<<<<<<<<<<<------------"""
+    canvas = canvas.Canvas("static/pdf02/C2_informe.pdf", pagesize=letter)
     #Estructura para imprimir los calculos por Etapa
-    canvas.showPage()
     Fondo(canvas)
     puntero_v=450
     canvas.setFont('Helvetica-Bold', 12)
@@ -266,7 +200,6 @@ def Generar_reporte(D1,D2):
     Unir_Informe('Calculos_WEB', 'static/pdf02/', 0)
     Unir_Informe('Informe', 'static/pdf01/', 1)
     
-
 def Dibujar_planta():
     from reportlab.lib.pagesizes import letter
     from reportlab.pdfgen import canvas
@@ -297,8 +230,8 @@ def Dibujar_planta_2():
 def Crear_plano_pdf(directorio_imagen, Nombre_archivo, Nombre_Usuario, Nombre_Paila, Valores_plano, valores_eliminar):
     from reportlab.lib.pagesizes import letter
     from reportlab.pdfgen import canvas
-    Etiquetas=['Altura de la falca','Altura del fondo','Ancho', 'Ancho del fondo', 'Longitud',
-               'Longitud del fondo', 'Angulo', 'Altura aletas', 'Separación entre aletas', 
+    Etiquetas=['Altura de la falca','Altura del fondo','Ancho del fondo', 'Ancho', 'Longitud',
+               'Espesor del doblez', 'Angulo', 'Altura aletas', 'Separación entre aletas', 
                'Número de aletas', 'Alto del casco', 'Ancho del casco',
                'Cantidad de tubos', 'Diametro del tubo', 'Diametro del tubo',
                'Grosor del canal', 'Cantidad de canales']
@@ -331,17 +264,30 @@ def Crear_plano_pdf(directorio_imagen, Nombre_archivo, Nombre_Usuario, Nombre_Pa
     
     #Rotulo
     canvas.setFont('Helvetica-Bold', 7)
-    canvas.drawString(370, 76, Nombre_Usuario)   
-    canvas.drawString(370, 67, Nombre_Paila)  
-    canvas.drawString(370, 60, 'AGROSAVIA') 
+    canvas.drawString(720, 71, Nombre_Usuario)   
+    canvas.drawString(720, 62, Nombre_Paila)  
+    canvas.drawString(720, 52, 'APLICACIÓN')
+    canvas.drawString(720, 43, 'APLICACIÓN') 
+    canvas.drawString(720, 34, 'AGROSAVIA') 
+    canvas.drawString(720, 25, 'AGROSAVIA') 
     canvas.setFont('Helvetica-Bold', 5)
     tiempo = time.asctime(time.localtime(time.time()))
-    canvas.drawString(460,35,str(tiempo))
+    canvas.drawString(720,16,str(tiempo))
 
     
     canvas.showPage() #Salto de página  
     canvas.setPageSize((970,628))
     canvas.drawImage(directorio_imagen.replace(".png","_vistas.png"), 0, 0, width=970, height=628)
+    canvas.setFont('Helvetica-Bold', 7)
+    canvas.drawString(720, 71, Nombre_Usuario)   
+    canvas.drawString(720, 62, Nombre_Paila)  
+    canvas.drawString(720, 52, 'APLICACIÓN')
+    canvas.drawString(720, 43, 'APLICACIÓN') 
+    canvas.drawString(720, 34, 'AGROSAVIA') 
+    canvas.drawString(720, 25, 'AGROSAVIA') 
+    canvas.setFont('Helvetica-Bold', 5)
+    tiempo = time.asctime(time.localtime(time.time()))
+    canvas.drawString(720,16,str(tiempo))
     canvas.save()
 
 """--->>>Está función convierte en milimetros las dimensiones y envia los 
@@ -374,7 +320,7 @@ def Dibujar_plano(Nombre_Sitio,Nombre_archivo,Tipo_paila,H_fl,H_fn,Ancho,L,Ho,Hc
     O=lT*1000                               #14
     P=lC*1000                               #15
     Q=Cantidad_canales                      #16
-    Valores_plano=[A,B,C,D,E,G,I,F,H,J,K,L,M,N,O,P,Q] 
+    Valores_plano=[A,B,C,D,E,50,I,F,H,J,K,L,M,N,O,P,Q] 
     if Tipo_paila==1:
         if Activar_Aletas==True:
             Cantidad_pailas[0]=Cantidad_pailas[0]+1
@@ -403,7 +349,7 @@ def Dibujar_plano(Nombre_Sitio,Nombre_archivo,Tipo_paila,H_fl,H_fn,Ancho,L,Ho,Hc
         Cantidad_pailas[4]=Cantidad_pailas[4]+1
         Lista_de_pailas[4]='Semiesferica'
         Crear_plano_pdf('static/Pailas/Semiesferica.png', Nombre_archivo,
-                        Nombre_Sitio, 'Diagrama de una paila semiesférica', Valores_plano, [1,4,5,7,8,9,11,12,13,14,15,16])   
+                        Nombre_Sitio, 'Diagrama de una paila semiesférica', Valores_plano, [1,3,4,5,7,8,9,11,12,13,14,15,16])   
         
     elif Tipo_paila==4:
         if Activar_Aletas==True:
