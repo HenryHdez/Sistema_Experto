@@ -102,7 +102,6 @@ def Dibujar_Molino(canvas, puntero):
     canvas.drawString(200,puntero-20,'   ')
     canvas.drawString(210,puntero-20,'>>>MOLINOS DISPONIBLES<<<')
     Molino=pd.read_excel('static/Temp/Temp.xlsx',skipcolumn = 0,)
-    
     Marca=Molino['Marca'].values
     Modelo=Molino['Modelo'].values
     Kilos=Molino['kg/hora'].values
@@ -200,30 +199,115 @@ def Generar_reporte(D1,D2):
     Unir_Informe('Calculos_WEB', 'static/pdf02/', 0)
     Unir_Informe('Informe', 'static/pdf01/', 1)
     
-def Dibujar_planta():
+def Dibujar_planta(Vector_Entrada, Tipo_Hornilla, Etapas):
     from reportlab.lib.pagesizes import letter
     from reportlab.pdfgen import canvas
+    print(Vector_Entrada)
+    print(Tipo_Hornilla)
+    print(Etapas)
     canvas = canvas.Canvas("static/Planta_WEB.pdf", pagesize=letter)
-    canvas.drawImage('static/Planta/Camara.png', 0, 0, width=610, height=790)
+    canvas.setPageSize((970,628))
+    canvas.drawImage('static/Vistas/Otros/Formato.png', 0, 0, width=970, height=628)
+    #Vista superior
+    Espacio=700/Etapas
+    Desplazamiento=200
+    for i in range (Etapas):
+        if Vector_Entrada[i][0]==1:
+            if Vector_Entrada[i][1]==True:
+                Nombre_Paila='static/Vistas/Superior/'+'Plana_con_aletas.png'
+            else:
+                Nombre_Paila='static/Vistas/Superior/'+'Plana_sin_aletas.png'
+        elif Vector_Entrada[i][0]==2: 
+            if Vector_Entrada[i][1]==True:
+                Nombre_Paila='static/Vistas/Superior/'+'Pirotubular_circular_con_aletas.png'
+            else:
+                Nombre_Paila='static/Vistas/Superior/'+'Pirotubular_circular_sin_aletas.png'
+        elif Vector_Entrada[i][0]==3:
+            Nombre_Paila='static/Vistas/Superior/'+'Semiesferica.png' 
+        elif Vector_Entrada[i][0]==4:
+            if Vector_Entrada[i][1]==True:
+                Nombre_Paila='static/Vistas/Superior/'+'Semicilindrica_con_aletas.png'
+            else:
+               Nombre_Paila='static/Vistas/Superior/'+'Semicilindrica_sin_aletas.png'
+        elif Vector_Entrada[i][0]==5:
+            if Vector_Entrada[i][1]==True:
+                Nombre_Paila='static/Vistas/Superior/'+'Pirotubular_cuadrada_con_aletas.png'
+            else:
+                Nombre_Paila='static/Vistas/Superior/'+'Pirotubular_cuadrada_sin_aletas.png'
+        elif Vector_Entrada[i][0]==6:
+            if Vector_Entrada[i][1]==True:
+                Nombre_Paila='static/Vistas/Superior/'+'Cuadrada_acanalada_con_aletas.png'
+            else:
+                Nombre_Paila='static/Vistas/Superior/'+'Cuadrada_acanalada_sin_aletas.png'   
+        canvas.drawImage(Nombre_Paila, Desplazamiento, 500, width=Espacio*0.7, height=Espacio*0.8)
+        Desplazamiento=Desplazamiento+Espacio-10
+
+    #Vista lateral
+    Espacio=700/Etapas
+    Desplazamiento=200
+    Desp_y=250
+    Desp_y1=Desp_y
+    conta=0
+    for i in range (Etapas):
+        if(conta<2):
+            Desp_y1      
+        elif(conta>2 and conta <6):
+            Desp_y1=Desp_y-40
+        elif(conta>=6 and conta <10):
+            Desp_y1=Desp_y+40
+        elif(conta>=10):
+            Desp_y1=Desp_y-70
+        if Vector_Entrada[i][0]==1:
+            if Vector_Entrada[i][1]==True:
+                Nombre_Paila='static/Vistas/Lateral/'+'Plana_con_aletas.png'
+            else:
+                Nombre_Paila='static/Vistas/Lateral/'+'Plana_sin_aletas.png'
+        elif Vector_Entrada[i][0]==2: 
+            if Vector_Entrada[i][1]==True:
+                Nombre_Paila='static/Vistas/Lateral/'+'Pirotubular_circular_con_aletas.png'
+            else:
+                Nombre_Paila='static/Vistas/Lateral/'+'Pirotubular_circular_sin_aletas.png'
+        elif Vector_Entrada[i][0]==3:
+            Nombre_Paila='static/Vistas/Lateral/'+'Semiesferica.png' 
+        elif Vector_Entrada[i][0]==4:
+            if Vector_Entrada[i][1]==True:
+                Nombre_Paila='static/Vistas/Lateral/'+'Semicilindrica_con_aletas.png'
+            else:
+               Nombre_Paila='static/Vistas/Lateral/'+'Semicilindrica_sin_aletas.png'
+        elif Vector_Entrada[i][0]==5:
+            if Vector_Entrada[i][1]==True:
+                Nombre_Paila='static/Vistas/Lateral/'+'Pirotubular_cuadrada_con_aletas.png'
+            else:
+                Nombre_Paila='static/Vistas/Lateral/'+'Pirotubular_cuadrada_sin_aletas.png'
+        elif Vector_Entrada[i][0]==6:
+            if Vector_Entrada[i][1]==True:
+                Nombre_Paila='static/Vistas/Lateral/'+'Cuadrada_acanalada_con_aletas.png'
+            else:
+                Nombre_Paila='static/Vistas/Lateral/'+'Cuadrada_acanalada_sin_aletas.png'   
+        canvas.drawImage(Nombre_Paila, Desplazamiento, Desp_y1, width=Espacio*0.7, height=Espacio*0.5)
+        Desplazamiento=Desplazamiento+Espacio-10
+        conta=conta+1
+        
     canvas.showPage()
-    canvas.drawImage('static/Planta/Chimenea.png', 0, 0, width=610, height=790)
+    canvas.drawImage('static/Planta/Chimenea.png', 0, 0,  width=970, height=628)
     canvas.showPage()
-    canvas.drawImage('static/Planta/Ducto.png', 0, 0, width=610, height=790)
+    canvas.drawImage('static/Planta/Ducto.png', 0, 0,  width=970, height=628)
     canvas.showPage()
-    canvas.drawImage('static/Planta/Planta.png', 0, 0, width=610, height=790)
+    canvas.drawImage('static/Planta/Planta.png', 0, 0,  width=970, height=628)
     canvas.save()
     
 def Dibujar_planta_2():
     from reportlab.lib.pagesizes import letter
     from reportlab.pdfgen import canvas
     canvas = canvas.Canvas("static/pdf01/Planta_WEB.pdf", pagesize=letter)
-    canvas.drawImage('static/Planta/Camara.png', 0, 0, width=610, height=790)
+    canvas.setPageSize((970,628))
+    canvas.drawImage('static/Planta/Camara.png', 0, 0,  width=970, height=628)
     canvas.showPage()
-    canvas.drawImage('static/Planta/Chimenea.png', 0, 0, width=610, height=790)
+    canvas.drawImage('static/Planta/Chimenea.png', 0, 0,  width=970, height=628)
     canvas.showPage()
-    canvas.drawImage('static/Planta/Ducto.png', 0, 0, width=610, height=790)
+    canvas.drawImage('static/Planta/Ducto.png', 0, 0,  width=970, height=628)
     canvas.showPage()
-    canvas.drawImage('static/Planta/Planta.png', 0, 0, width=610, height=790)
+    canvas.drawImage('static/Planta/Planta.png', 0, 0,  width=970, height=628)
     canvas.save()   
     
 #Funcion para dibujar planos acotados
@@ -274,7 +358,6 @@ def Crear_plano_pdf(directorio_imagen, Nombre_archivo, Nombre_Usuario, Nombre_Pa
     tiempo = time.asctime(time.localtime(time.time()))
     canvas.drawString(720,16,str(tiempo))
 
-    
     canvas.showPage() #Salto de página  
     canvas.setPageSize((970,628))
     canvas.drawImage(directorio_imagen.replace(".png","_vistas.png"), 0, 0, width=970, height=628)
@@ -302,24 +385,24 @@ def Dibujar_plano(Nombre_Sitio,Nombre_archivo,Tipo_paila,H_fl,H_fn,Ancho,L,Ho,Hc
     global Cantidad_pailas
     global Lista_de_pailas
     #Convertir medidas en milimetros
-    A=H_fl*1000                             #0
-    B=H_fn*1000                             #1
-    C=Ancho*1000                            #2
-    G=L*1000                                #3
-    E=(L*1000)+100                          #4
-    D=2*(math.sin((math.pi/2)-Angulo)*H_fl)+Ancho    #5
-    D=D*1000
-    I=(180*Angulo)/math.pi                                #6
-    F=h_Aletas*1000                         #7
-    H=0.07*1000                             #8- 0.07 es la separación entre aletas
-    J=N_Aletas                              #9
-    K=Hc*1000                               #10
-    L=Ho*1000                               #11 ACDIK
-    M=nT                                    #12
-    N=dT*1000                               #13
-    O=lT*1000                               #14
-    P=lC*1000                               #15
-    Q=Cantidad_canales                      #16
+    A=H_fl*1000                                             #0
+    B=H_fn*1000                                             #1
+    C=Ancho*1000                                            #2
+    G=L*1000                                                #3
+    E=(L*1000)+100                                          #4
+    D=2*(math.sin((math.pi/2)-Angulo)*H_fl)+Ancho           #5
+    D=D*1000                                            
+    I=(180*Angulo)/math.pi                                  #6
+    F=h_Aletas*1000                                         #7
+    H=0.07*1000                                             #8- 0.07 es la separación entre aletas
+    J=N_Aletas                                              #9
+    K=Hc*1000                                               #10
+    L=Ho*1000                                               #11 ACDIK
+    M=nT                                                    #12
+    N=dT*1000                                               #13
+    O=lT*1000                                               #14
+    P=lC*1000                                               #15
+    Q=Cantidad_canales                                      #16
     Valores_plano=[A,B,C,D,E,50,I,F,H,J,K,L,M,N,O,P,Q] 
     if Tipo_paila==1:
         if Activar_Aletas==True:
@@ -349,7 +432,7 @@ def Dibujar_plano(Nombre_Sitio,Nombre_archivo,Tipo_paila,H_fl,H_fn,Ancho,L,Ho,Hc
         Cantidad_pailas[4]=Cantidad_pailas[4]+1
         Lista_de_pailas[4]='Semiesferica'
         Crear_plano_pdf('static/Pailas/Semiesferica.png', Nombre_archivo,
-                        Nombre_Sitio, 'Diagrama de una paila semiesférica', Valores_plano, [1,3,4,5,7,8,9,11,12,13,14,15,16])   
+                        Nombre_Sitio, 'Diagrama de una paila semiesférica', Valores_plano, [1,4,7,8,9,11,12,13,14,15,16])   
         
     elif Tipo_paila==4:
         if Activar_Aletas==True:
@@ -629,10 +712,11 @@ def comprobar_individuo(Lim_inf,Lim_sup,valor_actual):
 """--------->>>Función que optimiza las dimensiones de la paila a partir de los,
 pesos<<-------------""" 
 #Dimensiones de la lamina 4*10 pies o 1.21*3.04 metros (Restricción del sistema)
-def Mostrar_pailas(Vol_aux, Etapas, Sitio):
+def Mostrar_pailas(Vol_aux, Etapas, Sitio, T_Hornilla):
     global Cantidad_pailas
     global Lista_de_pailas
     Tipo_paila=[[],[]]
+    Pailas_Planta=[]
     Total_pailas=6   #Diseños de pailas disponibles
     for i in range(Etapas):
         Tipo_paila[0].append(random.randint(1,Total_pailas))
@@ -655,7 +739,7 @@ def Mostrar_pailas(Vol_aux, Etapas, Sitio):
         Hc   = comprobar_individuo(0.05, 0.50, abs(random.uniform(0.05, 0.50)))
         f_tem=Valor_Aptitud(Volumen,int(Tipo_paila[0][i]),H_fl,H_fn,A,L,H,Hc,bool(Tipo_paila[1][i]))
         f=f_tem[0]
-        #Memorias tempales
+        #Memorias temporales
         H_fl_1 = 0
         H_fn_1 = 0
         A_1 = 0
@@ -700,13 +784,14 @@ def Mostrar_pailas(Vol_aux, Etapas, Sitio):
                       H_fl,H_fn,A,L,H,Hc,lista_par[1],lista_par[2],lista_par[0],lista_par[5],
                       lista_par[4],lista_par[6],lista_par[8],lista_par[7],bool(Tipo_paila[1][i])
                       )
+        Pailas_Planta.append([int(Tipo_paila[0][i]),bool(Tipo_paila[1][i]),A*1000,L*1000])
         
         """Eliminar comentarios para probar el algoritmo de optimización"""
         #Comprobar_diseno(Volumen,i,int(Tipo_paila[0][i]),H_fl,H_fn,A,L,H,Hc,bool(Tipo_paila[1][i]))
         #print("________>>>>>>>>>>>>>____________")
         #print(str(iteraciones))
         #print(str(f)) 
-    Dibujar_planta()
+    Dibujar_planta(Pailas_Planta,T_Hornilla, sum(Cantidad_pailas))    
     Dibujar_planta_2()
     df = pd.DataFrame([Lista_de_pailas, Cantidad_pailas])
     df.to_excel('static/Temp/Temp2.xlsx')

@@ -20,7 +20,7 @@ import Doc_latex                                         #Gestión de documentos
 import Diseno_inicial                                    #Calculo preliminar de la hornilla
 import Costos_funcionamiento                             #Calculo del costo financiero de la hornilla
 import Pailas                                            #Calculo de las dimensiones de las pailas
-#import Gases                                             #Calculo de las propiedades de los gases
+import Gases                                             #Calculo de las propiedades de los gases
 
 #Generación de la interfaz WEB
 app = Flask(__name__)
@@ -241,7 +241,8 @@ def generar_valores_informe():
     Pailas.Mostrar_pailas(
             Diccionario_2['Volumen de jugo [m^3/kg]'],
             int(Diccionario_2['Etapas']),
-            "Hornilla: "+Diccionario['Nombre de usuario']+" ("+Diccionario['Departamento']+'-'+Diccionario['Ciudad']+')'
+            "Hornilla: "+Diccionario['Nombre de usuario']+" ("+Diccionario['Departamento']+'-'+Diccionario['Ciudad']+')',
+            Diccionario['Tipo de hornilla']
             )
     """Presentar información del molino"""
     Formulario_3_Etiquetas=['Caña molida al mes', 'Área cosechada al mes',	 'Caña molida a la semana',		
@@ -268,7 +269,7 @@ def generar_valores_informe():
     Diccionario_3=dict(zip(Formulario_3_Etiquetas,Formulario_3_Valores))
     
     """Estimar propiedades de los gases"""
-#    Gases.Optimizacion(Diccionario,Diccionario_2)
+    #Gases.Optimizacion(Diccionario,Diccionario_2)
     """Analisis financiero"""
     Costos_funcionamiento.Variables(float(Diccionario['Capacidad estimada de la hornilla']),
                                     float(Diccionario['Horas de trabajo al día']), 
@@ -279,7 +280,7 @@ def generar_valores_informe():
     
     """Generar portada"""
     Eficiencia_hornilla="20" #Cambiar
-    Doc_latex.Documento_Latex.portada(Diccionario,Eficiencia_hornilla)
+    Doc_latex.Documento_Latex.portada(Diccionario,Eficiencia_hornilla,Diccionario['Tipo de hornilla'])
     Doc_latex.Documento_Latex.seccion1(Diccionario,Diccionario_2)
     Doc_latex.Documento_Latex.generar_pdf()
     sleep(1)
@@ -347,8 +348,8 @@ def infor4():
     l4b[1:7]=Convertir_lista(l4b[1:7],3)
     l4a[8:11]=Convertir_lista(l4a[8:11],1)
     l4b[8:11]=Convertir_lista(l4b[8:11],1)
-    l6a=Convertir_lista(l6a,1)
-    l6b=Convertir_lista(l6b,1)
+    l6a=Convertir_lista(l6a,2)
+    l6b=Convertir_lista(l6b,2)
     return render_template('informe4.html',eti1=l1,eti2=l2,L1=len(l1),
                                            eti3=l3,eti4=l4a,eti5=l4b,L2=len(l3),
                                            eti6=l5,eti7=l6a,eti8=l6b,L3=len(l5)) 

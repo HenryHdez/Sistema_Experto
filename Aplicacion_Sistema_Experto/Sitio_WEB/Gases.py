@@ -281,8 +281,9 @@ def Q_Cedido_gas(Calor_estimado):
     Lista_Contenido=np.ones((16, Etapas))
     """Calculo de la hornilla por etapas"""   
     CSS_Cana=float(Diccionario_Entr['CSS del jugo de Caña'])
-    Temp_amb=float(Diccionario_Entr['Temperatura Ambiente'])
-    Presion =float(Diccionario_Entr['Presion Atmosferica'])/760.0
+    print(Diccionario_Entr['Temperatura del ambiente'])
+    Temp_amb=float(Diccionario_Entr['Temperatura del ambiente'])
+    Presion =float(Diccionario_Entr['Presión atmosférica'])/760.0
     Tension_superficial=0.05546
     Lista_Contenido[0]=Calor_estimado
     Lista_Contenido[12]=Area_lisa  
@@ -368,4 +369,4 @@ def Optimizacion(Diccionario_1, Diccionario_2):
         Iteracion_actual=Iteracion_actual+1
     print('Fin algoritmo')
         
-Optimizacion(Diccionario, Diccionario_2)
+#Optimizacion(Diccionario, Diccionario_2)

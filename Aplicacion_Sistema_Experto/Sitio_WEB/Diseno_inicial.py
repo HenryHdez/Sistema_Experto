@@ -5,6 +5,7 @@ Created on Wed Apr  8 11:38:48 2020
 @author: hahernandez
 """
 import math
+import random
 import pandas as pd
 
 """----->>>>Selección del molino<<<<----"""
@@ -56,6 +57,49 @@ def Seleccionar_Molino(Kilos_Hora):
     df.to_excel('static/Temp/Temp.xlsx')
     return sum(E1)/len(E1)
     
+def Normalizar_Capacidad(Capacidad_Hornilla, Nivel_Freat):
+    if (Capacidad_Hornilla<=75):
+        Capacidad_Hornilla=75
+        Cant_Pailas=5
+        if (Nivel_Freat<3):
+            Tipo_Hornilla="Plana de una camara"
+        else:
+            Tipo_Hornilla="Plana de una camara"
+    elif((Capacidad_Hornilla>75) and (Capacidad_Hornilla<=100)):
+        Capacidad_Hornilla=100
+        Cant_Pailas=6
+        if (Nivel_Freat<3):
+            Tipo_Hornilla="Plana de una camara"
+        else:
+            Tipo_Hornilla="Ward cimpa"
+    elif((Capacidad_Hornilla>100) and (Capacidad_Hornilla<=125)):
+        Capacidad_Hornilla=125
+        Cant_Pailas=7
+        if (Nivel_Freat<3):
+            Tipo_Hornilla="Plana de dos camaras"
+        else:
+            Tipo_Hornilla=random.choice(["Ward cimpa","Mini-ward"])
+    elif((Capacidad_Hornilla>125) and (Capacidad_Hornilla<=150)):
+        Capacidad_Hornilla=150
+        Cant_Pailas=10
+        if (Nivel_Freat<3):
+            Tipo_Hornilla="Plana de dos camaras"
+        else:
+            Tipo_Hornilla=random.choice(["Ward cimpa","Mini-ward"])
+    elif((Capacidad_Hornilla>150) and (Capacidad_Hornilla<=175)):
+        Capacidad_Hornilla=175 
+        Cant_Pailas=11
+        Tipo_Hornilla="Plana de dos camaras"
+    elif((Capacidad_Hornilla>175) and (Capacidad_Hornilla<=200)):
+        Capacidad_Hornilla=200
+        Cant_Pailas=12
+        Tipo_Hornilla="Plana de dos camaras"
+    elif(Capacidad_Hornilla>200):
+        Capacidad_Hornilla=225 
+        Cant_Pailas=13
+        Tipo_Hornilla="Plana de dos camaras"
+    return [Capacidad_Hornilla, Cant_Pailas, Tipo_Hornilla]
+        
 def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
     """Estos datos se toman directamente del archivo HTML"""
     #Crecimiento del área sembrada en los proximos 5 años		
@@ -112,7 +156,10 @@ def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
     Capacidad_molino=Cana_molida_hora*1.3*1000
     #Capacidad de la hornilla=Masa de panela
     Capacidad_Hornilla=Masa_panela
-    
+    #Normalización de la capacidad de la hornilla
+    Mem_Fre=Diccionario['Nivel freático'].split()
+    Mem_Temp=Normalizar_Capacidad(Capacidad_Hornilla, float(Mem_Fre[1]))
+    Capacidad_Hornilla=Mem_Temp[0]
     """Cálculos para la masa de panela"""
     Masa_Jugo_Clarificado=(CSS_Panela*Capacidad_Hornilla)/CSS_Cana
     Masa_Jugo_Prelimpiador=Masa_Jugo_Clarificado/(1-Cachaza)
@@ -167,8 +214,9 @@ def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
     """Ampliación del diccionario"""
     Etiquetas=['DATOS DE ENTRADA',
                'Capacidad estimada de la hornilla',			
-               'Factor de consumo de bagazo',	
-               'Eficiencia de la hornilla',					
+               'Factor de consumo de bagazo',
+               'Eficiencia de la hornilla',	
+               'Tipo de hornilla',				
                'Bagacillo del pre-limpiador',		
                'Cachaza',			
                'CSS del jugo de Caña',			
@@ -238,6 +286,7 @@ def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
              math.ceil(Capacidad_Hornilla),
              round(Factor_consumo_bagazo,3),
              round(Eficiencia,3),
+             Mem_Temp[2],
              round(Bagazillo_Prelimpiador,3),
              round(Cachaza,3),
              round(CSS_Cana,3),
@@ -312,8 +361,8 @@ def Calculo_por_etapas(Diccionario):
     Lista_Contenido=[]
     Lista_columnas=[]
     #Etapas es un supuesto de cuantas pailas debe tener la hornilla
-    Cana_esperada_hectarea=float(Diccionario['Caña esperada por hectárea'])
-    Etapas=10#int(round(Cana_esperada_hectarea/10,0))
+    Mem_Temp=Normalizar_Capacidad(float(Diccionario['Capacidad estimada de la hornilla']),0)
+    Etapas=Mem_Temp[1]
     #Saturador "minimo son dos etapas"
     if (Etapas>2):
         Factor_Division=Etapas-2
@@ -404,7 +453,8 @@ def Calculo_por_etapas(Diccionario):
                'Temperatura de Salida [ºC]',
                'Entalpia de Vaporización [KJ/kg]',
                'Masa de Agua a Evaporar [Kg]',
-               'Calor Nece Calc por Etapa [KW]']
+               'Calor Nece Calc por Etapa [KW]'
+               ]
     Dict_aux=dict(zip(Etiquetas,Lista_Contenido))    
     Dict_aux_2=dict(zip(['Etapas'],[Etapas]))  
     Dict_aux.update(Dict_aux_2)

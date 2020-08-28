@@ -13,7 +13,7 @@ from pylatex.package import Package
 class Documento_Latex():
     global doc
     
-    def portada(Diccionario, eficiencia):
+    def portada(Diccionario, eficiencia,T_Hornilla):
         global doc
         doc = Document()
         geometry_options = {"tmargin": "4cm", "rmargin": "2cm", "lmargin": "4cm", "bmargin": "3cm"} 
@@ -49,7 +49,7 @@ class Documento_Latex():
                     tlg.append('\nApreciado(s) productor(es):')
                     tlg.append('\n \n') #Salto de línea en parráfo
                     Parrafo= ('Con base en la información suministrada, está aplicación ha tasado (ver Sección 1) la construcción de una hornilla '+
-                              'Plana CIMPA'+' con capacidad de '+ str(Diccionario['Capacidad estimada de la hornilla']) +' kg/h; adecuada para el procesamiento de hasta '+
+                              T_Hornilla+' con capacidad de '+ str(Diccionario['Capacidad estimada de la hornilla']) +' kg/h; adecuada para el procesamiento de hasta '+
                               str(Diccionario['Área cosechada al mes'])+
                               ' ha'+' de caña, con un rendimiento de '+ str(float(Diccionario['Caña molida al mes']))+
                               ' T/mes y un periodo vegetativo de '+ str(Diccionario['Periodo vegetativo'])+' meses. Teniendo en cuenta que'+

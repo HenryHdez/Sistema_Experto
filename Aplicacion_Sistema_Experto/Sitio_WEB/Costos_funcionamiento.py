@@ -443,16 +443,16 @@ def costos():
                         ]
     D_Consolidado=dict(zip(Etiquetas_Totales,Consolidado_totales_1))    
     L_etiquetas_aux_excel1=[Etiquetas_Totales,Consolidado_totales_1]
-    
     mem_capacidad=Capacidad_hornilla
     lista_produccion_1=[]
     lista_produccion_2=[]
     for k in range(2):    
         """>>>>-----------------COSTOS DE LA PRODUCCIÓN-------------------------<<<"""
         if(k==0):
-            Capacidad_hornilla=mem_capacidad*0.6
+            Capacidad_hornilla=mem_capacidad+25
         elif (k==1):
             Capacidad_hornilla=mem_capacidad
+
         #Variables
         Valor_Cana=float(Operativos['Tonelada de Caña'].values)	
         Galon_diesel=float(Operativos['Galon diesel'].values)		
@@ -509,12 +509,12 @@ def costos():
             lista_produccion_1=Consolidado_totales_2
             lista_produccion_1.append(Costo_total_kg)
             lista_produccion_1.insert(0,Capacidad_hornilla)
-            lista_produccion_1.insert(0,'NO')
+            lista_produccion_1.insert(0,'SI')
         elif (k==1):
             lista_produccion_2=Consolidado_totales_2
             lista_produccion_2.append(Costo_total_kg)
             lista_produccion_2.insert(0,Capacidad_hornilla)
-            lista_produccion_2.insert(0,'SI')
+            lista_produccion_2.insert(0,'NO')
 
     """>>>>>>>>>>>>>>>>>>>>>Codificar rotulo del informe<<<<<<<<<<<<<<<<"""  
     Etiquetas_produccion=['¿El diseño incorpora recuperador de calor?',
@@ -544,7 +544,7 @@ def costos():
     for k in range(2):
         if(k==0):
             Total_proyecto=mem_total_proyecto-total_recuperador
-            Capacidad_hornilla=mem_capacidad*0.6
+            Capacidad_hornilla=mem_capacidad+25
         elif (k==1):
             Total_proyecto=mem_total_proyecto
             Capacidad_hornilla=mem_capacidad
@@ -578,20 +578,20 @@ def costos():
                                 round(Valor_Salvamento,0),  
                                 round(Ingreso_anual,0)]
             lista_Depreciacion1=Depreciacion
-            lista_financiero_1.insert(0,'NO')
+            lista_financiero_1.insert(0,'SI')
         elif (k==1):
             lista_financiero_2=[' ', ' ', ' ', ' ', 
                                 math.ceil(Costo_financiero), Depreciacion_anual, Produccion_mensual_kg, 
                                 Produccion_anual_kg, Valor_Salvamento, Ingreso_anual]
             lista_Depreciacion2=Depreciacion
-            lista_financiero_2.insert(0,'SI')
+            lista_financiero_2.insert(0,'NO')
             
     """>>>>>>>>>>>>>>>>>>>>>Codificar rotulo del informe<<<<<<<<<<<<<<<<"""  
     Etiquetas_financiacion=['¿El diseño incorpora recuperador de calor?',
                           'Vida útil estimada de la hornilla (años)',
                           'Tasa de interés de la financiación',
                           'Tiempo mínimo para recuperar la inversión (años)', 
-                          'Valor de la panela actualmente ', 
+                          'Valor de la panela para el cálculo ', 
                           'Costo financiero',
                           'Depreciación anual',
                           'Producción mensual (kg)',
@@ -599,6 +599,23 @@ def costos():
                           'Valor de salvamento (5% del total del costo de la hornilla)',
                           'Ingreso anual aproximado'                          
                           ]
+
+    Memoria_Temp=lista_financiero_1[5]
+    lista_financiero_1[5]=lista_financiero_2[5]
+    lista_financiero_2[5]=Memoria_Temp    
+
+    Memoria_Temp=lista_financiero_1[6]
+    lista_financiero_1[6]=lista_financiero_2[6]
+    lista_financiero_2[6]=Memoria_Temp  
+
+    Memoria_Temp=lista_financiero_1[9]
+    lista_financiero_1[9]=lista_financiero_2[9]
+    lista_financiero_2[9]=Memoria_Temp 
+    
+#    Memoria_Temp=lista_financiero_2[10]
+#    lista_financiero_2[10]=lista_financiero_1[10]
+#    lista_financiero_1[10]=Memoria_Temp 
+        
     lista1=[]
     for i in range(len(lista_financiero_1)):
         lista1.append([lista_financiero_1[i], lista_financiero_2[i]])
@@ -684,14 +701,14 @@ def costos():
     m4=min(np.array(lista_flujo_2)/(1000000))   
     lim_max=0
     lim_min=0
-    if(m1<m2):
-        lim_max=m2
-        l1 =b.barh(range(len(lista_flujo_2)),np.array(lista_flujo_2)/(1000000),edgecolor='black',hatch="/")
-        l2 =b.barh(range(len(lista_flujo_1)),np.array(lista_flujo_1)/(1000000),edgecolor='black',hatch="o")
-    else:
+    if(m1>m2):
         lim_max=m1
-        l2 =b.barh(range(len(lista_flujo_1)),np.array(lista_flujo_1)/(1000000),edgecolor='black',hatch="o")
-        l1 =b.barh(range(len(lista_flujo_2)),np.array(lista_flujo_2)/(1000000),edgecolor='black',hatch="/")
+        l1 =b.barh(range(len(lista_flujo_1)),np.array(lista_flujo_1)/(1000000),edgecolor='black',hatch="/")
+        l2 =b.barh(range(len(lista_flujo_2)),np.array(lista_flujo_2)/(1000000),edgecolor='black',hatch="o")
+    else:
+        lim_max=m2
+        l2 =b.barh(range(len(lista_flujo_2)),np.array(lista_flujo_2)/(1000000),edgecolor='black',hatch="o")
+        l1 =b.barh(range(len(lista_flujo_1)),np.array(lista_flujo_1)/(1000000),edgecolor='black',hatch="/")
     if(m3<m4):
         lim_min=m3
     else:
@@ -775,8 +792,6 @@ def costos():
     d.set_xlabel('NCS value (USD)', fontsize=20)    
 #    plt.setp(d.get_xticklabels(), fontsize=16, rotation=45)
 #    plt.setp(d.get_yticklabels(), fontsize=16)
-
-    
     d.set_ylabel('Funcionamiento (Años)', fontsize=18)
     d.set_xlabel('Valor de la panela ($)', fontsize=18)
     d.set_title('Tiempo de retorno a la inversión', fontsize=20)
