@@ -6,7 +6,9 @@ Created on Wed Apr 29 07:52:53 2020
 """
 import math
 import numpy as np
+import pandas as pd
 import Diseno_inicial
+import Pailas
 from Modulo1 import *
 from Modulo2 import *
 from Modulo21 import *
@@ -65,6 +67,7 @@ def Calcular_parrillas(Area_Calculada,Capacidad_Hornilla,i,Calor_suministrado,Ti
     Esp_Camara=0.12
     Aux=-264.44+(1.03*Temperatura_Flama_Ad)
     Q_Perd_Camara=(Coef_Conduct_Termica*Area_Cam)*((Aux-Temperatura_ambiente)/Esp_Camara)
+    Pailas.Dimensiones_parrilla(Ancho_seccion*1000, Longitud_Seccion*1000, Secciones_totales, Ancho_camara*1000, Longitud_Camara*1000, Altura_camara*1000)
     return Q_Perd_Camara
 
 #Función para calcular las propiedades de los gases           
@@ -113,7 +116,7 @@ def Propiedades(Calor_transferido):
     Gases_Totales=CO2_producidos+CO_producidos+H2O_Totales+O2_producidos+N2_producidos
     Temperatura_llama= 1180.0 + 273.15
     masa_Gases_Total= (CO2_producidos*CO2)+(CO_producidos*CO)+(H2O_Totales*H2O)+(O2_producidos*O2)+(N2_producidos*N2)
-    Potencia_Inicial_Gas=float(Diccionario_Entr['Calor Suministrado'])
+    Potencia_Inicial_Gas=float(Diccionario_Entr['Calor suministrado'])
     
     CO2_producidos_2=CO2*CO2_producidos/1000.0
     CO_producidos_2=CO*CO_producidos/1000.0
@@ -131,7 +134,7 @@ def Propiedades(Calor_transferido):
     N2_producidos_3=N2_producidos/Gases_Totales
     Gas_Total_2=CO2_producidos_3+CO_producidos_3+H2O_Totales_3+O2_producidos_3+N2_producidos_3  
     
-    Presion=float(Diccionario_Entr['Presion Atmosferica'])/760.0
+    Presion=float(Diccionario_Entr['Presión atmosférica'])/760.0
 
     Temperatura_Flama_Ad=Tadiabatica(Exceso_aire,Eficiencia_Combustion,Humedad_bagazo,Humedad_aire)
 
@@ -142,12 +145,12 @@ def Propiedades(Calor_transferido):
     Perdida_total=Energia_inicial_Gas*0.14
     
     Tipo_ladrillo=0
-    Q_perdido_cam = Calcular_parrillas(float(Diccionario_Entr['Area de Parrilla']),
-                                       float(Diccionario_Entr['Capacidad Estimada de la hornilla']),
+    Q_perdido_cam = Calcular_parrillas(float(Diccionario_Entr['Área de la parrilla']),
+                                       float(Diccionario_Entr['Capacidad estimada de la hornilla']),
                                        Tipo_ladrillo,
-                                       float(Diccionario_Entr['Calor Suministrado']),
+                                       float(Diccionario_Entr['Calor suministrado']),
                                        'Refractario',
-                                       float(Diccionario_Entr['Temperatura Ambiente']),
+                                       float(Diccionario_Entr['Temperatura del ambiente']),
                                        Temperatura_Flama_Ad)
     '''>>>>>>>>---------------Calculo de los gases----------------<<<<<<<<<<<<'''
     #>>>>>>>>>>>>>>>>>>>>>>>>>>>>Este arreglo inicia por la ultima paila<<<<<<<<<<<<<<<<<<<<<<<
@@ -195,13 +198,13 @@ def Propiedades(Calor_transferido):
     Emisividad_Ducto=0.96
     Factor_forma_Pared=0.4
     Factor_Forma_Piso=0.2
-    Area_Paredes_radiantes=[1.88,2.2,2.291,2.162,2.162,1.6215,1.216125]     #np.random.random(Cantidad_Pailas)              #Faltan ecuaciones
-    Area_Piso_radiante=[0.8,0.803,0.803,1.238,1.238,1.238,1.238]            #np.random.random(Cantidad_Pailas)                  #Faltan ecuaciones
-    Area_Flujo=[1.150,1.150, 1.150, 0.869	, 0.824, 0.824, 0.824]             #np.random.random(Cantidad_Pailas)                          #Faltan las ecuaciones
-    Area_Lisa=[0.614,0.99,1.8,2.176,2.9,5]                                  #np.random.random(Cantidad_Pailas)                           #Faltan las ecuaciones
-    Perimetro=[3.200,3.200,5.085,3.979,3.889,3.889]                         #Faltan las ecuaciones
+    Area_Paredes_radiantes=np.random.random(Cantidad_Pailas)*2 #[1.88,2.2,2.291,2.162,2.162,1.6215,1.216125]     #np.random.random(Cantidad_Pailas)              #Faltan ecuaciones
+    Area_Piso_radiante=np.random.random(Cantidad_Pailas) #[0.8,0.803,0.803,1.238,1.238,1.238,1.238]            #np.random.random(Cantidad_Pailas)                  #Faltan ecuaciones
+    Area_Flujo=np.random.random(Cantidad_Pailas)*1.5 #[1.150,1.150, 1.150, 0.869	, 0.824, 0.824, 0.824]             #np.random.random(Cantidad_Pailas)                          #Faltan las ecuaciones
+    Area_Lisa=np.random.random(Cantidad_Pailas)*3 #[0.614,0.99,1.8,2.176,2.9,5]                                  #np.random.random(Cantidad_Pailas)                           #Faltan las ecuaciones
+    Perimetro=np.random.random(Cantidad_Pailas)*3 #[3.200,3.200,5.085,3.979,3.889,3.889]                         #Faltan las ecuaciones
     Temperatura_Superficie=Q_Cedido[15]                                     #Lista del arreglo Q_cedido
-    Emisividad_gases=[0.119,0.126,0.147,0.153,0.153,0.153]                  #Revisar nomograma
+    Emisividad_gases=np.random.random(Cantidad_Pailas)*0.2 #[0.119,0.126,0.147,0.153,0.153,0.153]                  #Revisar nomograma
     Q_Total_estimado=[]
     for i in range(Cantidad_Pailas):
     #'''>>>>>>>>---------------Calor por convección----------------<<<<<<<<<<<<'''
@@ -257,8 +260,9 @@ def saturador (valor_i,maximo,minimo):
 def Q_Cedido_gas(Calor_estimado):
     global Diccionario_Entr
     global Diccionario_Pailas
-    Area_lisa=[0.614,0.99,1.8,2.176,2.9,5]
-    Espesor_lamina=[0.019,0.016,0.016,0.013,0.013,0.013]
+    Cantidad_Pailas=int(Diccionario_Pailas['Etapas']) 
+    Area_lisa=np.random.random(Cantidad_Pailas)*2 #[0.614,0.99,1.8,2.176,2.9,5]
+    Espesor_lamina=np.random.random(Cantidad_Pailas)*0.01 #[0.019,0.016,0.016,0.013,0.013,0.013]
     #Calor_estimado=[47.135,59.740,78.743,64.603,57.385,62.503,47.135,59.740,78.743,64.603,57.385,62.503]
 #    La matriz tiene la siguiente disposición 
 #    Lista_Contenido[0]=Calor Transferido desde el gas 
@@ -291,7 +295,7 @@ def Q_Cedido_gas(Calor_estimado):
     for i in range(Etapas-1,-1,-1):
         if(i==Etapas-1):
             Lista_Contenido[1][i]=CSS_Cana 
-            Lista_Contenido[4][i]=float(Diccionario_Entr['Jugo pre limpiador'])
+            Lista_Contenido[4][i]=float(Diccionario_Entr['Jugo pre-limpiador'])
         else:
             Lista_Contenido[1][i]=Lista_Contenido[2][i+1]
             Masa_Jugo_Aux=(Lista_Contenido[4][i+1]*Lista_Contenido[1][i+1]/Lista_Contenido[2][i+1])
@@ -336,24 +340,35 @@ def Optimizacion(Diccionario_1, Diccionario_2):
     #Parámetros del algoritmo de optimización
     Iteraciones_Max  = 10000
     Iteracion_actual = 0
-    Error_Minimo     = 0.001
+    Error_Minimo     = 0.05
     Error_actual     = 100
     #Individuos de la población inicial
     Diccionario = Diseno_inicial.datos_entrada(Diccionario_Entr,0,0)
     #Condiciones iniciales
     Calor_0=Diccionario_Pailas['Calor Nece Calc por Etapa [KW]']
     Factor_bagazo_nuevo=2.1
-    while ((Error_Minimo<Error_actual)and(Iteracion_actual<Iteraciones_Max)):
+    yprueba=0
+    while (yprueba<=1):
+        yprueba=yprueba+1
+    #while ((Error_Minimo<Error_actual)and(Iteracion_actual<Iteraciones_Max)):
         Diccionario = Diseno_inicial.datos_entrada(Diccionario_Entr,Iteracion_actual,Factor_bagazo_nuevo)
+        a11 = np.array(Calor_0, dtype = np.float)
+        a11 [np.isnan(a11)] = 0.1
+        Calor_0=a11
         Calor_1=np.around(Propiedades(Calor_0),3)
-        print(Calor_1)
-        print('Factor Consumo bagazo='+str(Diccionario['Factor Consumo Bagazo']))
-        print('Area parrilla='+str(Diccionario['Area de Parrilla']))
+
+        a11 = np.array(Calor_1, dtype = np.float)
+        a11 [np.isnan(a11)] = 0.1
+        Calor_1=a11
+        
+        print('Factor Consumo bagazo='+str(Diccionario['Factor de consumo de bagazo']))
+        print('Area parrilla='+str(Diccionario['Área de la parrilla']))
         print('Eficiencia de la hornilla='+str(Diccionario['Eficiencia de la hornilla']))
         print('Q='+str(Calor_1))
         #Calculo del error usando la magnitud del vector
         Calor_0 = np.array(Calor_0)
         Calor_1 = np.array(Calor_1) 
+
         x0=np.linalg.norm(Calor_0)
         x1=np.linalg.norm(Calor_1)
         Error=(x1-x0)/x0
@@ -362,7 +377,7 @@ def Optimizacion(Diccionario_1, Diccionario_2):
             Factor_bagazo_nuevo=Factor_bagazo_nuevo+(0.25*np.random.random(1))
         else:
             Factor_bagazo_nuevo=Factor_bagazo_nuevo-(0.25*np.random.random(1))
-        Factor_bagazo_nuevo=saturador(Factor_bagazo_nuevo,100,2.1)
+        Factor_bagazo_nuevo=float(saturador(Factor_bagazo_nuevo,100,2.1))
         print('Error='+str(Error))
         print('Iteracion='+str(Iteracion_actual))
         Calor_0=Calor_1

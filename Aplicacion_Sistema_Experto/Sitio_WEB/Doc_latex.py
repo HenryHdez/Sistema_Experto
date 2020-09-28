@@ -44,7 +44,10 @@ class Documento_Latex():
                     tlg.append(LineBreak()) #Salto de línea en parráfo
                     tlg.append('\nSeñor (es):') 
                     tlg.append('\n'+str(Diccionario['Nombre de usuario']))
-                    tlg.append('\n'+str(Diccionario['Departamento'])+', '+str(Diccionario['Ciudad'])+'.')
+                    if(str(Diccionario['Departamento'])=='--'):
+                        tlg.append('\n'+str(Diccionario['Pais'])+'.')    
+                    else:
+                        tlg.append('\n'+str(Diccionario['Departamento'])+', '+str(Diccionario['Ciudad'])+'.')
                     tlg.append('\n \n') #Salto de línea en parráfo
                     tlg.append('\nApreciado(s) productor(es):')
                     tlg.append('\n \n') #Salto de línea en parráfo
@@ -53,8 +56,8 @@ class Documento_Latex():
                               str(Diccionario['Área cosechada al mes'])+
                               ' ha'+' de caña, con un rendimiento de '+ str(float(Diccionario['Caña molida al mes']))+
                               ' T/mes y un periodo vegetativo de '+ str(Diccionario['Periodo vegetativo'])+' meses. Teniendo en cuenta que'+
-                              ' se realizan '+str(Diccionario['Número de moliendas'])+' moliendas al mes se establece una tiene una jornada laboral de '+
-                              str(Diccionario['Días de trabajo a la semana'])+ ' días a la semana de '+str(Diccionario['Horas de trabajo al día'])+ ' horas laborables cada una. '+
+                              ' se realizan '+str(Diccionario['Número de moliendas al mes'])+' moliendas al mes se establece una tiene una jornada laboral de '+
+                              str(Diccionario['Días de trabajo de la hornilla a la semana'])+ ' días a la semana de '+str(Diccionario['Horas de trabajo de la hornilla al día'])+ ' horas laborables cada una. '+
                               '\n Además, la aplicación estima que para garantizar una operación apropiada de la hornilla durante la producción '+
                               'de panela se requiere de un área (ver Sección 3) disponible de al menos '+'320'+' m² con una configuración de pailas y molino que garantiza una producción de panela de '+
                               '50 toneladas al mes (ver Sección 2)'
@@ -90,6 +93,7 @@ class Documento_Latex():
                                                         item.add_item('Información del usuario.')
                                                         item.add_item('Características de la caña sembrada.')
                                                         item.add_item('Características del molino.')
+                                                        item.add_item('Consideraciones generales para el manejo de la hornilla.')
                                                         item.add_item('Análisis financiero.')
                                             itemize.add_item('Sección 2')
                                             with itemize.create(Itemize()) as item:
@@ -102,6 +106,8 @@ class Documento_Latex():
                                                         item.add_item('Diagramas mecánicos de la chimenea.')
                                                         item.add_item('Diagramas mecánicos del proceso productivo.')
         doc.append(NewPage())
+
+        #PORTADA PARA LA SECCIÓN 1 
         
         with doc.create(Center()) as centered:
                     centered.append(TextColor('white','HH')) 
@@ -111,6 +117,8 @@ class Documento_Latex():
                     centered.append(LineBreak())
                     centered.append(HugeText('INFORMACIÓN TÉCNICA Y FINANCIERA')) 
         doc.append(NewPage())
+        
+    #Contenido
                     
     def titulos_I (texto, Palabra):
         with texto.create(Center()) as centered:
@@ -147,7 +155,9 @@ class Documento_Latex():
                 if(str(i)=='DATOS DE ENTRADA'):
                     break
                 else:
-                    if(SM(None, 'Variedad de Caña', i).ratio()<0.85):
+                    if((SM(None, 'Variedad de Caña', i).ratio()<0.85) and
+                       (SM(None, 'Usa fertilizante', i).ratio()<0.85) and
+                       (SM(None, '--', str(D1[i])).ratio()<0.85)):
                         T1=str(D1[i])
                         #Arreglo para asignar unidades y mostrarlas en el informe
                         if (str(i)=='Área caña sembrada'):
@@ -254,6 +264,116 @@ class Documento_Latex():
         doc.append(TextColor('white','HH')) 
         doc.append(NewPage())                
 
+        #MANUAL DE OPERACIÓN DE LA HORNILLA                   
+        with doc.create(MediumText(' ')) as tlg:
+                    tlg.append(LargeText(bold('Consideraciones para el manejo de la hornilla')))
+                    
+                    Parrafo= ('\n \nEl trapiche panelero es un lugar donde se procesa la caña de azúcar para producir la panela. Está constituido por las áreas de molienda, prelimpieza, hornilla, moldeo y almacenamiento.')           
+                    tlg.append(Parrafo)
+
+                    Parrafo= ('\n La hornilla panelera, está conformada, por el cenicero, la cámara, la chimenea y el ducto, sobre el cual se asientan directamente los intercambiadores de calor, en los que se deposita el jugo. En la hornilla panelera, se genera y transfiere el calor necesario para concentrar en un sistema de evaporación abierta, el jugo de la caña; de tal forma que la cantidad de energía aprovechada se relaciona directamente con el suministro de aire y bagazo, la eficiencia de la combustión, y la cantidad de energía disipada a los alrededores. Estas variables de operación y transferencia se relacionan entre si y debido a su complejidad y cantidad, dificultan las tareas de manipulación y diseño de la hornilla.')           
+                    tlg.append(Parrafo)
+                    
+                    tlg.append(LargeText(bold('\n \n Manejo de las hornillas paneleras')))
+                    
+                    with tlg.create(Itemize()) as itemize:
+                                            itemize.add_item('Tenga en cuenta las siguientes indicaciones.')
+                                            with itemize.create(Itemize()) as item:
+                                                        item.add_item('Durante las pruebas iniciales y periodos de capacitación, los operarios que manejan la hornilla deben tener experiencia para evitar la disminución en la calidad de la panela y vida util de los equipos instalados.')
+                                                        item.add_item('El trabajo continuo de la hornilla aumenta la capacidad de producción y evita la perdida de energía, puesto que, al no enfriarse durante las horas de la noche se reduce el efecto del cambio termico sobre los ladrillos de la estructura.')
+                                                        item.add_item('La combustión en la hornilla será buena, si se alimenta con pequeñas cantidades de bagazo cada 150 segundos y la válvula de la chimenea tiene una apertura 60° para garantizar un flujo de aire suficientemente alto que produzca llama, sin arrastrar combustible en los gases residuales.')
+                                                        item.add_item('La entrada de aire por orificios diferentes a los proyectados en el diseño inicial debe evitarse a toda costa, para aumentar la eficiencia de la combustión y reducir el material particulado de los gases en la chimenea.')
+                                                        item.add_item('Elimine obstáculos en las entradas de aire diseñadas para la hornilla y retire periódicamente la ceniza la parrilla para evitar la formación de escoria.')
+                                                        item.add_item('El cenicero y su entrada deben mantenerse despejada a fin de no obstruir el paso del aire.')
+                                                        item.add_item('El bagazo para alimentar la hornilla debe tener las condiciones de humedad mencionadas en el diseño.')
+                                                        item.add_item('Almacene el bagazo por dos semanas en la bagacera, y así, obtendrá un bagazo con al menos un 30% de humedad.')
+                                                        item.add_item('Ajuste el tiro de la chimenea usando la válvula mariposa cuando tenga bagazo con mayor humedad.')
+                                                        item.add_item('La válvula no opera en tiempo real y cuando se encuentra a medio cerrar se aumenta la velocidad de calentamiento en la zona de evaporación al pie de la entrada del bagazo. Sin embargo, cuando se encuentra abierta el calentamiento se presenta al pie de la chimenea.')
+                                                        item.add_item('El tiempo de residencia del jugo en la hornilla, influye en la calidad de la panela y este es directamente proporcional al aumento de los azucares invertidos.')
+                                                        item.add_item('Las falcas en las pailas son de seguridad, no deben usarse para contener una mayor cantidad de jugo. Por tanto para aumentar la transferencia de calor al jugo y mejorar la calidad de la panela es importante manejar la cantidad de jugo mínima en cada paila.')
+                                                        item.add_item('El nivel del jugo en las pailas semiesféricas, siempre debe estar por encima de la línea de contacto de los gases de combustión con la paila a fin de evitar quemadura en la panela.')
+                                                        item.add_item('La paila clarificadora debe calentar lo más rápido posible para que permita remover la cachaza. Además, la velocidad mínima de calentamiento debe ser de 1.5°C/min.')
+                                                        item.add_item('Elimine residuos de la caña o jugos presentes sobre la superficie de las pailas concentradoras de panela y cachaza periódicamente, para que el producto se pegue al fondo. Lo cual disminuye el paso del calor y deterioran la calidad del producto.')
+
+                    tlg.append(LargeText(bold('Mantenimiento de la hornilla')))
+                    
+                    with tlg.create(Itemize()) as itemize:
+                                            itemize.add_item('Después de cada molienda.')
+                                            with itemize.create(Itemize()) as item:
+                                                        item.add_item('Limpie y desinfecte las instalaciones, pailas, equipos y utensilios, antes de iniciar nuevamente la producción de panela.')
+                                                        item.add_item('Un encelamiento de los moldes, utensilios de madera y prelimpiadores.')
+                                                        item.add_item('Dejar en remojo con agua limpia las pailas durante el enfriamiento de la hornilla.')
+                                                        item.add_item('Retirar la ceniza del cenicero y el ducto.')
+                                                   
+                    with tlg.create(Itemize()) as itemize:
+                                            itemize.add_item('Cada seis moliendas.')
+                                            with itemize.create(Itemize()) as item:
+                                                        item.add_item('Retirar el hollín formado en la superficie de las pailas, por donde se transfiere el calor.')
+                                                        item.add_item('Limpiar los ductos de las pailas piro-tubulares, con ayuda de un raspador o un costal de fique.')
+    
+                    with tlg.create(Itemize()) as itemize:
+                                            itemize.add_item('Cada seis meses.')
+                                            with itemize.create(Itemize()) as item:
+                                                        item.add_item('Realice una limpieza general e inspección del estado de los ductos.')
+                                                        item.add_item('Realice un mantenimiento de las paredes del ducto y la cámara.')
+                                                        
+                    tlg.append(LargeText(bold('Recomendaciones de construcción del trapiche')))
+                    
+                    with tlg.create(Itemize()) as itemize:
+                                            itemize.add_item('Algunos parámetros para tener en cuenta son.')
+                                            with itemize.create(Itemize()) as item:
+                                                        item.add_item('El suministro de agua ser potable y continuo.')
+                                                        item.add_item('Los alrededores de las fábricas deben estar libre de posibles focos de infección.')
+                                                        item.add_item('Las áreas de trabajo de cada subproceso deben estar delimitadas.')
+                                                        item.add_item('Las áreas de procesamiento y empaque deben estar separadas de las áreas de recepción y desechos.')
+                                                        item.add_item('Las uniones de las baldosas deben recubrirse de materiales plásticos que faciliten la limpieza.')
+                                                        item.add_item('Las salientes de las paredes, dinteles de ventanas y suspensiones del techo deben ser curvas e inclinadas.')
+                                                        item.add_item('Los pisos y las paredes se deben construir con materiales anticorrosivos, no absorbentes y de alto transito.')
+                                                        item.add_item('Las áreas de procesos deben tener en el centro un canal de drenaje con 3° de inclinación y una parrilla removible para realizar su limpieza.')
+                                                        item.add_item('Los pisos deben tener una leve inclinación (3°) para realizar el drenado.')
+                                                        item.add_item('Los desagües deben tener rejillas de seguridad para impedir el paso de animales.')
+                                                        item.add_item('Los ambientes debe ser ventilados.')
+                                                        item.add_item('Los vapores deben contar con su propio escape para evitar la presencia de moho en paredes y techos.')
+                                                        item.add_item('Los ductos de ventilación deben estar cubiertos de mallas protectoras.')
+                                                        item.add_item('Los ambientes deben estar bien iluminados.')
+                                                        item.add_item('Las bases o cimientos deben ser lisos para evitar la presencia de insectos o residuos.')
+                                                        item.add_item('Los espacios entre los equipos o equipos y paredes deben estar sellados.')
+                                                        item.add_item('Los baños, habitaciones y casilleros, deben estar aseados y alejados de las áreas de procesamiento y producto terminado.')
+                                                        item.add_item('Las diferentes áreas deben disponer de un sitio para el aseo de las manos con sus respectivos implementos, tales como; jabón líquido, cepillos y toallas desechables.')
+
+                    tlg.append(LargeText(bold('Higiene y desinfección en el trapiche')))
+                   
+                    with tlg.create(Itemize()) as itemize:
+                                            itemize.add_item('Tenga en cuenta las siguientes indicaciones para su cuidado personal.')
+                                            with itemize.create(Itemize()) as item:
+                                                        item.add_item('El objetivo de la higiene en los alimentos es alargar la vida útil del producto, y proteger al consumidor final de las enfermedades producidas al ingerir alimentos contaminados.')
+                                                        item.add_item('La higienización de un trapiche requiere de una limpieza con detergente y de una esterilización industrial o satanización (desinfectante y bactericida).')
+                                                        item.add_item('Los equipos y utensilios deben limpiarse y desinfectarse al final e inicio de cada molienda.')
+                                                        item.add_item('La limpieza se realiza siguiendo estas pautas: proteger las materias prima y los productos terminados, raspar los residuos sólidos con una espátula sobre un recogedor y lavar con agua limpia, cepillo y detergente')
+                                                        item.add_item('La esterilización se realiza con calor (vapor de agua, agua hirviendo), o un esterilizante químico (bactericida, desinfectante).Cuando se emplea agua caliente debe estar hirviendo (90°C) o en el caso del esterilizante químico puede usarse una solución clorada, de vinagre y una lechada de cal.')
+                                                        item.add_item('Las soluciones desinfectantes deben aplicarse en solución con un rociador, empezando por la parte inferior.')
+                                                        item.add_item('Antes de la esterilización la superficie debe estar limpia y totalmente escurrida.')
+                                                        item.add_item('Las superficies en contacto con el alimento deben ser lisas, exentas de huecos, grietas y evitar las esquinas cuadradas.')
+                                                        item.add_item('La industria de alimentos usa ampliamente el acero inoxidable y plásticos como el teflón por la facilidad de higienización, y su poca alteración al contacto con los alimentos.')
+                                                        item.add_item('No debe usarse el cobre, bronce, estaño, aluminio, madera y zinc para las superficies que están en contacto con el alimento.')
+                                                        item.add_item('No emplee en la limpieza esponjas o cepillos metálicos que rayen las superficies.')
+                                                        item.add_item('Las pailas se lavan con arena de peña y esponja para desmancharla.')
+                                                        item.add_item('Ningún tipo de rosca debe estar en contacto con el alimento.')
+                                                        item.add_item('Se debe mantener una inclinación de superficies y tubería para el drenaje de 1 centímetro por metro.')
+                                                        item.add_item('Se deben usar conexiones hidraulicas y uniones que sean de fácil limpieza.')
+                                                        item.add_item('Se debe evitar la unión de acero inoxidable con otros metales.')
+                                                        item.add_item('El hipoclorito ejerce una rápida acción bactericida sin dejar residuos tóxicos.')
+                                                        item.add_item('No es aconsejable el uso de cloro en material de acero inoxidable.')
+                                                        item.add_item('En la esterilización del acero inoxidable, puede utilizarse agua caliente, vapor o solución de 0.25 litros de vinagre en 10 litros de agua.')
+                                                        item.add_item('Los materiales plásticos se deben lavar con una solución de 5.0 gramos de bicarbonato (2 cucharadas) en l0 litros de agua clorada y dejar secar durante 30 minutos.')
+                                                        item.add_item('La esterilización del acero inoxidable puede hacerse con agua caliente, vapor o solución de 0.25 litros de vinagre en 10 litros de agua.')
+                                                        item.add_item('Las superficies de madera se limpian con espátula para eliminar los residuos sólidos. Después remojar en detergente durante 5 minutos, luego cepillar, lavar con agua limpia, y finalmente rociar con solución de 12 gramos de cal (una cucharadita) en 10 litros de agua dejar secar.')  
+                                                        item.add_item('Los utensilios de madera se dejan en un recipiente plástico limpio, con solución de 12 gramos de cal (una cucharadita) en 10 litros de agua.')  
+                                                        item.add_item('Cambiar la solución donde se sumergen los utensilios de madera cada cuatro horas.') 
+                                                        item.add_item('Los utensilios y gaveras no deben dejarse sobre el suelo o superficies no desinfectadas.') 
+                                                        item.add_item('Evitar la caída de grasa mecánica en los alimentos.')
+
+        doc.append(NewPage())
             
     def generar_pdf():  
         global doc

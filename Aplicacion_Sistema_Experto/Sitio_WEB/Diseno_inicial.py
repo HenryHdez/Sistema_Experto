@@ -58,46 +58,40 @@ def Seleccionar_Molino(Kilos_Hora):
     return sum(E1)/len(E1)
     
 def Normalizar_Capacidad(Capacidad_Hornilla, Nivel_Freat):
-    if (Capacidad_Hornilla<=75):
+    if (Capacidad_Hornilla<=100):
         Capacidad_Hornilla=75
-        Cant_Pailas=5
-        if (Nivel_Freat<3):
-            Tipo_Hornilla="Plana de una camara"
-        else:
-            Tipo_Hornilla="Plana de una camara"
-    elif((Capacidad_Hornilla>75) and (Capacidad_Hornilla<=100)):
-        Capacidad_Hornilla=100
         Cant_Pailas=6
-        if (Nivel_Freat<3):
-            Tipo_Hornilla="Plana de una camara"
-        else:
-            Tipo_Hornilla="Ward cimpa"
+        Tipo_Hornilla="Plana de una camara"
     elif((Capacidad_Hornilla>100) and (Capacidad_Hornilla<=125)):
         Capacidad_Hornilla=125
         Cant_Pailas=7
-        if (Nivel_Freat<3):
-            Tipo_Hornilla="Plana de dos camaras"
-        else:
-            Tipo_Hornilla=random.choice(["Ward cimpa","Mini-ward"])
+        if (Nivel_Freat<1):
+            Tipo_Hornilla=random.choice(["Plana de una camara","Plana de dos camaras"])
+        else: #Evaluacion Ward cimpa
+            Tipo_Hornilla=random.choice(["Plana de una camara","Plana de dos camaras","Ward cimpa","Mini-ward"])      
     elif((Capacidad_Hornilla>125) and (Capacidad_Hornilla<=150)):
         Capacidad_Hornilla=150
         Cant_Pailas=10
-        if (Nivel_Freat<3):
-            Tipo_Hornilla="Plana de dos camaras"
-        else:
-            Tipo_Hornilla=random.choice(["Ward cimpa","Mini-ward"])
+        if (Nivel_Freat<1):
+            Tipo_Hornilla=random.choice(["Plana de una camara","Plana de dos camaras"])
+        else: 
+            Tipo_Hornilla=random.choice(["Plana de una camara","Plana de dos camaras","Ward cimpa","Mini-ward"])
     elif((Capacidad_Hornilla>150) and (Capacidad_Hornilla<=175)):
         Capacidad_Hornilla=175 
         Cant_Pailas=11
-        Tipo_Hornilla="Plana de dos camaras"
-    elif((Capacidad_Hornilla>175) and (Capacidad_Hornilla<=200)):
+        if (Nivel_Freat<1):
+            Tipo_Hornilla=random.choice(["Plana de una camara","Plana de dos camaras"])
+        else: 
+            Tipo_Hornilla=random.choice(["Plana de una camara","Plana de dos camaras","Ward cimpa","Mini-ward"])
+        ######################################################Recupera
+    elif((Capacidad_Hornilla>175) and (Capacidad_Hornilla<=250)):
         Capacidad_Hornilla=200
         Cant_Pailas=12
-        Tipo_Hornilla="Plana de dos camaras"
-    elif(Capacidad_Hornilla>200):
-        Capacidad_Hornilla=225 
+        Tipo_Hornilla=random.choice(["Plana de una camara","Plana de dos camaras"])
+    elif(Capacidad_Hornilla>250):
+        Capacidad_Hornilla=250 
         Cant_Pailas=13
-        Tipo_Hornilla="Plana de dos camaras"
+        Tipo_Hornilla=random.choice(["Plana de una camara","Plana de dos camaras"])  
     return [Capacidad_Hornilla, Cant_Pailas, Tipo_Hornilla]
         
 def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
@@ -131,19 +125,19 @@ def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
     
     """Cálculo de la capacidad del molino"""		
     #Área de caña sembrada para el calculo
-    Crecimiento=float(Diccionario['Crecimiento aproximado del área sembrada'])
+    Crecimiento=float(Diccionario['Área proyectada para cultivo en los proximos 5 años'])
     Crecimiento=Crecimiento+float(Diccionario['Área caña sembrada'])
     Area_cana_calculo=(Crecimiento+float(Diccionario['Área caña sembrada']))/2
-    Cana_esperada_hectarea=float(Diccionario['Caña esperada por hectárea'])
+    Cana_esperada_hectarea=float(Diccionario['Caña producida por hectárea (T/ha)'])
     P_vegetativo=float(Diccionario['Periodo vegetativo'])
     #Caña molida al mes = Area sembrada de caña para calculo*Caña esperada por hectarea/Periodo vegetativo
     Cana_molida_mes=(Area_cana_calculo*Cana_esperada_hectarea)/P_vegetativo
     # Area cosechada al mes = Caña esperada por hectarea/Caña molida al mes
     Area_Cosechada_mes=Cana_molida_mes/Cana_esperada_hectarea
     #Caña molida a la semana = Caña molida al mes/numero de moliendas
-    Cana_molida_semana=Cana_molida_mes/float(Diccionario['Número de moliendas'])
+    Cana_molida_semana=Cana_molida_mes/float(Diccionario['Número de moliendas al mes'])
     #Caña molida por hora = Caña molida a la semana/Dias de trabajo*Horas al dia
-    Cana_molida_hora=Cana_molida_semana/(float(Diccionario['Días de trabajo a la semana'])*float(Diccionario['Horas de trabajo al día']))
+    Cana_molida_hora=Cana_molida_semana/(float(Diccionario['Días de trabajo de la hornilla a la semana'])*float(Diccionario['Horas de trabajo de la hornilla al día']))
     #Jugo Crudo=Caña molida por hora*porcentaje de extraccion
     Jugo_Crudo=Cana_molida_hora*Porcentaje_extraccion
     #Jugo Clarificado=Jugo_Crudo-((Jugo_Crudo*Bagacillo en Prelimpiador+((Jugo_Crudo-(Jugo_Crudo*Bagacillo en Prelimpiador))*(Cachaza))
@@ -281,7 +275,6 @@ def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
                'Total [KW]',
                'Total(F.L.) [KW]'
                ]
-    
     Valores=['DATOS DE ENTRADA',
              math.ceil(Capacidad_Hornilla),
              round(Factor_consumo_bagazo,3),

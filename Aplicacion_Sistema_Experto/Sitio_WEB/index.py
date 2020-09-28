@@ -52,6 +52,7 @@ def index():
 @app.route('/usuario')
 def usua():
     global df  
+    global paises
     global Deptos_cana
     global Ciudad_cana
     global Tipo_cana
@@ -63,26 +64,30 @@ def usua():
     global Nivel_Fosforo
     global Nivel_Calidad
     global Nivel_brpane 
-    df            = pd.read_json("static/Catalogos/Colombia.json")
-    cana          = pd.read_excel('static/Catalogos/Variedades.xlsx')
-    Deptos_cana   = cana['Depto'].values
-    Ciudad_cana   = cana['Ciudad'].values
-    Tipo_cana     = cana['Tipo'].values
-    Grados_Bx     = cana['Br'].values
-    Nivel_pH      = cana['pH'].values
-    Nivel_azucar  = cana['Azucares'].values
-    Nivel_Sacarosa= cana['Sacarosa'].values
-    Nivel_pureza  = cana['Pureza'].values
-    Nivel_Fosforo = cana['Forforo'].values
-    Nivel_Calidad = cana['Calidad'].values 
-    Nivel_brpane  = cana['BrPanela'].values
-    Variedad_cana =[]
-    for i in range(0,len(Deptos_cana)):
+    global Cana_ha
+    df             = pd.read_json("static/Catalogos/Colombia.json")
+    paises         = pd.read_excel("static/Catalogos/Paises.xlsx") 
+    cana           = pd.read_excel("static/Catalogos/Variedades.xlsx")
+    Deptos_cana    = cana['Depto'].values
+    Ciudad_cana    = cana['Ciudad'].values
+    Tipo_cana      = cana['Tipo'].values
+    Grados_Bx      = cana['Br'].values
+    Nivel_pH       = cana['pH'].values
+    Nivel_azucar   = cana['Azucares'].values
+    Nivel_Sacarosa = cana['Sacarosa'].values
+    Nivel_pureza   = cana['Pureza'].values
+    Nivel_Fosforo  = cana['Forforo'].values
+    Nivel_Calidad  = cana['Calidad'].values 
+    Nivel_brpane   = cana['BrPanela'].values
+    Cana_ha        = cana['ProduccionCana'].values
+    Variedad_cana  = []
+    for i in range(0, len(Deptos_cana)):
         if(i==0):
             Variedad_cana.append(Tipo_cana[i]+", -Valor por defecto-, °Brix= "+str(Grados_Bx[i]))
         else:
             Variedad_cana.append(Tipo_cana[i]+", Disponible en: "+Deptos_cana[i]+"-"+Ciudad_cana[i]+", °Brix= "+str(Grados_Bx[i]))
     return render_template('usuario.html', 
+                           paises_lista=paises['Nombre'],
                            departamentos=df.departamento, 
                            provincia=df.ciudades,
                            Ciudad_cana_1=Ciudad_cana,
@@ -130,20 +135,32 @@ def generar_valores_informe():
     global Nivel_Fosforo
     global Nivel_Calidad
     global Nivel_brpane
+    global Cana_ha
     global Diccionario 
     global Diccionario_2
     global Diccionario_3
     global Diccionario_4
     """Creación de la primer parte del diccionario (leer del formulario de usuario)"""
-    Dept=result.get('Departamento')
-    D_aux=df.departamento
-    D_aux=D_aux.tolist()
-    amsnm=df.altura
-    amsnm=amsnm.tolist()
-    H2O=df.aguasubterranea
-    H2O=H2O.tolist()
-    altura_media=amsnm[D_aux.index(Dept)]
-    NivelFre=H2O[D_aux.index(Dept)]
+    Pais_sel=result.get('Pais')
+    if(Pais_sel=='Colombia'):
+        a=result.to_dict() 
+        Dept=result.get('Departamento')
+        D_aux=df.departamento
+        D_aux=D_aux.tolist()
+        amsnm=df.altura
+        amsnm=amsnm.tolist()
+        H2O=df.aguasubterranea
+        H2O=H2O.tolist()
+        altura_media=amsnm[D_aux.index(Dept)]
+        NivelFre=H2O[D_aux.index(Dept)]
+        Nombre_Rot="Hornilla: "+a['Nombre de usuario']+" ("+a['Departamento']+'-'+a['Ciudad']+")"
+    else:
+        a=result.to_dict() 
+        altura_media=200
+        NivelFre='desde 100 m'   
+        a['Departamento']='--'
+        a['Ciudad']='--'
+        Nombre_Rot="Hornilla: "+a['Nombre de usuario']+" ("+a['Pais']+")"
     #Rotulos de la página
     #    vector=['Nombre de usuario','Departamento','Ciudad','Crecimiento aproximado del área sembrada',
     #            'Área caña sembrada','Caña por esperada hectárea',
@@ -153,33 +170,17 @@ def generar_valores_informe():
     #---------------->>>>>>>>>"""Cálculo del periodo vegetativo"""<<<<<<<<<<<<<<<<<<<
     Formulario_1_Etiquetas=[]
     Formulario_1_Valores=[]
-    a=result.to_dict()        
+           
     for i in a:
         Formulario_1_Etiquetas.append(i)
         Formulario_1_Valores.append(a[i])
-    r=len(a)
-    del(Formulario_1_Etiquetas[r-1])
-    del(Formulario_1_Valores[r-1])
     Formulario_1_Etiquetas.append('Altura media sobre el nivel del mar')
     Formulario_1_Valores.append(str(altura_media)+' m')
     Formulario_1_Etiquetas.append('Nivel freático')
-    Formulario_1_Valores.append(str(NivelFre)) 
-    #Determinar periodo vegetativo
-    Formulario_1_Etiquetas.append('Periodo vegetativo')
-    #""">>>>De acuerdo con el libro descomente los if y comente el calculo exponencial<<<"""
-    #    if(altura_media<=1200):
-    #        Formulario_1_Valores.append(str(12))
-    #    elif (altura_media>1200 and altura_media<=1500):
-    #        Formulario_1_Valores.append(str(15))
-    #    else:
-    #        Formulario_1_Valores.append(str(18))
-    
-    #>>>>>>>>>>>De acuerdo con la formula enviada por la ingeniera.<<<<<<<<<<<
-    Formulario_1_Valores.append(str(round(math.exp((altura_media+5518.9)/2441.1),0)))  
-    Diccionario=dict(zip(Formulario_1_Etiquetas,Formulario_1_Valores))  
+    Formulario_1_Valores.append(str(NivelFre))    
     """Creación de la segunda parte del diccionario"""
     a=result.to_dict()
-    cantidadcanas=int(a['Cantidad de variedades de caña sembrada'])+1
+    cantidadcanas=int(a['Variedades de caña sembrada'])+1
     Formulario_2_Etiquetas=[]
     Formulario_2_Valores=[] 
     Formulario_2a_Etiquetas=[]
@@ -187,6 +188,7 @@ def generar_valores_informe():
     Directorio =[]
     G_brix_cana=0.0;
     G_brix_panela=0.0;    
+    ha_cana_conta=0.0;
     for contacana in range(1,cantidadcanas):
         try:
             Valor_cana_buscar='Variedad de Caña '+str(contacana)
@@ -216,8 +218,22 @@ def generar_valores_informe():
             G_brix_cana=G_brix_cana+float(Grados_Bx[index])
             G_brix_panela=G_brix_panela+float(Nivel_brpane[index])
             Directorio.append('Cana/'+Tipo_cana[index]+'.png')
+            ha_cana_conta=ha_cana_conta+float(Cana_ha[index])
         except:
             print("Variedad no disponible")
+    #FORMULARIO 1
+    #Agregar caña esperada por ha
+    if(a['Usa fertilizante']=='NO'):
+        ha_cana_conta=round((ha_cana_conta/cantidadcanas)*0.5,3)
+    else:
+        ha_cana_conta=round((ha_cana_conta/cantidadcanas)*0.8,3)
+    Formulario_1_Etiquetas.append('Caña producida por hectárea (T/ha)')
+    Formulario_1_Valores.append(str(ha_cana_conta))
+    #Determinar periodo vegetativo
+    Formulario_1_Etiquetas.append('Periodo vegetativo')
+    Formulario_1_Valores.append(str(round(math.exp((altura_media+5518.9)/2441.1),0)))
+    Diccionario=dict(zip(Formulario_1_Etiquetas,Formulario_1_Valores))  
+    #FORMULARIO 2
     #Exportar variedades de caña seleccionadas
     datos_temp=[Formulario_2_Etiquetas,Formulario_2_Valores]
     df1 = pd.DataFrame(datos_temp)
@@ -238,10 +254,14 @@ def generar_valores_informe():
     """Calculo de la hornilla"""
     Diccionario   = Diseno_inicial.datos_entrada(Diccionario,0,0)
     Diccionario_2 = Diseno_inicial.Calculo_por_etapas(Diccionario)
+
+    """Estimar propiedades de los gases"""
+    Gases.Optimizacion(Diccionario,Diccionario_2)
+    """Optimizar tamaño de las pailas"""
     Pailas.Mostrar_pailas(
             Diccionario_2['Volumen de jugo [m^3/kg]'],
             int(Diccionario_2['Etapas']),
-            "Hornilla: "+Diccionario['Nombre de usuario']+" ("+Diccionario['Departamento']+'-'+Diccionario['Ciudad']+')',
+            Nombre_Rot,
             Diccionario['Tipo de hornilla']
             )
     """Presentar información del molino"""
@@ -267,14 +287,11 @@ def generar_valores_informe():
     Formulario_3_Etiquetas.append('Valor aproximado de un molino')
     Formulario_3_Valores.append(Costos_funcionamiento.Formato_Moneda(sum(Valor)/len(Valor), "$", 2))
     Diccionario_3=dict(zip(Formulario_3_Etiquetas,Formulario_3_Valores))
-    
-    """Estimar propiedades de los gases"""
-    #Gases.Optimizacion(Diccionario,Diccionario_2)
     """Analisis financiero"""
     Costos_funcionamiento.Variables(float(Diccionario['Capacidad estimada de la hornilla']),
-                                    float(Diccionario['Horas de trabajo al día']), 
-                                    float(Diccionario['Días de trabajo a la semana']), 
-                                    float(Diccionario['Número de moliendas']),
+                                    float(Diccionario['Horas de trabajo de la hornilla al día']), 
+                                    float(Diccionario['Días de trabajo de la hornilla a la semana']), 
+                                    float(Diccionario['Número de moliendas al mes']),
                                     float(Diccionario['Caña molida al mes']))
     Costos_funcionamiento.costos()
     
@@ -291,7 +308,8 @@ def generar_valores_informe():
     usuarios = (Diccionario['Nombre de usuario'],
                 Diccionario['Correo'],
                 int(Diccionario['Telefono']),
-                Diccionario['Departamento'], 
+                Diccionario['Pais'], 
+                Diccionario['Departamento'],
                 Diccionario['Ciudad'], 
                 Crear_archivo_base_64("static/Informe_WEB.pdf"), 
                 Crear_archivo_base_64("static/Planos_WEB.pdf"), 
@@ -382,7 +400,9 @@ def infor1():
     lista_etiquetas_filtradas=[]
     lista_valores_filtrados=[]
     for i in range(len(Formulario_1_Etiquetas)):
-        if(SM(None, 'Variedad de Caña', Formulario_1_Etiquetas[i]).ratio()<0.85):
+        if((SM(None, 'Variedad de Caña', Formulario_1_Etiquetas[i]).ratio()<0.85) and 
+           (SM(None, 'Usa fertilizante', Formulario_1_Etiquetas[i]).ratio()<0.85) and
+           (SM(None, '--', Formulario_1_Valores[i]).ratio()<0.85)):
             lista_etiquetas_filtradas.append(Formulario_1_Etiquetas[i])
             lista_valores_filtrados.append(Formulario_1_Valores[i])    
     return render_template('informe1.html', 
@@ -427,7 +447,6 @@ def Operaciones_db(Operacion, usuarios):
         cursor = cnxn.cursor()
         #Consulta
         if(Operacion==0):               
-            print("Algo2")
             base_temp=cursor.execute("SELECT * FROM Clientes")
             for tdb in base_temp:
                     db_1.append(tdb)
@@ -436,8 +455,7 @@ def Operaciones_db(Operacion, usuarios):
             cursor.execute("DELETE FROM Clientes WHERE CONVERT(NVARCHAR(MAX), Nombre)!='NO_BORRAR'")
         #Insertar
         elif(Operacion==2):
-            print("acceso")
-            cursor.execute("INSERT INTO Clientes (Nombre, Correo, Telefono, Departamento, Ciudad, Usuario, Planos, Recinto, Calculos) VALUES (?,?,?,?,?,?,?,?,?)", usuarios)
+            cursor.execute("INSERT INTO Clientes (Nombre, Correo, Telefono, Pais, Departamento, Ciudad, Usuario, Planos, Recinto, Calculos) VALUES (?,?,?,?,?,?,?,?,?,?)", usuarios)
         #Busqueda
         elif(Operacion==3):
             base_temp=cursor.execute("SELECT * FROM Clientes")
@@ -525,6 +543,7 @@ def base_batos():
             Etiquetas_Nombres=[]
             Etiquetas_Correo=[]
             Etiquetas_Telefono=[]
+            Etiquetas_Pais=[]
             Etiquetas_Departamento=[]
             Etiquetas_Ciudad=[]
             Etiquetas_U=[]
@@ -544,18 +563,19 @@ def base_batos():
                 Etiquetas_Nombres.append(listas_1[1])
                 Etiquetas_Correo.append(listas_1[2])
                 Etiquetas_Telefono.append(listas_1[3])
-                Etiquetas_Departamento.append(listas_1[4])
-                Etiquetas_Ciudad.append(listas_1[5])
+                Etiquetas_Pais.append(listas_1[4])
+                Etiquetas_Departamento.append(listas_1[5])
+                Etiquetas_Ciudad.append(listas_1[6])
                 Etiquetas_U.append("pdf2/U_"+str(Cantidad_Clientes)+".pdf")
                 Etiquetas_P.append("pdf2/P_"+str(Cantidad_Clientes)+".pdf")
                 Etiquetas_R.append("pdf2/R_"+str(Cantidad_Clientes)+".pdf")
                 Etiquetas_C.append("pdf2/C_"+str(Cantidad_Clientes)+".pdf")
                 Cantidad_Clientes=Cantidad_Clientes+1
                 try:
-                    Leer_pdf_base64("static/pdf2/U_"+str(Cantidad_Clientes)+".pdf", listas_1[6])
-                    Leer_pdf_base64("static/pdf2/P_"+str(Cantidad_Clientes)+".pdf", listas_1[7])
-                    Leer_pdf_base64("static/pdf2/R_"+str(Cantidad_Clientes)+".pdf", listas_1[8])
-                    Leer_pdf_base64("static/pdf2/C_"+str(Cantidad_Clientes)+".pdf", listas_1[9])         
+                    Leer_pdf_base64("static/pdf2/U_"+str(Cantidad_Clientes)+".pdf", listas_1[7])
+                    Leer_pdf_base64("static/pdf2/P_"+str(Cantidad_Clientes)+".pdf", listas_1[8])
+                    Leer_pdf_base64("static/pdf2/R_"+str(Cantidad_Clientes)+".pdf", listas_1[9])
+                    Leer_pdf_base64("static/pdf2/C_"+str(Cantidad_Clientes)+".pdf", listas_1[10])         
                 except:
                     print('Error archivo')
             return render_template('base.html',
@@ -563,6 +583,7 @@ def base_batos():
                                    Eti1=Etiquetas_Nombres,
                                    Eti2=Etiquetas_Correo,
                                    Eti3=Etiquetas_Telefono,
+                                   Eti3a=Etiquetas_Pais,
                                    Eti4=Etiquetas_Departamento,
                                    Eti5=Etiquetas_Ciudad,
                                    Eti6=Etiquetas_U,

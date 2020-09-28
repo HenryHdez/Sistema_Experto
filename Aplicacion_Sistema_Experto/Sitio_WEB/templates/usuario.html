@@ -47,12 +47,23 @@
             </tr>
                                                                         
             <tr>
+                <td style="width:450px"> <b>Pais:</b> </td>
+                <td style="width:450px"> 
+                    <select id="Pais" name="Pais" style="width : 250px; text-align:center;" onchange="Ocultar_depto();">
+                        {% for i in paises_lista %}
+                            <option value= "{{i}}">{{i}}</option>"
+                        {% endfor %}
+                    </select>                 
+                </td>
+            </tr> 
+            
+            <tr>
                 <td style="width:450px"> <b>Departamento:</b> </td>
                 <td style="width:450px"> 
                     <select id="Deptos" name="Departamento" style="width : 250px; text-align:center;" onchange="SeleccionarDepto();">
                         {% for i, valor in departamentos.items() %}
-                            {% if i == 4 %}
-                                <option value= "Santander" selected>Santander</option>"
+                            {% if i == 27 %}
+                                <option value= "{{valor}}" selected>{{valor}}</option>"
                             {% else %}
                                 <option value= "{{valor}}">{{valor}}</option>"
                             {% endif %}
@@ -65,7 +76,9 @@
                 <td style="width:450px"> <b>Ciudad:</b> </td>
                 <td style="width:450px"> 
                     <select id="Ciudad" name= "Ciudad" style="width : 250px; text-align:center;" onchange="Seleccionarvariedad();">
-                        <option value= "Barbosa">Barbosa</option>"
+                        {% for i in provincia[27] %}
+                            <option value= "{{i}}">{{i}}</option>"
+                        {% endfor %}
                     </select>                  
                 </td>
             </tr> 
@@ -76,37 +89,43 @@
             </tr>
 
             <tr>
-               <td style="width:450px"> <b>Crecimiento aproximado del área sembrada (Hectáreas):</b> </td>
-               <td style="width:450px"> <input type = "number" name = "Crecimiento aproximado del área sembrada" style="width : 250px; text-align:center;" value="0"  min="0" max="100"/> </td>
-            </tr>
-
-            <tr>
-               <td style="width:450px"> <b>Caña esperada por hectárea (Toneladas/Hectarea):</b> </td>
-               <td style="width:450px"> <input type = "number" name = "Caña esperada por hectárea" style="width : 250px; text-align:center;" value="120" min="1" max="1500"/> </td>
+               <td style="width:450px"> <b>Área proyectada para cultivo en los proximos 5 años (Hectáreas):</b> </td>
+               <td style="width:450px"> <input type = "number" name = "Área proyectada para cultivo en los proximos 5 años" style="width : 250px; text-align:center;" value="0"  min="0" max="100"/> </td>
             </tr>
             
             <tr>
-               <td style="width:450px"> <b>Número de moliendas:</b> </td>
-               <td style="width:450px"> <input type = "number" name = "Número de moliendas" style="width : 250px; text-align:center;" value="2" min="0" max="999"/> </td>
+               <td style="width:450px"> <b>Número de moliendas al mes:</b> </td>
+               <td style="width:450px"> <input type = "number" name = "Número de moliendas al mes" style="width : 250px; text-align:center;" value="2" min="0" max="999"/> </td>
             </tr>
 
             <tr>
-               <td style="width:450px"> <b>Días de trabajo a la semana:</b> </td>
-               <td style="width:450px"> <input type = "number" name = "Días de trabajo a la semana" style="width : 250px; text-align:center;" value="6" min="1" max="7"/> </td>
+               <td style="width:450px"> <b>Días de trabajo de la hornilla a la semana:</b> </td>
+               <td style="width:450px"> <input type = "number" name = "Días de trabajo de la hornilla a la semana" style="width : 250px; text-align:center;" value="6" min="1" max="7"/> </td>
             </tr>
 
             <tr>
-               <td style="width:450px"> <b>Horas de trabajo al día:</b> </td>
-               <td style="width:450px"> <input type = "number" name = "Horas de trabajo al día" style="width : 250px; text-align:center;" value="12" min="1" max="24"/> </td>
+               <td style="width:450px"> <b>Horas de trabajo de la hornilla al día:</b> </td>
+               <td style="width:450px"> <input type = "number" name = "Horas de trabajo de la hornilla al día" style="width : 250px; text-align:center;" value="12" min="1" max="24"/> </td>
             </tr>
-                        
+                                    
             <tr>
-                <td style="width:450px"> <b>¿Usted tiene acompañamiento agronómico?</b> </td>
+                <td style="width:450px"> <b>¿Utiliza fertilizante y realiza control de la maleza?</b> </td>
+                <td style="width:450px"> 
+                    <select id="Fertiliza" style="width : 250px;" onchange="Respuesta();">
+                      <option value="NO">NO</option>
+                      <option value="SI">SI</option>
+                    </select>  
+                </td>
+            </tr>
+                       
+            <tr>
+                <td style="width:450px"> <b>¿Conoce las variedades de caña sembradas?</b> </td>
                 <td style="width:450px"> 
                     <select id="Ocultaritem" style="width : 250px;" onchange="OcultarCSS();">
                       <option value="NO">NO</option>
                       <option value="SI">SI</option>
                     </select>  
+                </td>
             </tr>
 
             <tr>
@@ -132,8 +151,8 @@
             </tr>
             
             <tr>
-               <td style="width:450px"> <b>Cantidad de variedades de caña sembrada</b> </td>
-               <td style="width:450px"> <input id="ECantidadCana" type = "number" name = "Cantidad de variedades de caña sembrada" style="width : 250px; text-align:center;" value="1" min="1" max="10" onchange="CantidadCana();"/> </td>
+               <td style="width:450px"> <b>Variedades de caña sembrada</b> </td>
+               <td style="width:450px"> <input id="ECantidadCana" type = "number" name = "Variedades de caña sembrada" style="width : 250px; text-align:center;" value="1" min="1" max="10" onchange="CantidadCana();"/> </td>
             </tr>
             
             {%for i in range(1, 11)%}                       
@@ -188,8 +207,8 @@
         variedades de caña temporalmente-->
         <select id="CiudadOculto" style="visibility:hidden">
             {% for j, valor in provincia.items() %}
-                {% if j == 4 %}
-                    <option value= "Bogotá" selected>Bogotá</option>"
+                {% if j == 27 %}
+                    <option value= "{{valor}}" selected>{{valor}}</option>"
                 {% else %}
                     <option value= "{{valor}}">{{valor}}</option>"
                 {% endif %}
@@ -201,6 +220,9 @@
                 <option value= {{loop.index}}>{{k}}</option>"
             {% endfor %}
         </select> 
+
+        <input id="FertilizaOculto" name = "Usa fertilizante" type = "text" value="NO">
+        
         <!--Termina el combo oculto-->
     </form>  
     
@@ -362,6 +384,7 @@
                   document.getElementById("Tabla1").style.visibility = "hidden";
                   document.getElementById("Titulo").style.visibility = "hidden";
                   document.getElementById("Celdab1").style.visibility = "visible";
+                  document.getElementById("FertilizaOculto").value = "NO";
                  }
               else{
                   document.getElementById("Tabla1").style.visibility = "visible";
@@ -370,7 +393,21 @@
                  }                
 			}     
         </script>	
-        
+
+        <script type="text/javascript">
+         function Respuesta(){
+              //Función para enviar respuesta del manejo hecho al terreno              
+              var elemento = document.getElementById("Fertiliza");
+              var ITEM     = elemento.options[elemento.selectedIndex].innerText;
+              if(ITEM=="NO"){
+                  document.getElementById("FertilizaOculto").value = "NO";
+                 }
+              else{
+                  document.getElementById("FertilizaOculto").value = "SI";
+                 }                
+			}     
+        </script>
+                
         <script type="text/javascript">
          function CantidadCana(){
               //Función para habilitar la selección de variedades de caña
@@ -386,6 +423,22 @@
               }                             
 			}     
         </script>	
-                
+
+        <script type="text/javascript">
+         function Ocultar_depto(){
+              //Función para bloquear los elementos de la página el departamento y la provincia
+              var elemento = document.getElementById("Pais");
+              var ITEM     = elemento.options[elemento.selectedIndex].innerText;
+              if(ITEM=="Colombia"){
+                  document.getElementById("Deptos").disabled = false;
+                  document.getElementById("Ciudad").disabled = false;
+                 }
+              else{
+                  document.getElementById("Deptos").disabled = true;
+                  document.getElementById("Ciudad").disabled = true;
+                 }                            
+			}     
+        </script>
+                        
 {% endblock %}
 

@@ -7,7 +7,6 @@ Created on Mon Apr 20 10:08:42 2020
 """----------->>>>>Librerias para crear la ambientación del grafico de costo<<<<<<<------"""
 from matplotlib.backends.backend_agg import FigureCanvasAgg
 from time import sleep
-import time
 import xlrd
 import math
 import pandas as pd
@@ -22,15 +21,11 @@ global Horas_trabajo_al_dia
 #Layout del informe
 def Fondo(canvas):
     #Dibujar logo y membrete de AGROSAVIA
-    canvas.drawImage('static/Iconos/Agrosavia.jpg', 420, 720, width=150, height=40)
-    canvas.drawImage('static/Iconos/Membrete.png' , 0, 0, width=650, height=240)
-    canvas.drawImage('static/Iconos/Membrete2.png', 0, 650, width=150, height=150)   
+#    canvas.drawImage('static/Iconos/Agrosavia.jpg', 420, 720, width=150, height=40)
+#    canvas.drawImage('static/Iconos/Membrete.png' , 0, 0, width=650, height=240)
+#    canvas.drawImage('static/Iconos/Membrete2.png', 0, 650, width=150, height=150)  
+    canvas.drawImage('static/Iconos/Hoja.jpg', 0, 0, width=612, height=795)
     canvas.setLineWidth(.3)
-    canvas.setFont('Helvetica-Bold', 20)
-    tiempo = time.asctime(time.localtime(time.time()))
-    canvas.setFont('Helvetica-Bold', 7)
-    canvas.drawString(520,5,str(tiempo))
-    #canvas.drawString(10,5,"Hoja: "+str(Hoja))
     return canvas
 
 #Cambiar formato a miles
@@ -59,9 +54,9 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
     from reportlab.lib.pagesizes import letter
     from reportlab.pdfgen import canvas
     canvas = canvas.Canvas("static/pdf01/A6_informe.pdf", pagesize=letter)
+    canvas = Fondo(canvas)
     #Hoja=1
     for k in range(3):
-        canvas=Fondo(canvas)
         canvas.setFont('Helvetica-Bold', 12)
         """----------->>>>>>> Publicar Calculos por etapa<<<<<<<<<<<------------"""
         #Publicar calculos de la hornilla
@@ -103,7 +98,6 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
             puntero_h=50
             if(puntero_v<=30):
                 canvas.showPage()
-                Fondo(canvas)
                 puntero_v=640
         if(k==0):
             canvas.setFillColorRGB(0,0,0)
@@ -112,10 +106,11 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
             canvas.setFont('Helvetica-Oblique', 10)
             canvas.drawString(puntero_h, puntero_v-10, "Nota: El acero usado en la construcción de la hornilla es inoxidable.") 
             canvas.showPage()
-            Fondo(canvas) 
+            canvas=Fondo(canvas)
+            puntero_v=640
+            canvas.setFillColorRGB(0,0,0)
             canvas.setFont('Helvetica-Bold', 14)
             canvas.drawString(140,680,'--->>>COSTO DEL RECUPERADOR DE CALOR<<<---')
-            puntero_v=640
         elif(k==1):
             canvas.setFillColorRGB(0,0,0)
             canvas.setFont('Helvetica-Oblique', 10)
@@ -125,6 +120,7 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
             puntero_v=puntero_v-40
             canvas.drawString(202, puntero_v,'--->>>GASTOS OPERATIVOS<<<---')  
             puntero_v=puntero_v-40
+            
     canvas.setFillColorRGB(0,0,0)       
     canvas.setFont('Helvetica-Bold', 14)
     puntero_v=puntero_v-40
@@ -155,7 +151,6 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
         puntero_h=50
         if(puntero_v<=30):
             canvas.showPage()
-            Fondo(canvas)
             puntero_v=640
             
     canvas.showPage()
@@ -190,7 +185,6 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
         puntero_h=50
         if(puntero_v<=30):
             canvas.showPage()
-            Fondo(canvas)
             puntero_v=640
     canvas.setFillColorRGB(0,0,0)
     canvas.setFont('Helvetica-Oblique', 10)
@@ -232,7 +226,6 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
         puntero_h=50
         if(puntero_v<=30):
             canvas.showPage()
-            Fondo(canvas)
             puntero_v=640
             
     canvas.showPage()
@@ -490,7 +483,7 @@ def costos():
             Costo_kg_control=math.ceil(Total_Control/Produ_diaria)
         # >>>>>>>>>> Materia Prima	
         #Multiplico por 1000 para pasar de KG/h a litros
-        Relacion=	Toneladas_cana_a_moler/(Capacidad_hornilla*1000)
+        Relacion=Toneladas_cana_a_moler/(Capacidad_hornilla*1000)
     
         Costo_kg_cana=math.ceil(Valor_Cana*Relacion)
         #Otros insumos Cera, Empaques, Clarificante			

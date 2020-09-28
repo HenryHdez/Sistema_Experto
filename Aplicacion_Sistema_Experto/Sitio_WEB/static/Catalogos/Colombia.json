@@ -1115,11 +1115,11 @@
         "departamento":"Santander",
 	"altura":"200",
 	"aguasubterranea": "desde 100 m",
-        "ciudades":[  
+        "ciudades":[ 
+	    "Barbosa", 
             "Aguada",
             "Albania",
             "Aratoca",
-            "Barbosa",
             "Barichara",
             "Barrancabermeja",
             "Betulia",
