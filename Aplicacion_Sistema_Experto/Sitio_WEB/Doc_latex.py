@@ -10,6 +10,8 @@ from pylatex import Math, TikZ, Axis, Plot, SubFigure, Figure, Matrix, Alignat, 
 from pylatex.utils import italic, NoEscape, bold
 from pylatex.package import Package
 
+
+#Modificar las viñetas y ortografia
 class Documento_Latex():
     global doc
     
@@ -59,7 +61,7 @@ class Documento_Latex():
                               ' se realizan '+str(Diccionario['Número de moliendas al mes'])+' moliendas al mes se establece una tiene una jornada laboral de '+
                               str(Diccionario['Días de trabajo de la hornilla a la semana'])+ ' días a la semana de '+str(Diccionario['Horas de trabajo de la hornilla al día'])+ ' horas laborables cada una. '+
                               '\n Además, la aplicación estima que para garantizar una operación apropiada de la hornilla durante la producción '+
-                              'de panela se requiere de un área (ver Sección 3) disponible de al menos '+'320'+' m² con una configuración de pailas y molino que garantiza una producción de panela de '+
+                              'de panela se requiere de un área disponible de al menos '+'320'+' m² con una configuración de pailas y molino que garantiza una producción de panela de '+
                               '50 toneladas al mes (ver Sección 2)'
                               )
                     tlg.append(Parrafo)                
@@ -97,14 +99,11 @@ class Documento_Latex():
                                                         item.add_item('Análisis financiero.')
                                             itemize.add_item('Sección 2')
                                             with itemize.create(Itemize()) as item:
-                                                        item.add_item('Diagramas mecánicos de las pailas.')
-                                                        item.add_item('Diagramas mecánicos del recuperador de calor.')
-                                            itemize.add_item('Sección 3')                    
-                                            with itemize.create(Itemize()) as item:
+                                                        item.add_item('Diagramas mecánicos de la hornilla.')
+                                                        item.add_item('Diagramas mecánicos de la camára.')
                                                         item.add_item('Diagramas mecánicos de la chimenea.')
                                                         item.add_item('Diagramas mecánicos del ducto.')
-                                                        item.add_item('Diagramas mecánicos de la chimenea.')
-                                                        item.add_item('Diagramas mecánicos del proceso productivo.')
+                                                        item.add_item('Diagramas mecánicos de la hornilla con recuperador de calor.')
         doc.append(NewPage())
 
         #PORTADA PARA LA SECCIÓN 1 

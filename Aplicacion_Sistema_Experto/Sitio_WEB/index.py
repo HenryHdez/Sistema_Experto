@@ -430,6 +430,7 @@ def infor():
     #Continuar ejecución
     if request.method == 'POST':
         result = request.form
+#        print(result)
         generar_valores_informe()
         return render_template('informe.html') 
 

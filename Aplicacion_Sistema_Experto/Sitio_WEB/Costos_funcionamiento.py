@@ -84,7 +84,7 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
                 elif((i=='Valor total de la hornilla') 
                         or (i=='Valor total del recuperador de calor') 
                         or (i=='Total de gastos operativos')):
-                    canvas.setFillColorRGB(1,0,0)
+                    canvas.setFillColorRGB(0,0,0)
                     canvas.setFont('Helvetica-Bold', 9)
                     if(j>1):
                         Texto=Formato_Moneda(float(Texto), "$", 2)
@@ -139,7 +139,7 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
             canvas.setFont('Helvetica-Bold', 11)
         elif((i=='Valor total de la construcción con recuperador de calor') 
                 or (i=='Valor total de la construcción sin recuperador de calor')):
-            canvas.setFillColorRGB(1,0,0)
+            canvas.setFillColorRGB(0,0,0)
             canvas.setFont('Helvetica-Bold', 9)
             Texto=Formato_Moneda(float(Texto), "$", 2)
         else:
@@ -173,7 +173,7 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
             if((i=='¿El diseño incorpora recuperador de calor?') or (i=='Capacidad de la hornilla [kg/h]')):
                 canvas.setFont('Helvetica-Bold', 11)
             elif(i=='Valor total del kg de caña'):
-                canvas.setFillColorRGB(1,0,0)
+                canvas.setFillColorRGB(0,0,0)
                 canvas.setFont('Helvetica-Bold', 9)
                 Texto=Formato_Moneda(float(Texto), "$", 2)
             else:
@@ -210,7 +210,7 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
             if(i=='¿El diseño incorpora recuperador de calor?'):
                 canvas.setFont('Helvetica-Bold', 9)
             elif(i=='Ingresos anuales aproximados ($)'):
-                canvas.setFillColorRGB(1,0,0)
+                canvas.setFillColorRGB(0,0,0)
                 canvas.setFont('Helvetica-Bold', 9)          
             else:
                 canvas.setFont('Helvetica', 9)
@@ -284,8 +284,8 @@ def costos():
                         'semiesférica', 'semicilindrica', 'semicilindrica SA', 'cuadrada', 'cuadrada SA',
                         'acanalada', 'acanalada SA']
     Pailas_disponibles_2=['Paila plana', 'Paila plana sin aletas', 'Paila pirotubular circular', 
-                          'Paila pirotubular sin aletas', 'Paila semiesférica', 'Paila semicilindrica', 
-                          'Paila semicilindrica sin aletas', 'Paila cuadrada', 'Paila cuadrada sin aletas', 
+                          'Paila pirotubular circular sin aletas', 'Paila semiesférica', 'Paila semicilindrica', 
+                          'Paila semicilindrica sin aletas', 'Paila pirotubular cuadrada', 'Paila pirotubular cuadrada sin aletas', 
                           'Paila acanalada con canales cuadrados','Paila acanalada con canales cuadrados y sin aletas']
     Etiquetas_Hornilla=['Nombre']
     #Crear un vector con la cantidad de pailas

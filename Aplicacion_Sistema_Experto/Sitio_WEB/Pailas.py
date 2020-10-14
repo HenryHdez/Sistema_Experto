@@ -78,9 +78,8 @@ def Generar_portada():
     Fondo(canvas)
     canvas.drawImage('static/Iconos/Fondo_otros.png', 50, 220, width=500, height=350)
     canvas.setFont('Helvetica-Bold', 30)
-    canvas.drawString(20,450,'                         SECCIÓN 2:     ') 
-    canvas.drawString(20,415,'              DIAGRAMAS MECÁNICOS   ') 
-    canvas.drawString(20,380,'                      DE LAS PAILAS  ') 
+    canvas.drawString(20,435,'                         SECCIÓN 2:     ') 
+    canvas.drawString(20,400,'              DIAGRAMAS MECÁNICOS   ') 
     canvas.showPage() #Salto de página    
     canvas.save()
     #Sección 3
@@ -161,26 +160,37 @@ def Dimensiones_parrilla(Ancho_seccion, Longitud_Seccion, Secciones_totales, Anc
     
 def Dibujar_planta(Vector_Entrada, Tipo_Hornilla, Etapas, Nombres_Ubicaciones):
     global Dimensiones_Pailas
-    from reportlab.lib.pagesizes import letter
-    from reportlab.pdfgen import canvas
 #    print(Dimensiones_Pailas)
 #    print(Vector_Entrada)
 #    print(Tipo_Hornilla)
 #    print(Etapas)
-    for inter in range(2):
+    for inter in range(2):      
+        from reportlab.lib.pagesizes import letter
+        from reportlab.pdfgen import canvas
         if(inter==0):
-            canvas = canvas.Canvas("static/Planta_WEB.pdf", pagesize=letter)
+            canvas = canvas.Canvas("static/B1_Etapa_Planta_WEB.pdf", pagesize=letter)
             canvas.setPageSize((970,628))
             canvas.drawImage('static/Vistas/Otros/Formato.png', 0, 0, width=970, height=628)
         if(inter==1):
-            canvas.showPage()
+            canvas = canvas.Canvas("static/B4_Etapa_Planta_WEB.pdf", pagesize=letter)
+            canvas.setPageSize((970,628))
             canvas.drawImage('static/Vistas/Otros/Formato.png', 0, 0, width=970, height=628)
             
         canvas.setFont('Helvetica-Bold', 22)
         canvas.drawString(55,550,'ESTÁ IMÁGEN ES UNA REPRESENTACIÓN DEL ENSAMBLAJE DE LA HORNILLA')
         #>>>>>>>>>>>>>>>----------------------------Vista superior----------------------<<<<<<<<<<<<<<<<<<<<<
         Espacio=700/Etapas
-        Desplazamiento=225
+        Desplazamiento=215
+
+        for i in range (Etapas):
+            #Dibujar Parte superior y selección de camáras
+            canvas.drawImage('static/Vistas/Ductos/Pared_superior.png', Desplazamiento-40, 270, width=Espacio*0.4, height=Espacio*0.6)        
+            canvas.drawImage('static/Vistas/Ductos/Pared_superior.png', 815, 270, width=Espacio*0.4, height=Espacio*0.6)
+            Desplazamiento=Desplazamiento+Espacio-10
+ 
+        Espacio=700/Etapas
+        Desplazamiento=215
+
         for i in range (Etapas):
             if Vector_Entrada[i][0]==1:
                 Nombre_ducto='static/Vistas/Ductos/'+'Dplana_superior.png'
@@ -215,111 +225,45 @@ def Dibujar_planta(Vector_Entrada, Tipo_Hornilla, Etapas, Nombres_Ubicaciones):
                     Nombre_Paila='static/Vistas/Superior/'+'Cuadrada_acanalada_con_aletas.png'
                 else:
                     Nombre_Paila='static/Vistas/Superior/'+'Cuadrada_acanalada_sin_aletas.png' 
-            #Dibujar Parte superior y selección de camáras
-            canvas.drawImage('static/Vistas/Ductos/Pared_superior.png', Desplazamiento-40, 450, width=Espacio*0.4, height=Espacio*0.6)        
-            canvas.drawImage('static/Vistas/Ductos/Pared_superior.png', 815, 450, width=Espacio*0.4, height=Espacio*0.6) 
+ 
 #            Chimenea_dir=' '
             if(Tipo_Hornilla=='Plana de una camara'):
                 if(inter==0):
-                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea1_superior.png', 855, 450, width=Espacio*0.6, height=Espacio*0.6)
+                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea1_superior.png', 855, 270, width=Espacio*0.6, height=Espacio*0.6)
                 if(inter==1):
-                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea1_superior.png', 855, 440, width=Espacio*0.8, height=Espacio*0.8)
+                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea1_superior.png', 855, 260, width=Espacio*0.8, height=Espacio*0.8)
                 
-                canvas.drawImage('static/Vistas/Camaras/Plana_superior.png', 45, 450, width=Espacio*1.4, height=Espacio*0.6)        
+                canvas.drawImage('static/Vistas/Camaras/Plana2_superior.png', 45, 270, width=Espacio*1.4, height=Espacio*0.6)        
             elif(Tipo_Hornilla=='Plana de dos camaras'):
                 if(inter==0):
-                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea1_superior.png', 855, 450, width=Espacio*0.6, height=Espacio*0.6)
+                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea1_superior.png', 855, 270, width=Espacio*0.6, height=Espacio*0.6)
                 if(inter==1):
-                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea1_superior.png', 855, 440, width=Espacio*0.8, height=Espacio*0.8)
-                canvas.drawImage('static/Vistas/Camaras/Doble_superior.png', 45, 333, width=Espacio*1.2, height=Espacio*1.6)         
+                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea1_superior.png', 855, 260, width=Espacio*0.8, height=Espacio*0.8)
+                canvas.drawImage('static/Vistas/Camaras/Doble_superior.png', 45, 153, width=Espacio*1.2, height=Espacio*1.6)         
             elif(Tipo_Hornilla=='Ward cimpa'):
                 if(inter==0):
-                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea2_superior.png', 855, 450, width=Espacio*0.6, height=Espacio*0.6)
+                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea2_superior.png', 855, 270, width=Espacio*0.6, height=Espacio*0.6)
                 if(inter==1):
-                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea1_superior.png', 855, 440, width=Espacio*0.8, height=Espacio*0.8)
-                canvas.drawImage('static/Vistas/Camaras/Cimpa_superior.png', 45, 450, width=Espacio*1.4, height=Espacio*0.6)
+                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea1_superior.png', 855, 260, width=Espacio*0.8, height=Espacio*0.8)
+                canvas.drawImage('static/Vistas/Camaras/Cimpa_superior.png', 45, 270, width=Espacio*1.4, height=Espacio*0.6)
             elif(Tipo_Hornilla=='Mini-ward'):
                 if(inter==0):
-                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea2_superior.png', 855, 450, width=Espacio*0.6, height=Espacio*0.6)
+                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea2_superior.png', 855, 270, width=Espacio*0.6, height=Espacio*0.6)
                 if(inter==1):
-                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea1_superior.png', 855, 440, width=Espacio*0.8, height=Espacio*0.8)
-                canvas.drawImage('static/Vistas/Camaras/Plana2_superior.png', 45, 450, width=Espacio*1.4, height=Espacio*0.6)
+                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea1_superior.png', 855, 260, width=Espacio*0.8, height=Espacio*0.8)
+                canvas.drawImage('static/Vistas/Camaras/Ward_superior.png', 45, 270, width=Espacio*1.4, height=Espacio*0.6)
             
 #            canvas.drawImage(Chimenea_dir, 855, 450, width=Espacio*0.6, height=Espacio*0.6) 
-            canvas.drawImage(Nombre_ducto, Desplazamiento, 450, width=Espacio*0.6, height=Espacio*0.6) 
-            canvas.drawImage(Nombre_Paila, Desplazamiento, 450, width=Espacio*0.6, height=Espacio*0.6)
+            canvas.drawImage(Nombre_ducto, Desplazamiento, 270, width=Espacio*0.6, height=Espacio*0.6) 
+            canvas.drawImage(Nombre_Paila, Desplazamiento, 270, width=Espacio*0.6, height=Espacio*0.6)
             Desplazamiento=Desplazamiento+Espacio-10
-        #>>>>>>>>>>>>>>>>>>>>>>>>>>>>---------------------Vista lateral--------------------<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-        Espacio=700/Etapas
-        Desplazamiento=225
-        Desp_y=220
-        conta=0
-        for i in range (Etapas):            
-            if Vector_Entrada[i][0]==1:
-                if Vector_Entrada[i][1]==True:
-                    Nombre_Paila='static/Vistas/Lateral/'+'Plana_con_aletas.png'
-                else:
-                    Nombre_Paila='static/Vistas/Lateral/'+'Plana_sin_aletas.png'
-            elif Vector_Entrada[i][0]==2: 
-                if Vector_Entrada[i][1]==True:
-                    Nombre_Paila='static/Vistas/Lateral/'+'Pirotubular_circular_con_aletas.png'
-                else:
-                    Nombre_Paila='static/Vistas/Lateral/'+'Pirotubular_circular_sin_aletas.png'
-            elif Vector_Entrada[i][0]==3:
-                Nombre_Paila='static/Vistas/Lateral/'+'Semiesferica.png' 
-            elif Vector_Entrada[i][0]==4:
-                if Vector_Entrada[i][1]==True:
-                    Nombre_Paila='static/Vistas/Lateral/'+'Semicilindrica_con_aletas.png'
-                else:
-                   Nombre_Paila='static/Vistas/Lateral/'+'Semicilindrica_sin_aletas.png'
-            elif Vector_Entrada[i][0]==5:
-                if Vector_Entrada[i][1]==True:
-                    Nombre_Paila='static/Vistas/Lateral/'+'Pirotubular_cuadrada_con_aletas.png'
-                else:
-                    Nombre_Paila='static/Vistas/Lateral/'+'Pirotubular_cuadrada_sin_aletas.png'
-            elif Vector_Entrada[i][0]==6:
-                if Vector_Entrada[i][1]==True:
-                    Nombre_Paila='static/Vistas/Lateral/'+'Cuadrada_acanalada_con_aletas.png'
-                else:
-                    Nombre_Paila='static/Vistas/Lateral/'+'Cuadrada_acanalada_sin_aletas.png'   
-            
-            if(Tipo_Hornilla=='Plana de una camara'):
-                if(inter==0):
-                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea1_lateral.png', 850, Desp_y-20, width=Espacio*0.6, height=Espacio*1.5)
-                if(inter==1):
-                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea3_lateral.png', 864, Desp_y-28, width=Espacio*0.6, height=Espacio*1.8)
-                canvas.drawImage('static/Vistas/Camaras/Plana_lateral.png', 25, Desp_y-72, width=Espacio*1.5, height=Espacio*0.8)      
-            elif(Tipo_Hornilla=='Plana de dos camaras'):
-                if(inter==0):
-                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea1_lateral.png', 850, Desp_y-20, width=Espacio*0.6, height=Espacio*1.5)
-                if(inter==1):
-                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea3_lateral.png', 864, Desp_y-28, width=Espacio*0.6, height=Espacio*1.8)
-                canvas.drawImage('static/Vistas/Camaras/Doble_lateral.png', 25, Desp_y-125, width=Espacio*1.5, height=Espacio*1.25)        
-            elif(Tipo_Hornilla=='Ward cimpa'):
-                if(inter==0):
-                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea2_lateral.png', 850, Desp_y-20, width=Espacio*0.6, height=Espacio*1.5)
-                if(inter==1):
-                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea3_lateral.png', 864, Desp_y-28, width=Espacio*0.6, height=Espacio*1.8)
-                canvas.drawImage('static/Vistas/Camaras/Cimpa_lateral.png', 45, Desp_y-112, width=Espacio*1.55, height=Espacio*1.15)
-            elif(Tipo_Hornilla=='Mini-ward'):
-                if(inter==0):
-                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea2_lateral.png', 850, Desp_y-20, width=Espacio*0.6, height=Espacio*1.5)
-                if(inter==1):
-                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea3_lateral.png', 864, Desp_y-28, width=Espacio*0.6, height=Espacio*1.8)
-                canvas.drawImage('static/Vistas/Camaras/Plana2_lateral.png', 25, Desp_y-73, width=Espacio*1.5, height=Espacio*0.85)
-            
-            canvas.drawImage('static/Vistas/Ductos/Pared_lateral.png', 795, Desp_y-20, width=Espacio*0.6, height=Espacio*0.35)         
-            canvas.drawImage(Nombre_Paila, Desplazamiento, Desp_y, width=Espacio*0.7, height=Espacio*0.5)
-            canvas.drawImage('static/Vistas/Ductos/Pared_lateral.png', Desplazamiento-30, Desp_y-20, width=Espacio*0.3, height=Espacio*0.35)
-            canvas.drawImage('static/Vistas/Ductos/Dplana_lateral.png', Desplazamiento, Desp_y-20, width=Espacio*0.7, height=Espacio*0.35) 
-            Desplazamiento=Desplazamiento+Espacio-10
-            conta=conta+1
+#        #>>>>>>>>>>>>>>>>>>>>>>>>>>>>---------------------Vista de las camaras--------------------<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         
         canvas.showPage()
         if(Tipo_Hornilla=='Plana de una camara'):
             if(inter==0):
-                canvas.drawImage('static/Vistas/Camaras/Plana_cotas.png', 0, 0,  width=970, height=628)  
-                canvas=Dibujar_Cotas_Camara(canvas,'Prueba', Dimensiones_Pailas[0][4], Dimensiones_Pailas[0][3], 0)
+                canvas.drawImage('static/Vistas/Camaras/Plana2_cotas.png', 0, 0,  width=970, height=628)  
+                canvas=Dibujar_Cotas_Camara(canvas,'Prueba', Dimensiones_Pailas[0][4], Dimensiones_Pailas[0][3], 3)
                 canvas.showPage()
                 canvas.drawImage('static/Vistas/Chimeneas/Chimenea1_cotas.png', 0, 0,  width=970, height=628)
             if(inter==1):
@@ -342,16 +286,25 @@ def Dibujar_planta(Vector_Entrada, Tipo_Hornilla, Etapas, Nombres_Ubicaciones):
                 canvas.drawImage('static/Vistas/Chimeneas/Chimenea3_cotas.png', 0, 0,  width=970, height=628)   
         elif(Tipo_Hornilla=='Mini-ward'):
             if(inter==0):
-                canvas.drawImage('static/Vistas/Camaras/Plana2_cotas.png', 0, 0,  width=970, height=628)     
-                canvas=Dibujar_Cotas_Camara(canvas,'Prueba', Dimensiones_Pailas[0][4], Dimensiones_Pailas[0][3], 3)
+                canvas.drawImage('static/Vistas/Camaras/Ward_cotas.png', 0, 0,  width=970, height=628)     
+                canvas=Dibujar_Cotas_Camara(canvas,'Prueba', Dimensiones_Pailas[0][4], Dimensiones_Pailas[0][3], 4)
                 canvas.showPage()
                 canvas.drawImage('static/Vistas/Chimeneas/Chimenea2_cotas.png', 0, 0,  width=970, height=628)
             if(inter==1):
                 canvas.drawImage('static/Vistas/Chimeneas/Chimenea3_cotas.png', 0, 0,  width=970, height=628)   
-       
+        canvas.save()
+        
         #Disposición de los ladrillos
         if(inter==0):
-            for i in range (Etapas):        
+            from reportlab.lib.pagesizes import letter
+            from reportlab.pdfgen import canvas
+            canvas = canvas.Canvas("static/B3_Etapa_Planta_WEB.pdf", pagesize=letter)
+            canvas.setPageSize((970,628))
+            canvas.drawImage('static/Vistas/Otros/Formato.png', 0, 0, width=970, height=628)
+            
+            for i in range (Etapas):    
+                if(i!=0):
+                    canvas.showPage()
                 if Vector_Entrada[i][0]==1:
                     canvas=Dibujar_Cotas(canvas,1,Dimensiones_Pailas[i], Nombres_Ubicaciones[Etapas-1-i])
                     ruta_ladrillos='static/Vistas/Ductos/Dplana_ladrillos.png'
@@ -370,12 +323,15 @@ def Dibujar_planta(Vector_Entrada, Tipo_Hornilla, Etapas, Nombres_Ubicaciones):
                 elif Vector_Entrada[i][0]==6:
                     canvas=Dibujar_Cotas(canvas,1,Dimensiones_Pailas[i], Nombres_Ubicaciones[Etapas-1-i])
                     ruta_ladrillos='static/Vistas/Ductos/Dplana_ladrillos.png' 
+                
                 canvas.showPage()
                 canvas.drawImage(ruta_ladrillos, 0, 0,  width=970, height=628) 
                 canvas=Dibujar_Rotulo(canvas, Nombres_Ubicaciones[Etapas-1-i], 'Ubicación de los ladrillos')
-                
-    canvas.save()
-    shutil.copy("static/Planta_WEB.pdf", "static/pdf01/Planta_WEB.pdf")
+            canvas.save()
+    
+    shutil.copy("static/B1_Etapa_Planta_WEB.pdf","static/pdf01/B1_Etapa_Planta_WEB.pdf")
+    shutil.copy("static/B3_Etapa_Planta_WEB.pdf","static/pdf01/B3_Etapa_Planta_WEB.pdf")
+    shutil.copy("static/B4_Etapa_Planta_WEB.pdf","static/pdf01/B4_Etapa_Planta_WEB.pdf")
 
 def Dibujar_Rotulo(canvas, Nombre_Usuario, Nombre_Paila):
     canvas.setFont('Helvetica-Bold', 7)
@@ -400,22 +356,22 @@ def Dibujar_Cotas_Camara(canvas,Nombre_Usuario, Longitud_paila_1, Ancho_paila_1,
     # 5 Altura_camara
     Conv=['Secciones de parrilla','A','B','C','D','E','G','F','H','I','J','K','L','M','N','O','P','Q','R','S']
     Valores_Dim=[]
-    if(Cam_Sel==0): #Plana 1
-        Valores_Dim.append(Dimensiones_Camara[2]) 
-        Valores_Dim.append("Sección de corte")                                     #A
-        Valores_Dim.append(800)                                                    #B Tamaño de puerta
-        Valores_Dim.append(Dimensiones_Camara[3])                                  #C Distancia primer paila
-        Valores_Dim.append(abs((Dimensiones_Camara[1]*2)-((Longitud_paila_1)/2)))  #D 
-        Valores_Dim.append(Dimensiones_Camara[5])                                  #E 
-        Valores_Dim.append(abs((Dimensiones_Camara[5]/2)-100))                     #F Verificar con las dimensiones de los ladrillos        
-        Valores_Dim.append(abs((Dimensiones_Camara[5]/2)-100))                     #G Verificar con las dimensiones de los ladrillos
-        Valores_Dim.append((Dimensiones_Camara[5]/2))                              #H Verificar con las dimensiones de los ladrillos
-        Valores_Dim.append(Dimensiones_Camara[3]/2)                                #I Verificar con las dimensiones de los ladrillos
-        Valores_Dim.append(Dimensiones_Camara[0])                                  #J
-        Valores_Dim.append(Dimensiones_Camara[1]*2)                                #K
-        Valores_Dim.append(Dimensiones_Camara[4])                                  #L        
-        Valores_Dim.append(Dimensiones_Camara[4]-Dimensiones_Camara[1])            #M   
-    elif(Cam_Sel==1): #Plana doble
+#    if(Cam_Sel==0): #Plana 1
+#        Valores_Dim.append(Dimensiones_Camara[2]) 
+#        Valores_Dim.append("Sección de corte")                                     #A
+#        Valores_Dim.append(800)                                                    #B Tamaño de puerta
+#        Valores_Dim.append(Dimensiones_Camara[3])                                  #C Distancia primer paila
+#        Valores_Dim.append(abs((Dimensiones_Camara[1]*2)-((Longitud_paila_1)/2)))  #D 
+#        Valores_Dim.append(Dimensiones_Camara[5])                                  #E 
+#        Valores_Dim.append(abs((Dimensiones_Camara[5]/2)-100))                     #F Verificar con las dimensiones de los ladrillos        
+#        Valores_Dim.append(abs((Dimensiones_Camara[5]/2)-100))                     #G Verificar con las dimensiones de los ladrillos
+#        Valores_Dim.append((Dimensiones_Camara[5]/2))                              #H Verificar con las dimensiones de los ladrillos
+#        Valores_Dim.append(Dimensiones_Camara[3]/2)                                #I Verificar con las dimensiones de los ladrillos
+#        Valores_Dim.append(Dimensiones_Camara[0])                                  #J
+#        Valores_Dim.append(Dimensiones_Camara[1]*2)                                #K
+#        Valores_Dim.append(Dimensiones_Camara[4])                                  #L        
+#        Valores_Dim.append(Dimensiones_Camara[4]-Dimensiones_Camara[1])            #M   
+    if(Cam_Sel==1): #Plana doble
         Valores_Dim.append(Dimensiones_Camara[2]) 
         Valores_Dim.append(800)                                                    #A
         Valores_Dim.append(800)                                                    #B Tamaño de puerta
@@ -462,22 +418,22 @@ def Dibujar_Cotas_Camara(canvas,Nombre_Usuario, Longitud_paila_1, Ancho_paila_1,
         Valores_Dim.append(Dimensiones_Camara[1])                                  #K
         Valores_Dim.append(Dimensiones_Camara[1]+100)                              #L        
         Valores_Dim.append(Dimensiones_Camara[0])                                  #M
-#    elif(Cam_Sel==4): #Ward cimpa
-#        Valores_Dim.append(Dimensiones_Camara[2]) 
-#        Valores_Dim.append(abs((Dimensiones_Camara[4]/2)-(Longitud_paila_1)/2))    #A
-#        Valores_Dim.append(abs((Dimensiones_Camara[4]/2)-(Longitud_paila_1)/2)+10) #B Tamaño de puerta
-#        Valores_Dim.append(800)                                                    #C Distancia primer paila
-#        Valores_Dim.append("Sección de corte")                                     #D 
-#        Valores_Dim.append(Dimensiones_Camara[5])                                  #E 
-#        Valores_Dim.append((Dimensiones_Camara[5]/2)+100)                          #F Verificar con las dimensiones de los ladrillos        
-#        Valores_Dim.append(Dimensiones_Camara[5])                                  #G Verificar con las dimensiones de los ladrillos
-#        Valores_Dim.append((Dimensiones_Camara[5]/2)+100)                          #H Verificar con las dimensiones de los ladrillos
-#        Valores_Dim.append(Dimensiones_Camara[1])                                  #I Verificar con las dimensiones de los ladrillos
-#        Valores_Dim.append(abs((Dimensiones_Camara[4]/2)-(Longitud_paila_1)/2))    #J
-#        Valores_Dim.append(Dimensiones_Camara[4])                                  #K
-#        Valores_Dim.append(Dimensiones_Camara[0])                                  #L        
-#        Valores_Dim.append(Dimensiones_Camara[0]+100)                              #M
-#        Valores_Dim.append(Dimensiones_Camara[3])                                  #N
+    elif(Cam_Sel==4): #Ward cimpa
+        Valores_Dim.append(Dimensiones_Camara[2]) 
+        Valores_Dim.append(abs((Dimensiones_Camara[4]/2)-(Longitud_paila_1)/2))    #A
+        Valores_Dim.append(abs((Dimensiones_Camara[4]/2)-(Longitud_paila_1)/2)+10) #B Tamaño de puerta
+        Valores_Dim.append(800)                                                    #C Distancia primer paila
+        Valores_Dim.append("Sección de corte")                                     #D 
+        Valores_Dim.append(Dimensiones_Camara[5])                                  #E 
+        Valores_Dim.append((Dimensiones_Camara[5]/2)+100)                          #F Verificar con las dimensiones de los ladrillos        
+        Valores_Dim.append(Dimensiones_Camara[5])                                  #G Verificar con las dimensiones de los ladrillos
+        Valores_Dim.append((Dimensiones_Camara[5]/2)+100)                          #H Verificar con las dimensiones de los ladrillos
+        Valores_Dim.append(Dimensiones_Camara[1])                                  #I Verificar con las dimensiones de los ladrillos
+        Valores_Dim.append(abs((Dimensiones_Camara[4]/2)-(Longitud_paila_1)/2))    #J
+        Valores_Dim.append(Dimensiones_Camara[4])                                  #K
+        Valores_Dim.append(Dimensiones_Camara[0])                                  #L        
+        Valores_Dim.append(Dimensiones_Camara[0]+100)                              #M
+        Valores_Dim.append(Dimensiones_Camara[3])                                  #N
         
     #Dimensiones de las cotas
     canvas.setLineWidth(0.5)
@@ -524,11 +480,35 @@ def Dibujar_Cotas(canvas,sel_Plano,Dimensiones, Nombre_Usuario):
 #15               'Grosor del canal', 
 #16               'Cantidad de canales']
 #    Conv=['A','B','C','D','E','G','I','F','H','J','K','L','M','N','O','P','Q']
-    
+     
     Conv=['A','B','C','D','E','G','F','H','I','J','K','L','M','N']
     Valores_Dim=[]
     a=0
     if(sel_Plano==1):
+        #Primer paila esta a 1.5m 
+        #Fondos planos al final
+        #Reducir 2%
+        
+        #Altura D es 60mm
+        #G es el ancho de la parrilla
+        #H es el ancho (G+2)*120
+        #La ocual es 60
+        #Revisar ancho de paila
+        
+        #Plana
+        #H en la plano es E+120mm
+        #A es la longitud de paila
+        #A es la longitud de falca - 2*longitud del pliegue+esp
+        #c es ancho de paila
+        #E=C
+        #D=I
+        
+        #Semicilindria
+        #Poner cota abajo
+        #B=Longitud cilindro+2*Altura del casco
+        #D es el ancho de la paila
+        #G es mayor que la altura de la paila
+        
         ruta_cotas='static/Vistas/Ductos/Dplana_cotas.png'
         Valores_Dim.append(Dimensiones[4])              #A
         Valores_Dim.append(Dimensiones[4]+500)          #B Verificar con la pendiente
@@ -563,9 +543,7 @@ def Dibujar_Cotas(canvas,sel_Plano,Dimensiones, Nombre_Usuario):
         Valores_Dim.append(Dimensiones[2]+200)          #I Verificar con las dimensiones de los ladrillos  
         Valores_Dim.append(abs(Dimensiones[2]-100))     #J Verificar con las dimensiones de los ladrillos
         Valores_Dim.append(Dimensiones[2])              #K Verificar con las dimensiones de los ladrillos
-        Valores_Dim.append(Dimensiones[2]+200)          #L Verificar con las dimensiones de los ladrillos  
-        
-    canvas.showPage()       
+        Valores_Dim.append(Dimensiones[2]+200)          #L Verificar con las dimensiones de los ladrillos        
     canvas.drawImage(ruta_cotas, 0, 0,  width=970, height=628)
     #Dimensiones de las cotas
     canvas.setLineWidth(0.5)
@@ -591,11 +569,24 @@ def Dibujar_Cotas(canvas,sel_Plano,Dimensiones, Nombre_Usuario):
 def Crear_plano_pdf(directorio_imagen, Nombre_archivo, Nombre_Usuario, Nombre_Paila, Valores_plano, valores_eliminar):
     from reportlab.lib.pagesizes import letter
     from reportlab.pdfgen import canvas
-    Etiquetas=['Altura de la falca','Altura del fondo','Ancho del fondo', 'Ancho', 'Longitud',
-               'Espesor del doblez', 'Angulo', 'Altura aletas', 'Separación entre aletas', 
-               'Número de aletas', 'Alto del casco', 'Ancho del casco',
-               'Cantidad de tubos', 'Diametro del tubo', 'Diametro del tubo',
-               'Grosor del canal', 'Cantidad de canales']
+
+    Etiquetas=['Altura de la falca',        #A
+               'Altura del fondo',          #B
+               'Ancho del fondo',           #C
+               'Ancho de la falca',         #D 
+               'Longitud de la falca',      #E
+               'Longitud del doblez',       #F  
+               'Angulo',                    #G 
+               'Altura aletas',             #H 
+               'Separación entre aletas',   #I 
+               'Número de aletas',          #J
+               'Altura del casco',          #K
+               'Ancho del casco',           #L
+               'Cantidad de tubos',         #M 
+               'Diametro del tubo',         #N
+               'Diametro del tubo',         #O
+               'Grosor del canal',          #P
+               'Cantidad de canales']       #Q
     Conv=['A','B','C','D','E','G','I','F','H','J','K','L','M','N','O','P','Q']
     for i in range(len(valores_eliminar)-1,-1,-1):
         Valores_plano.pop(valores_eliminar[i])
@@ -701,7 +692,7 @@ def Dibujar_plano(Nombre_Sitio,Nombre_archivo,Tipo_paila,H_fl,H_fn,Ancho,L,Ho,Hc
         Cantidad_pailas[4]=Cantidad_pailas[4]+1
         Lista_de_pailas[4]='Semiesferica'
         Crear_plano_pdf('static/Pailas/Semiesferica.png', Nombre_archivo,
-                        Nombre_Sitio, 'Diagrama de una paila semiesférica', Valores_plano, [1,4,7,8,9,11,12,13,14,15,16])   
+                        Nombre_Sitio, 'Diagrama de una paila semiesférica', Valores_plano, [4,7,8,9,10,11,12,13,14,15,16])   
         
     elif Tipo_paila==4:
         if Activar_Aletas==True:
@@ -754,7 +745,20 @@ def Cantidad_Aletas(A,B_Aletas):
 #Orden de las variables de salida
 #Volumen_Total, Ang, N_Aletas_Canal ó N_Aletas, h_Aletas, Seperacion_Aletas, dT, nT, lT, N_Canales
                 
-def Semiesferica(H_fn,A,H_fl):
+def Semiesferica(H_fn,A,H_fl):   
+    #Hfn        Altura de fondo
+    #Hfa o hfl  Altura falca
+    #hal        Altura aletas
+    #An o A     Ancho de paila
+    #Hc         Altura de casco
+    #H          Altura total  
+    #K es altura de fondo
+    #G longitud doblez
+    #D es ancho de falca
+    #Alto de  Casco <= (Ancho del fondo/2)
+    
+    if(A>=H_fn/2):
+        A=H_fn/2
     R=(((A/2)**2)+(H_fn**2))/(2*H_fn)	
     Ang=68*math.pi/180
     VTJ=(math.pi*(H_fn**2)*(3*R-H_fn))/3
@@ -766,6 +770,12 @@ def Semiesferica(H_fn,A,H_fl):
     return [Volumen_Total, Ang, 0, 0, 0, 0, 0, 0, 0, 0]
 
 def Semicilindrica(H,Hc,A,L,Hfa,B_Aletas):
+    #K es altura de casca
+    #Cambiar K por altura del fondo
+    #Alto de paila <= (Ancho del fondo/2)*0.1
+    #Fijar en 160mm
+    #Ancho de paila = L+W
+    
     #la altura de las aletas es fijo por ahora 10cm
     N_Aletas_Canal, Separacion_Aletas=Cantidad_Aletas(A,B_Aletas)
     h_Aletas=0.01
@@ -799,7 +809,15 @@ def Semicilindrica(H,Hc,A,L,Hfa,B_Aletas):
     return [Volumen_Total, Ang, N_Aletas_Canal, h_Aletas, Separacion_Aletas, 0, 0, 0, 0, 0]
        
 def Plana(H_fl,H_fn,A,L,B_Aletas): 
+    #Capacidad de la hornilla
+    
+    
     #La altura de las aletas es fijo por ahora 10cm
+    #C es el ancho de falta borde de la pestaña C y borde 
+    #E es longitud de falca
+    #Longitud de la paila es E-2*G
+    #G Longitud de doblez
+    
     N_Aletas, Separacion_Aletas=Cantidad_Aletas(A,B_Aletas)
     h_Aletas=0.01
     Ang=68*math.pi/180
@@ -811,7 +829,16 @@ def Plana(H_fl,H_fn,A,L,B_Aletas):
     Area_TCC=(2*h_Aletas*L*N_Aletas)+Area
     return [Volumen_Total, Ang, N_Aletas, h_Aletas, Separacion_Aletas, 0, 0, 0, 0, 0]
 	
-def Pirotubular_Circular(H_fl,H_fn,A,L,B_Aletas):   
+def Pirotubular_Circular(H_fl,H_fn,A,L,B_Aletas):
+    #Confirmar
+    #Espesor de la lamina de falca 1.7mm
+    #Tubos 1/8" 3.75
+    #Fondo lamina mas cerca a la camara 3/8", 1/4"
+    #Fondo lamina mitad 5/16"
+    #demas 1/8"
+    
+    #Partir cota y poner distancia entre tubos y del borde al tubo
+    
     #dT es el diametro del tubo
     #nT es el numero de tubos
     #La altura de las aletas es fijo por ahora 10cm
@@ -827,7 +854,12 @@ def Pirotubular_Circular(H_fl,H_fn,A,L,B_Aletas):
     Area_TCC=((((H_fn)*(A))-(2*((math.pi/4)*dT**2)*nT))+(2*(H_fn*L)+(A*L)))+(math.pi*dT*L*nT)+(2*(L*h_Aletas)+(2*(h_Aletas))*N_Aletas)
     return [Volumen_Total, Ang, N_Aletas, h_Aletas, Separacion_Aletas, dT, nT, 0, 0, 0]
 
-def Pirotubular_Cuadrada(H_fl,H_fn,A,L,B_Aletas):           
+def Pirotubular_Cuadrada(H_fl,H_fn,A,L,B_Aletas): 
+    #N diferente en lado uno y lado 2 no esta
+    #igual que en la pirotubular circular
+    #Pasar altura aletas a mm
+    #
+    
     #lT es la medida de un lado de un tubo cuadrado
     #nT es el numero de tubos
     #La altura de las aletas es fijo por ahora 10cm
@@ -844,7 +876,27 @@ def Pirotubular_Cuadrada(H_fl,H_fn,A,L,B_Aletas):
     Area_TCC=(h_Aletas*L*N_Aletas*2)+Area
     return [Volumen_Total, Ang, N_Aletas, h_Aletas, Separacion_Aletas, 0, nT, lT, 0, 0]
     
+#Pirotubular acanalda
+#Grosor canal
+#Entrada 250mm y 400mm    150kg<
+
+#Camara  
+#C< 1500mm
+#D ==240mm
+    # Minimo 1.5m
+#G es la altura de la camara la entrada
+#D es la longitud camara
+# D y K son iguales
+
+#Chimenea
+#Diametro chimenea minimo 800mm
+
+
 def Acanalada_Cuadrada(H_fl,H_fn,A,L,B_Aletas):
+    #H es separación entre canales
+    #B y F son lo mismo
+    
+    
     #la altura de las aletas es fijo por ahora 10cm
     #lC es la medida de un lado de un canal cuadrado y las aletas van el
     #ducto del canal
@@ -985,11 +1037,34 @@ def Mostrar_pailas(Vol_aux, Etapas, Sitio, T_Hornilla):
     global Lista_de_pailas
     global Dimensiones_Pailas
     Nombres_Ubi=[]
-    Nombres_PP=[]
     Dimensiones_Pailas=[]
     Tipo_paila=[[],[]]
     Pailas_Planta=[]
     Total_pailas=6   #Diseños de pailas disponibles
+#    Tipo_paila[0].append(1)
+#    Tipo_paila[0].append(2)
+#    Tipo_paila[0].append(3)
+#    Tipo_paila[0].append(4)
+#    Tipo_paila[0].append(5)
+#    Tipo_paila[0].append(6)
+#    Tipo_paila[1].append(True)
+#    Tipo_paila[1].append(True)
+#    Tipo_paila[1].append(True)
+#    Tipo_paila[1].append(True)
+#    Tipo_paila[1].append(True)
+#    Tipo_paila[1].append(True)
+#    Tipo_paila[0].append(1)
+#    Tipo_paila[0].append(2)
+#    Tipo_paila[0].append(3)
+#    Tipo_paila[0].append(4)
+#    Tipo_paila[0].append(5)
+#    Tipo_paila[0].append(6)
+#    Tipo_paila[1].append(False)
+#    Tipo_paila[1].append(False)
+#    Tipo_paila[1].append(False)
+#    Tipo_paila[1].append(False)
+#    Tipo_paila[1].append(False)
+#    Tipo_paila[1].append(False)
     for i in range(Etapas):
         Tipo_paila[0].append(random.randint(1,Total_pailas))
         if(i==0):
@@ -1053,7 +1128,7 @@ def Mostrar_pailas(Vol_aux, Etapas, Sitio, T_Hornilla):
         else:
             Texto_etapa= str(i+1)
         Nombres_Ubi.append(Sitio+" [Paila: "+Texto_etapa+"]")
-        Dibujar_plano(Sitio+" [Paila: "+Texto_etapa+"]","static/pdf01/B1_Etapa_"+Texto_etapa,int(Tipo_paila[0][i]),
+        Dibujar_plano(Sitio+" [Paila: "+Texto_etapa+"]","static/pdf01/B2_Etapa_"+Texto_etapa,int(Tipo_paila[0][i]),
                       H_fl,H_fn,A,L,H,Hc,lista_par[1],lista_par[2],lista_par[0],lista_par[5],
                       lista_par[4],lista_par[6],lista_par[8],lista_par[7],bool(Tipo_paila[1][i])
                       )
@@ -1065,7 +1140,6 @@ def Mostrar_pailas(Vol_aux, Etapas, Sitio, T_Hornilla):
         #print(str(iteraciones))
         #print(str(f)) 
     Dibujar_planta(Pailas_Planta,T_Hornilla, sum(Cantidad_pailas), Nombres_Ubi)    
-#    Dibujar_planta_2()
     df = pd.DataFrame([Lista_de_pailas, Cantidad_pailas])
     df.to_excel('static/Temp/Temp2.xlsx')
     Cantidad_pailas=[0,0,0,0,0,0,0,0,0,0,0]

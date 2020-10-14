@@ -60,7 +60,7 @@ def Seleccionar_Molino(Kilos_Hora):
 def Normalizar_Capacidad(Capacidad_Hornilla, Nivel_Freat):
     if (Capacidad_Hornilla<=100):
         Capacidad_Hornilla=75
-        Cant_Pailas=6
+        Cant_Pailas=7
         Tipo_Hornilla="Plana de una camara"
     elif((Capacidad_Hornilla>100) and (Capacidad_Hornilla<=125)):
         Capacidad_Hornilla=125
@@ -71,14 +71,14 @@ def Normalizar_Capacidad(Capacidad_Hornilla, Nivel_Freat):
             Tipo_Hornilla=random.choice(["Plana de una camara","Plana de dos camaras","Ward cimpa","Mini-ward"])      
     elif((Capacidad_Hornilla>125) and (Capacidad_Hornilla<=150)):
         Capacidad_Hornilla=150
-        Cant_Pailas=10
+        Cant_Pailas=7
         if (Nivel_Freat<1):
             Tipo_Hornilla=random.choice(["Plana de una camara","Plana de dos camaras"])
         else: 
             Tipo_Hornilla=random.choice(["Plana de una camara","Plana de dos camaras","Ward cimpa","Mini-ward"])
     elif((Capacidad_Hornilla>150) and (Capacidad_Hornilla<=175)):
         Capacidad_Hornilla=175 
-        Cant_Pailas=11
+        Cant_Pailas=7
         if (Nivel_Freat<1):
             Tipo_Hornilla=random.choice(["Plana de una camara","Plana de dos camaras"])
         else: 
@@ -86,11 +86,11 @@ def Normalizar_Capacidad(Capacidad_Hornilla, Nivel_Freat):
         ######################################################Recupera
     elif((Capacidad_Hornilla>175) and (Capacidad_Hornilla<=250)):
         Capacidad_Hornilla=200
-        Cant_Pailas=12
+        Cant_Pailas=7
         Tipo_Hornilla=random.choice(["Plana de una camara","Plana de dos camaras"])
     elif(Capacidad_Hornilla>250):
         Capacidad_Hornilla=250 
-        Cant_Pailas=13
+        Cant_Pailas=7
         Tipo_Hornilla=random.choice(["Plana de una camara","Plana de dos camaras"])  
     return [Capacidad_Hornilla, Cant_Pailas, Tipo_Hornilla]
         
