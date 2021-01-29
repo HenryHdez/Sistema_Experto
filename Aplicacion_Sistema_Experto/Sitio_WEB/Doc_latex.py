@@ -58,8 +58,8 @@ class Documento_Latex():
                               str(Diccionario['Área cosechada al mes'])+
                               ' ha'+' de caña, con un rendimiento de '+ str(float(Diccionario['Caña molida al mes']))+
                               ' T/mes y un periodo vegetativo de '+ str(Diccionario['Periodo vegetativo'])+' meses. Teniendo en cuenta que'+
-                              ' se realizan '+str(Diccionario['Número de moliendas al mes'])+' moliendas al mes se establece una tiene una jornada laboral de '+
-                              str(Diccionario['Días de trabajo de la hornilla a la semana'])+ ' días a la semana de '+str(Diccionario['Horas de trabajo de la hornilla al día'])+ ' horas laborables cada una. '+
+                              ' se realizan '+str(Diccionario['Número de moliendas al mes'])+' moliendas al mes se estableció una jornada laboral de '+
+                              str(Diccionario['Días de trabajo de la hornilla a la semana'])+ ' días a la semana de '+str(Diccionario['Horas de trabajo de la hornilla al día'])+ ' horas laborables cada una '+'(la eficiencia estimada de la hornilla es del '+ str(Diccionario['Eficiencia de la hornilla'])+'%). '+
                               '\n Además, la aplicación estima que para garantizar una operación apropiada de la hornilla durante la producción '+
                               'de panela se requiere de un área disponible de al menos '+'320'+' m² con una configuración de pailas y molino que garantiza una producción de panela de '+
                               '50 toneladas al mes (ver Sección 2)'

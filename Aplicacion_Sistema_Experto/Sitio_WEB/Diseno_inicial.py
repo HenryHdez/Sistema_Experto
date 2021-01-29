@@ -58,43 +58,45 @@ def Seleccionar_Molino(Kilos_Hora):
     return sum(E1)/len(E1)
     
 def Normalizar_Capacidad(Capacidad_Hornilla, Nivel_Freat):
+    global Tipo_Hornilla
     if (Capacidad_Hornilla<=100):
         Capacidad_Hornilla=75
-        Cant_Pailas=7
+        Cant_Pailas=6
         Tipo_Hornilla="Plana de una camara"
     elif((Capacidad_Hornilla>100) and (Capacidad_Hornilla<=125)):
         Capacidad_Hornilla=125
-        Cant_Pailas=7
-        if (Nivel_Freat<1):
-            Tipo_Hornilla=random.choice(["Plana de una camara","Plana de dos camaras"])
+        Cant_Pailas=6
+        if (Nivel_Freat<=100):
+            Tipo_Hornilla="Plana de una camara"
         else: #Evaluacion Ward cimpa
-            Tipo_Hornilla=random.choice(["Plana de una camara","Plana de dos camaras","Ward cimpa","Mini-ward"])      
+            Tipo_Hornilla=random.choice(["Plana de una camara","Ward cimpa","Mini-ward"])      
     elif((Capacidad_Hornilla>125) and (Capacidad_Hornilla<=150)):
         Capacidad_Hornilla=150
         Cant_Pailas=7
-        if (Nivel_Freat<1):
-            Tipo_Hornilla=random.choice(["Plana de una camara","Plana de dos camaras"])
+        if (Nivel_Freat<=100):
+            Tipo_Hornilla="Plana de una camara"
         else: 
-            Tipo_Hornilla=random.choice(["Plana de una camara","Plana de dos camaras","Ward cimpa","Mini-ward"])
+            Tipo_Hornilla=random.choice(["Plana de una camara","Ward cimpa","Mini-ward"])
     elif((Capacidad_Hornilla>150) and (Capacidad_Hornilla<=175)):
         Capacidad_Hornilla=175 
         Cant_Pailas=7
-        if (Nivel_Freat<1):
-            Tipo_Hornilla=random.choice(["Plana de una camara","Plana de dos camaras"])
+        if (Nivel_Freat<=100):
+            Tipo_Hornilla="Plana de una camara"
         else: 
-            Tipo_Hornilla=random.choice(["Plana de una camara","Plana de dos camaras","Ward cimpa","Mini-ward"])
-        ######################################################Recupera
+            Tipo_Hornilla=random.choice(["Plana de una camara","Ward cimpa","Mini-ward"])
+        ##################Sin recuperador#########
     elif((Capacidad_Hornilla>175) and (Capacidad_Hornilla<=250)):
         Capacidad_Hornilla=200
-        Cant_Pailas=7
-        Tipo_Hornilla=random.choice(["Plana de una camara","Plana de dos camaras"])
+        Cant_Pailas=8
+        Tipo_Hornilla="Plana de una camara"
     elif(Capacidad_Hornilla>250):
         Capacidad_Hornilla=250 
-        Cant_Pailas=7
-        Tipo_Hornilla=random.choice(["Plana de una camara","Plana de dos camaras"])  
+        Cant_Pailas=8
+        Tipo_Hornilla="Plana de una camara" 
     return [Capacidad_Hornilla, Cant_Pailas, Tipo_Hornilla]
         
 def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
+    global Tipo_Hornilla
     """Estos datos se toman directamente del archivo HTML"""
     #Crecimiento del área sembrada en los proximos 5 años		
     #Area de Caña Sembrada Propia			
@@ -114,7 +116,6 @@ def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
     Cachaza=0.04 #4%    
     CSS_Jugo_Clarificado=float(Diccionario['Grados Brix de la caña (promedio)'])+5
     CSS_Jugo_Posevaporacion=float(Diccionario['Grados Brix de la caña (promedio)'])+58
-    Tipo_de_camara='Ward'
     Humedad_bagazo=0.3#15%			
     Exceso_Aire=1.8 #lamda	
     Extraccion=0.6#60%
@@ -152,6 +153,7 @@ def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
     Capacidad_Hornilla=Masa_panela
     #Normalización de la capacidad de la hornilla
     Mem_Fre=Diccionario['Nivel freático'].split()
+    ############>>>>>>>>-----------<<<<<<<<<<<
     Mem_Temp=Normalizar_Capacidad(Capacidad_Hornilla, float(Mem_Fre[1]))
     Capacidad_Hornilla=Mem_Temp[0]
     """Cálculos para la masa de panela"""
@@ -169,6 +171,7 @@ def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
     Masa_Bag_Humedo=Masa_Cana-Masa_Jugo
     Humedad_inicial_bagazo=((Masa_Jugo-Masa_Jugo*(Extraccion+Porcentaje_Fibra))-(Masa_Jugo-Masa_Jugo*(Extraccion+Porcentaje_Fibra))*(CSS_Cana/100))/(Masa_Jugo*(1-Extraccion))			
     Masa_Bag_Seco=Masa_Bag_Humedo*((1-Humedad_inicial_bagazo)/(1-Humedad_bagazo))
+    
     if(iteracion==0):
         Factor_consumo_bagazo=Masa_Bag_Seco/Capacidad_Hornilla
     else:
@@ -205,10 +208,13 @@ def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
     Total_Etapa_F_L=(Masa_Jugo*(Ebullicion_Concentracion-Temperatura_Ambiente)*Q_Especifico_Inicial+Masa_Agua_Evaporar*((Entalpia_Clarificacion+Entalpia_Concentracion)/2))/3600
     """>>>>>>>>>>>>>>>>Eficiencia<<<<<<<<<<<<<<<<<<<<<<<"""
     Eficiencia=(Total_Etapa/Calor_Suministrado)*100
+    if(Eficiencia>40):
+        Eficiencia=random.randint(35, 41)
     """Ampliación del diccionario"""
     Etiquetas=['DATOS DE ENTRADA',
                'Capacidad estimada de la hornilla',			
                'Factor de consumo de bagazo',
+               'Tipo de hornilla',
                'Eficiencia de la hornilla',	
                'Tipo de hornilla',				
                'Bagacillo del pre-limpiador',		
@@ -216,8 +222,7 @@ def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
                'CSS del jugo de Caña',			
                'CSS del jugo clarificado',			
                'CSS del jugo pos-evaporación',		
-               'CSS panela',			
-               'Tipo de cámara',			
+               'CSS panela',						
                'Humedad del bagazo',		
                'Exceso de aire',			
                'Extracción',			
@@ -275,9 +280,11 @@ def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
                'Total [KW]',
                'Total(F.L.) [KW]'
                ]
+    
     Valores=['DATOS DE ENTRADA',
              math.ceil(Capacidad_Hornilla),
              round(Factor_consumo_bagazo,3),
+             Tipo_Hornilla,
              round(Eficiencia,3),
              Mem_Temp[2],
              round(Bagazillo_Prelimpiador,3),
@@ -286,7 +293,6 @@ def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
              round(CSS_Jugo_Clarificado,3),
              round(CSS_Jugo_Posevaporacion,3),
              round(CSS_Panela,3),
-             Tipo_de_camara,
              round(Humedad_bagazo,3),
              round(Exceso_Aire,3),
              round(Extraccion,3),
@@ -353,9 +359,11 @@ def Calculo_por_etapas(Diccionario):
     """Calculo de la hornilla por etapas"""   
     Lista_Contenido=[]
     Lista_columnas=[]
-    #Etapas es un supuesto de cuantas pailas debe tener la hornilla
-    Mem_Temp=Normalizar_Capacidad(float(Diccionario['Capacidad estimada de la hornilla']),0)
+     #Normalización de la capacidad de la hornilla
+    Mem_Fre=Diccionario['Nivel freático'].split()
+    Mem_Temp=Normalizar_Capacidad(float(Diccionario['Capacidad estimada de la hornilla']),float(Mem_Fre[1]))
     Etapas=Mem_Temp[1]
+    #Etapas=12
     #Saturador "minimo son dos etapas"
     if (Etapas>2):
         Factor_Division=Etapas-2

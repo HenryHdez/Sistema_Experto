@@ -262,7 +262,8 @@ def generar_valores_informe():
             Diccionario_2['Volumen de jugo [m^3/kg]'],
             int(Diccionario_2['Etapas']),
             Nombre_Rot,
-            Diccionario['Tipo de hornilla']
+            Diccionario['Tipo de hornilla'],
+            Diccionario['Capacidad estimada de la hornilla']
             )
     """Presentar información del molino"""
     Formulario_3_Etiquetas=['Caña molida al mes', 'Área cosechada al mes',	 'Caña molida a la semana',		
@@ -313,7 +314,7 @@ def generar_valores_informe():
                 Diccionario['Ciudad'], 
                 Crear_archivo_base_64("static/Informe_WEB.pdf"), 
                 Crear_archivo_base_64("static/Planos_WEB.pdf"), 
-                Crear_archivo_base_64("static/Planta_WEB.pdf"), 
+                Crear_archivo_base_64("static/B3_Etapa_Planta_WEB.pdf"), 
                 Crear_archivo_base_64("static/Calculos_WEB.pdf"))
     #Operaciones_db(2,usuarios)        #Usar base de datos
 

@@ -50,8 +50,8 @@ def Calcular_parrillas(Area_Calculada,Capacidad_Hornilla,i,Calor_suministrado,Ti
 
     #>>>>>>-------------Aqui se pone la geometría de la camara para hallar el vólumen
     Volumen_Calculado=Calor_suministrado/300
-    Ancho_camara=Ancho_parrilla+0.2
-    Longitud_Camara=(Longitud_Seccion*Numero_secciones_Lon)+0.1
+    Ancho_camara=Ancho_parrilla+0.3
+    Longitud_Camara=(Longitud_Seccion*Numero_secciones_Lon)+0.3
     Altura_camara=Volumen_Calculado/(Ancho_camara*Longitud_Camara)
     
     #Calculo de la pared con respecto a los ladrillos
@@ -348,9 +348,9 @@ def Optimizacion(Diccionario_1, Diccionario_2):
     Calor_0=Diccionario_Pailas['Calor Nece Calc por Etapa [KW]']
     Factor_bagazo_nuevo=2.1
     yprueba=0
-    while (yprueba<=1):
+    Diccionario = Diseno_inicial.datos_entrada(Diccionario_Entr,Iteracion_actual,Factor_bagazo_nuevo)
+    while (yprueba<=1 or Diccionario['Eficiencia de la hornilla']<40.0):
         yprueba=yprueba+1
-    #while ((Error_Minimo<Error_actual)and(Iteracion_actual<Iteraciones_Max)):
         Diccionario = Diseno_inicial.datos_entrada(Diccionario_Entr,Iteracion_actual,Factor_bagazo_nuevo)
         a11 = np.array(Calor_0, dtype = np.float)
         a11 [np.isnan(a11)] = 0.1
@@ -361,10 +361,10 @@ def Optimizacion(Diccionario_1, Diccionario_2):
         a11 [np.isnan(a11)] = 0.1
         Calor_1=a11
         
-        print('Factor Consumo bagazo='+str(Diccionario['Factor de consumo de bagazo']))
-        print('Area parrilla='+str(Diccionario['Área de la parrilla']))
-        print('Eficiencia de la hornilla='+str(Diccionario['Eficiencia de la hornilla']))
-        print('Q='+str(Calor_1))
+#        print('Factor Consumo bagazo='+str(Diccionario['Factor de consumo de bagazo']))
+#        print('Area parrilla='+str(Diccionario['Área de la parrilla']))
+#        print('Eficiencia de la hornilla='+str(Diccionario['Eficiencia de la hornilla']))
+#        print('Q='+str(Calor_1))
         #Calculo del error usando la magnitud del vector
         Calor_0 = np.array(Calor_0)
         Calor_1 = np.array(Calor_1) 
@@ -378,10 +378,10 @@ def Optimizacion(Diccionario_1, Diccionario_2):
         else:
             Factor_bagazo_nuevo=Factor_bagazo_nuevo-(0.25*np.random.random(1))
         Factor_bagazo_nuevo=float(saturador(Factor_bagazo_nuevo,100,2.1))
-        print('Error='+str(Error))
-        print('Iteracion='+str(Iteracion_actual))
+#        print('Error='+str(Error))
+#        print('Iteracion='+str(Iteracion_actual))
         Calor_0=Calor_1
         Iteracion_actual=Iteracion_actual+1
-    print('Fin algoritmo')
+#    print('Fin algoritmo')
         
 #Optimizacion(Diccionario, Diccionario_2)
