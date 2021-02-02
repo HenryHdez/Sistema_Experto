@@ -627,7 +627,7 @@ def costos():
     a.grid(color='k', linestyle='--', linewidth=1)
     a.set_ylabel('Valor (X $1.000.000)', fontsize=18)
     a.set_xlabel('Vida útil de la hornilla (Años)', fontsize=18)
-    a.set_title('Depreciación', fontsize=20)
+    a.set_title('Depreciación del equipo', fontsize=20)
     a.legend([l1, l2],["Con recuperador", "Sin recuperador"])  
     for item in [Fig_1,a]:
            item.patch.set_visible(False)
@@ -786,7 +786,7 @@ def costos():
 #    plt.setp(d.get_xticklabels(), fontsize=16, rotation=45)
 #    plt.setp(d.get_yticklabels(), fontsize=16)
     d.set_ylabel('Funcionamiento (Años)', fontsize=18)
-    d.set_xlabel('Valor de la panela ($)', fontsize=18)
+    d.set_xlabel('Valor de la panela (COP)', fontsize=18)
     d.set_title('Tiempo de retorno a la inversión', fontsize=20)
     d.legend([l1, l2],["Con recuperador", "Sin recuperador"], fontsize=14)
     for item in [Fig_3,d]:
@@ -798,8 +798,8 @@ def costos():
     l1,=e.plot(lista_valor_panela1,Meses1, linewidth=4)
     l2,=e.plot(lista_valor_panela2,Meses2, linewidth=4)   
     e.grid(color='k', linestyle='--', linewidth=1)
-    e.set_ylabel('Funcionamiento (Meses)', fontsize=18)
-    e.set_xlabel('Valor de la panela ($)', fontsize=18)
+    e.set_ylabel('Funcionamiento de la hornilla (meses)', fontsize=18)
+    e.set_xlabel('Valor de la panela (COP)', fontsize=18)
     e.set_title('Tiempo de retorno a la inversión', fontsize=20)
     e.legend([l1, l2],["Con recuperador", "Sin recuperador"])
     for item in [Fig_4,e]:

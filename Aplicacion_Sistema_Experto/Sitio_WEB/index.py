@@ -227,7 +227,7 @@ def generar_valores_informe():
         ha_cana_conta=round((ha_cana_conta/cantidadcanas)*0.5,3)
     else:
         ha_cana_conta=round((ha_cana_conta/cantidadcanas)*0.8,3)
-    Formulario_1_Etiquetas.append('Caña producida por hectárea (T/ha)')
+    Formulario_1_Etiquetas.append('Caña producida por hectárea (t/ha)')
     Formulario_1_Valores.append(str(ha_cana_conta))
     #Determinar periodo vegetativo
     Formulario_1_Etiquetas.append('Periodo vegetativo')

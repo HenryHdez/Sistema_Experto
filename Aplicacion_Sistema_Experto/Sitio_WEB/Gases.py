@@ -345,7 +345,7 @@ def Optimizacion(Diccionario_1, Diccionario_2):
     #Individuos de la población inicial
     Diccionario = Diseno_inicial.datos_entrada(Diccionario_Entr,0,0)
     #Condiciones iniciales
-    Calor_0=Diccionario_Pailas['Calor Nece Calc por Etapa [KW]']
+    Calor_0=Diccionario_Pailas['Calor Nece Calc por Etapa [kW]']
     Factor_bagazo_nuevo=2.1
     yprueba=0
     Diccionario = Diseno_inicial.datos_entrada(Diccionario_Entr,Iteracion_actual,Factor_bagazo_nuevo)

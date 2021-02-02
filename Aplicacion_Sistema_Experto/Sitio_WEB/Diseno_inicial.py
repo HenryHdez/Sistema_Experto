@@ -129,7 +129,7 @@ def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
     Crecimiento=float(Diccionario['Área proyectada para cultivo en los proximos 5 años'])
     Crecimiento=Crecimiento+float(Diccionario['Área caña sembrada'])
     Area_cana_calculo=(Crecimiento+float(Diccionario['Área caña sembrada']))/2
-    Cana_esperada_hectarea=float(Diccionario['Caña producida por hectárea (T/ha)'])
+    Cana_esperada_hectarea=float(Diccionario['Caña producida por hectárea (t/ha)'])
     P_vegetativo=float(Diccionario['Periodo vegetativo'])
     #Caña molida al mes = Area sembrada de caña para calculo*Caña esperada por hectarea/Periodo vegetativo
     Cana_molida_mes=(Area_cana_calculo*Cana_esperada_hectarea)/P_vegetativo
@@ -274,11 +274,11 @@ def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
                'Calor suministrado',
                'Área de la parrilla',
                'CALOR REQUERIDO POR ETAPA',
-               'Clarificación [KW]',
-               'Evaporación [KW]',
+               'Clarificación [kW]',
+               'Evaporación [kW]',
                'Concentración',
-               'Total [KW]',
-               'Total(F.L.) [KW]'
+               'Total [kW]',
+               'Total(F.L.) [kW]'
                ]
     
     Valores=['DATOS DE ENTRADA',
@@ -446,15 +446,15 @@ def Calculo_por_etapas(Diccionario):
                'Concentracion de Solidos Final [ºBrix]',
                'Concentracion de Solidos Promedio [ºBrix]',
                'Masa de Jugo Entrada [Kg]',
-               'Calor Especifico P Cte jugo [KJ/Kg °C]',
+               'Calor Especifico P Cte jugo [kJ/Kg °C]',
                'Densidad del Jugo [kg/m3]',
                'Volumen de jugo [m^3/kg]',
                'Volumen de jugo [L]',
                'Temperatura de Entrada [ºC]',
                'Temperatura de Salida [ºC]',
-               'Entalpia de Vaporización [KJ/kg]',
-               'Masa de Agua a Evaporar [Kg]',
-               'Calor Nece Calc por Etapa [KW]'
+               'Entalpia de Vaporización [kJ/kg]',
+               'Masa de Agua a Evaporar [kg]',
+               'Calor Nece Calc por Etapa [kW]'
                ]
     Dict_aux=dict(zip(Etiquetas,Lista_Contenido))    
     Dict_aux_2=dict(zip(['Etapas'],[Etapas]))  
