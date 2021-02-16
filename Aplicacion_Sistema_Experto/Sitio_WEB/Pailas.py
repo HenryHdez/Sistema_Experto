@@ -241,7 +241,7 @@ def Dibujar_planta(Vector_Entrada, Tipo_Hornilla, Etapas, Nombres_Ubicaciones, C
                 canvas.drawImage(Nombre_ducto, Desplazamiento, 270, width=Espacio*0.6, height=Espacio*0.6) 
                 canvas.drawImage(Nombre_Paila, Desplazamiento, 270, width=Espacio*0.6, height=Espacio*0.6)
                 canvas.setFont('Helvetica-Bold', 14)
-                canvas.drawString(Desplazamiento+12, 245, 'Paila: '+str(Etapas-i))   
+                canvas.drawString(Desplazamiento+12, 245, 'Paila: '+str(i+1))   
                 Desplazamiento=Desplazamiento+Espacio-10
                 canvas=Dibujar_Rotulo(canvas, 'Representación de la hornilla', 'Pictórico')
             if(inter==1):
@@ -309,8 +309,8 @@ def Dibujar_planta(Vector_Entrada, Tipo_Hornilla, Etapas, Nombres_Ubicaciones, C
             canvas.drawImage('static/Vistas/Otros/Formato.png', 0, 0, width=970, height=628)
             Altura=Dimensiones_Camara[5]
             Grados_inc=0
-            for i in range(Etapas-1,-1,-1):   
-                if(i!=Etapas-1):
+            for i in range(Etapas):   
+                if(i>0):
                     canvas.showPage()
                 if Vector_Entrada[i][0]==1:
                     canvas=Dibujar_Cotas(canvas,1,Dimensiones_Pailas[i], Nombres_Ubicaciones[i], Altura, Grados_inc)
@@ -344,12 +344,14 @@ def Dibujar_planta(Vector_Entrada, Tipo_Hornilla, Etapas, Nombres_Ubicaciones, C
                 canvas.showPage()
                 canvas.drawImage(ruta_ladrillos, 0, 0,  width=970, height=628) 
                 canvas=Dibujar_Rotulo(canvas, Nombres_Ubicaciones[i], 'Ubicación de los ladrillos')
+                
                 if(Vector_Entrada[i][0]==1 or Vector_Entrada[i][0]==2 or Vector_Entrada[i][0]==5 or Vector_Entrada[i][0]==6):
                     Grados_inc=0.02
                     Altura=Altura-(Altura*Grados_inc)
                 else:
                     Grados_inc=0.3
                     Altura=Altura-(Altura*Grados_inc)
+                
                 canvas.showPage()
                 canvas.drawImage(ruta_ladrillos_2, 0, 0,  width=970, height=628) 
                 canvas=Dibujar_Rotulo(canvas, Nombres_Ubicaciones[i], 'Ubicación de los ladrillos')
@@ -416,10 +418,10 @@ def Dibujar_Cotas_Chimenea(canvas,Nombre_Usuario, Capacidad_hornilla, Altura_UP)
     #C Interior
     #D exterior 
     Valores_Dim.append("Sección de corte") #A                 
-    Tiro=math.floor(Capacidad_hornilla/50)
+    Tiro=math.floor(Capacidad_hornilla/10)
     if(Tiro<=0):
         Tiro=1
-    Valores_Dim.append(Tiro*5000)          #B                                        
+    Valores_Dim.append(Tiro*1000)          #B                                        
     Valores_Dim.append(800)                #C                                     
     Valores_Dim.append(900)                #D
     Valores_Dim.append(round(Altura_UP))
@@ -583,8 +585,8 @@ def Dibujar_Cotas(canvas,sel_Plano,Dimensiones, Nombre_Usuario, Altura, Grados_i
         Valores_Dim.append(Dimensiones[2])              #C
         Valores_Dim.append(Dimensiones[2]+480)          #D 
         Valores_Dim.append(Dimensiones[3])              #E 
-        Valores_Dim.append(Altura)                      #F       
-        Valores_Dim.append(Altura+480)                  #G 
+        Valores_Dim.append(round(Altura))               #F       
+        Valores_Dim.append(round(Altura)+480)           #G 
         Valores_Dim.append(Dimensiones[2]+120)          #H 
         Valores_Dim.append(Dimensiones[2]+480)          #I  
         Valores_Dim.append(Grados_inc*100)              #Inc
@@ -595,8 +597,8 @@ def Dibujar_Cotas(canvas,sel_Plano,Dimensiones, Nombre_Usuario, Altura, Grados_i
         Valores_Dim.append(Dimensiones[4]+120)           #C
         Valores_Dim.append(Dimensiones[2])               #D 
         Valores_Dim.append(Dimensiones[2]+480)           #E 
-        Valores_Dim.append(Altura+480)                   #F       
-        Valores_Dim.append(Altura)                       #G 
+        Valores_Dim.append(round(Altura)+480)            #F       
+        Valores_Dim.append(round(Altura))                #G 
         Valores_Dim.append(Dimensiones[3])               #H 
         Valores_Dim.append(Grados_inc*100)               #Inc
     elif(sel_Plano==3):
@@ -604,8 +606,8 @@ def Dibujar_Cotas(canvas,sel_Plano,Dimensiones, Nombre_Usuario, Altura, Grados_i
         a=2
         Valores_Dim.append(Dimensiones[2])              #C
         Valores_Dim.append(120)                         #D 
-        Valores_Dim.append(Altura)                      #E 
-        Valores_Dim.append(Altura+120)                  #F         
+        Valores_Dim.append(round(Altura))               #E 
+        Valores_Dim.append(round(Altura)+120)           #F         
         Valores_Dim.append(Dimensiones[2]-60)           #G 
         Valores_Dim.append(Dimensiones[2]+100)          #H 
         Valores_Dim.append(Dimensiones[2]+480)          #I 
@@ -750,8 +752,8 @@ def Dibujar_plano(Nombre_Sitio,Nombre_archivo,Tipo_paila,H_fl,H_fn,Ancho,L,Ho,Hc
     Q=Cantidad_canales                                      #16
     An_g = C
     Lo_g = E
-    Valores_plano=[A,B,C,D,E,50,I,F,H,J,K,L,M,N,O,P,Q,R]
-    Dimensiones_Pailas.append([A,B,C,D,E,50,I,F,H,J,K,L,M,N,O,P,Q,R])
+    Valores_plano=[round(A),round(B),round(C),round(D),round(E),50,round(I),round(F),round(H),round(J),round(K),round(L),round(M),round(N),round(O),round(P),round(Q),round(R)]
+    Dimensiones_Pailas.append([round(A),round(B),round(C),round(D),round(E),50,round(I),round(F),round(H),round(J),round(K),round(L),round(M),round(N),round(O),round(P),round(Q),round(R)])
     if Tipo_paila==1:
         if Activar_Aletas==True:
             Cantidad_pailas[0]=Cantidad_pailas[0]+1
@@ -1094,8 +1096,8 @@ def Mostrar_pailas(Vol_aux, Etapas, Sitio, T_Hornilla, Cap_hornilla):
 #    Tipo_paila[1].append(False)
 #    Tipo_paila[1].append(False)
 #    Tipo_paila[1].append(False)
-    for i in range(Etapas):
-        if(i>Etapas-4):
+    for i in range(Etapas-1,-1,-1):
+        if(i<4):
             Tipo_paila[0].append(random.choice([3,4]))
             Tipo_paila[1].append(False)
         else:
@@ -1168,9 +1170,9 @@ def Mostrar_pailas(Vol_aux, Etapas, Sitio, T_Hornilla, Cap_hornilla):
         #lista_par[7]>>>N_Canales
         #lista_par[8]>>>lC
         if(i<9):
-            Texto_etapa= "0"+str(i+1)
+            Texto_etapa= "0"+str(Etapas-i)
         else:
-            Texto_etapa= str(i+1)
+            Texto_etapa= str(Etapas-i)
         Nombres_Ubi.append(Sitio+" [Paila: "+Texto_etapa+"]")
         Dibujar_plano(Sitio+" [Paila: "+Texto_etapa+"]","static/pdf01/B2_Etapa_"+Texto_etapa,int(Tipo_paila[0][i]),
                       H_fl,H_fn,A,L,H,Hc,lista_par[1],lista_par[2],lista_par[0],lista_par[5],

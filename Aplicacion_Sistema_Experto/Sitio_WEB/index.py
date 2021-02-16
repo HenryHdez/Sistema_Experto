@@ -161,11 +161,6 @@ def generar_valores_informe():
         a['Departamento']='--'
         a['Ciudad']='--'
         Nombre_Rot="Hornilla: "+a['Nombre de usuario']+" ("+a['Pais']+")"
-    #Rotulos de la página
-    #    vector=['Nombre de usuario','Departamento','Ciudad','Crecimiento aproximado del área sembrada',
-    #            'Área caña sembrada','Caña por esperada hectárea',
-    #            'Periodo vegetativo','Caña por hectárea esperada','Número de moliendas',
-    #            'Días de trabajo a la semana','Horas de trabajo al día','Variedad de Caña 1']
     
     #---------------->>>>>>>>>"""Cálculo del periodo vegetativo"""<<<<<<<<<<<<<<<<<<<
     Formulario_1_Etiquetas=[]
@@ -207,12 +202,8 @@ def generar_valores_informe():
             Formulario_2_Valores.append(Nivel_pureza[index])  
             Formulario_2_Etiquetas.append('Fósforo (ppm)')
             Formulario_2_Valores.append(Nivel_Fosforo[index])    
-            #Formulario_2_Etiquetas.append('Calidad de la panela')
-            #Formulario_2_Valores.append(Nivel_Calidad[index])  
-            Formulario_2_Etiquetas.append('Grados Brix de la panela '+str(contacana))
-            Formulario_2_Valores.append(Nivel_brpane[index])
-            #Formulario_2_Etiquetas.append('Posible ubicación')
-            #Formulario_2_Valores.append(Deptos_cana[index]+', '+Ciudad_cana[index]) 
+            #Formulario_2_Etiquetas.append('Grados Brix de la panela '+str(contacana))
+            #Formulario_2_Valores.append(Nivel_brpane[index])
             Formulario_2_Etiquetas.append('>---------------------------------<')
             Formulario_2_Valores.append('>---------------------------------<')
             G_brix_cana=G_brix_cana+float(Grados_Bx[index])

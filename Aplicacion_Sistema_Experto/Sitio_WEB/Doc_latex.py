@@ -49,7 +49,7 @@ class Documento_Latex():
                     if(str(Diccionario['Departamento'])=='--'):
                         tlg.append('\n'+str(Diccionario['Pais'])+'.')    
                     else:
-                        tlg.append('\n'+str(Diccionario['Departamento'])+', '+str(Diccionario['Ciudad'])+'.')
+                        tlg.append('\n'+str(Diccionario['Ciudad'])+', '+str(Diccionario['Departamento'])+'.')
                     tlg.append('\n \n') #Salto de línea en parráfo
                     tlg.append('\nApreciado(s) productor(es):')
                     tlg.append('\n \n') #Salto de línea en parráfo
@@ -60,9 +60,8 @@ class Documento_Latex():
                               ' t/mes y un periodo vegetativo de '+ str(Diccionario['Periodo vegetativo'])+' meses. Teniendo en cuenta que'+
                               ' se realizan '+str(Diccionario['Número de moliendas al mes'])+' moliendas al mes se estableció una jornada laboral de '+
                               str(Diccionario['Días de trabajo de la hornilla a la semana'])+ ' días a la semana de '+str(Diccionario['Horas de trabajo de la hornilla al día'])+ ' horas laborables cada una '+'(la eficiencia estimada de la hornilla es del '+ str(Diccionario['Eficiencia de la hornilla'])+'%). '+
-                              '\n Además, la aplicación estima que para garantizar una operación apropiada de la hornilla durante la producción '+
-                              'de panela se requiere de un área disponible de al menos '+str(round(Diccionario['Capacidad estimada de la hornilla']*4.3))+' m² con una configuración de pailas y molino que garantiza una producción de panela de '+
-                              '50 toneladas al mes (ver Sección 2)'
+                              '\n Además, la aplicación estima que para garantizar una operación apropiada de la hornilla '+
+                              ' se requiere de un área disponible de al menos '+str(round(Diccionario['Capacidad estimada de la hornilla']*4.3))+' m²'
                               )
                     tlg.append(Parrafo)                
                     Parrafo= (', cuya productividad puede aumentar al incorporar el sistema de recuperación de calor (hasta '+str(round(Diccionario['Capacidad estimada de la hornilla']+25))+' kg/h) como se muestra en las tablas del análisis financiero y al final del informe.'
@@ -72,7 +71,7 @@ class Documento_Latex():
                     
                     with tlg.create(Itemize()) as itemize:
                         itemize.add_item('Estudio detallado para la construcción e instalación de la hornilla.')
-                        itemize.add_item('Una visita técnica de dos funcionarios de AGROSAVIA para la puesta en marcha y '+
+                        itemize.add_item('Al menos tres visitas técnicas de dos funcionarios de AGROSAVIA para la puesta en marcha y '+
                                          'capacitación de los operarios en el manejo de la hornilla y en la producción de panela '+
                                          'saborizada, granulada o moldeada en presentación pastilla de chocolate.')
                         itemize.add_item('Entrega de un ejemplar de la guía tecnológica para el manejo integral del sistema '+
@@ -160,6 +159,7 @@ class Documento_Latex():
                 else:
                     if((SM(None, 'Variedad de Caña', i).ratio()<0.85) and
                        (SM(None, 'Usa fertilizante', i).ratio()<0.85) and
+                       (SM(None, 'Grados Brix de la panela (promedio)', i).ratio()<0.85) and
                        (SM(None, '--', str(D1[i])).ratio()<0.85)):
                         T1=str(D1[i])
                         #Arreglo para asignar unidades y mostrarlas en el informe
@@ -283,7 +283,7 @@ class Documento_Latex():
                                             itemize.add_item('Tenga en cuenta las siguientes indicaciones.')
                                             with itemize.create(Itemize()) as item:
                                                         item.add_item('Durante las pruebas iniciales y periodos de capacitación, los operarios que manejan la hornilla deben tener experiencia para evitar la disminución en la calidad de la panela y vida util de los equipos instalados.')
-                                                        item.add_item('El trabajo continuo de la hornilla aumenta la capacidad de producción y evita la perdida de energía, puesto que, al no enfriarse durante las horas de la noche se reduce el efecto del cambio termico sobre los ladrillos de la estructura.')
+                                                        item.add_item('El trabajo continuo de la hornilla aumenta la capacidad de producción y evita la perdida de energía, puesto que, al no enfriarse durante las horas de la noche se reduce el efecto del cambio térmico sobre los ladrillos de la estructura.')
                                                         item.add_item('La combustión en la hornilla será buena, si se alimenta con pequeñas cantidades de bagazo cada 150 segundos y la válvula de la chimenea tiene una apertura 60° para garantizar un flujo de aire suficientemente alto que produzca llama, sin arrastrar combustible en los gases residuales.')
                                                         item.add_item('La entrada de aire por orificios diferentes a los proyectados en el diseño inicial debe evitarse a toda costa, para aumentar la eficiencia de la combustión y reducir el material particulado de los gases en la chimenea.')
                                                         item.add_item('Elimine obstáculos en las entradas de aire diseñadas para la hornilla y retire periódicamente la ceniza la parrilla para evitar la formación de escoria.')

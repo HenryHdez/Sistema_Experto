@@ -104,7 +104,7 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
             canvas.setFont('Helvetica-Bold', 14)
             canvas.drawString(190,680,'--->>>COSTO DE LA HORNILLA<<<---')
             canvas.setFont('Helvetica-Oblique', 10)
-            canvas.drawString(puntero_h, puntero_v-10, "Nota: El acero usado en la construcción de la hornilla es inoxidable.") 
+            canvas.drawString(puntero_h, puntero_v-10, "Nota: El acero usado en la construcción de la hornilla es inoxidable 304.") 
             canvas.showPage()
             canvas=Fondo(canvas)
             puntero_v=640
@@ -115,7 +115,7 @@ def Generar_reporte_financiero(D1, D2, D3, D4, D5, D6):
             canvas.setFillColorRGB(0,0,0)
             canvas.setFont('Helvetica-Oblique', 10)
             puntero_v=puntero_v-10
-            canvas.drawString(puntero_h, puntero_v, "Nota: El acero usado en la construcción del recuperador de calor es inoxidable.")
+            canvas.drawString(puntero_h, puntero_v, "Nota: El acero usado en la construcción del recuperador de calor es inoxidable 304.")
             canvas.setFont('Helvetica-Bold', 14)
             puntero_v=puntero_v-40
             canvas.drawString(202, puntero_v,'--->>>GASTOS OPERATIVOS<<<---')  
@@ -296,10 +296,10 @@ def costos():
             Etiquetas_Hornilla.append(Pailas_disponibles_2[pun_i])
     
     #>>>>>>>>>>Otros accesorios de la hornilla<<<<<<<<<<<<<#
-    Accesorios_disponibles=['Prelimpiador', 'Tanque recibidor', 'Ladrillos refractarios', 'Pegante', 'Tubo sanitario de 3 pulgadas',
+    Accesorios_disponibles=['Prelimpiador', 'Ladrillos refractarios', 'Pegante', 'Tubo sanitario de 3 pulgadas',
                         'Codos sanitarios de 3 pulgadas','Válvula de bola de 2 y 1/2 pulgadas', 'Férula sanitaria de 3 pulgadas',
                         'Abrazadera sanitaria de 3 pulgadas', 'Empaque de silicona de 3 pulgadas (alta temperatura)',
-                        'Sección de parrilla', 'Entrada hornilla', 'Descachazado', 'Valor aproximado del molino', 'Valor aproximado de la base del molino',
+                        'Sección de parrilla', 'Entrada hornilla','Paila melotera','Accesorios paila melotera', 'Valor aproximado del molino',
                         'Valor total de la hornilla']
     #vector de accesorios
     for pun_i in range(len(Accesorios_disponibles)):
@@ -308,9 +308,7 @@ def costos():
     a=float(Hornilla['Prelimpiador'].values)
     Cantidad=math.ceil(Total_pailas/20)
     Valor_Hornilla.append([Cantidad, a, a*Cantidad])
-    a=float(Hornilla['tanque recibidor'].values)
-    Cantidad=math.ceil(Total_pailas/20)
-    Valor_Hornilla.append([Cantidad, a, a*Cantidad])
+
     a=float(Hornilla['Ladrillos refractarios'].values)
     Cantidad=1200*Total_pailas
     Valor_Hornilla.append([Cantidad, a, a*Cantidad])
@@ -341,14 +339,15 @@ def costos():
     a=float(Hornilla['Entrada de la hornilla'].values)	
     Cantidad=math.ceil(Total_pailas/20)
     Valor_Hornilla.append([Cantidad, a, a*Cantidad])
-    a=float(Hornilla['Descachazado'].values)	
-    Cantidad=math.ceil(Total_pailas/20)
-    Valor_Hornilla.append([Cantidad, a, a*Cantidad])
+    a=float(Hornilla['Paila melotera'].values)	
+    Valor_Hornilla.append([1, a, a*1])
+    a=float(Hornilla['Accesorios paila melotera'].values)	
+    Valor_Hornilla.append([1, a, a*1])    
     Valor_molino=math.ceil(sum(Valor_M)/len(Valor_M))
     Valor_Hornilla.append([1,Valor_molino,1*Valor_molino])
-    a=float(Hornilla['Base molino'].values)	
-    Valor_base_mol=math.ceil(a)
-    Valor_Hornilla.append([1,Valor_base_mol,1*Valor_base_mol])
+#    a=float(Hornilla['Base molino'].values)	
+#    Valor_base_mol=math.ceil(a)
+#    Valor_Hornilla.append([1,Valor_base_mol,1*Valor_base_mol])
     #>>>>>>>>>>>>>>>>>>>>>>>>>total gastos de la hornilla
     total_hornilla=math.ceil(estimar_total(Valor_Hornilla))
     Valor_Hornilla.append([' ',' ',total_hornilla])
@@ -402,17 +401,17 @@ def costos():
     Operativos=pd.read_excel('static/Costos/Operativos.xlsx')
     Valor_Operativo=[]
     c=float(Operativos['Ingeniero'].values)
-    Valor_Operativo.append([2, c, c*2])
+    Valor_Operativo.append([1, c, c*6])
     c=float(Operativos['Maestro de obra'].values)
-    Valor_Operativo.append([2, c, c*2])
+    Valor_Operativo.append([2, c, c*12])
     c=float(Operativos['Obrero'].values)	
     Cantidad=math.ceil(Total_pailas/4)
-    Valor_Operativo.append([Cantidad, c, Cantidad*c])
+    Valor_Operativo.append([Cantidad, c, Cantidad*c*6])
     #>>>>>>>>>>>>>>>>>>>>>>>>>>>>Total gastos operativos
     total_operativos=estimar_total(Valor_Operativo)
     """>>>>>>>>>>>>>>>>>>>>>Codificar rotulo del informe<<<<<<<<<<<<<<<<"""
     Valor_Operativo.append([' ',' ',total_operativos])
-    Valor_Operativo.insert(0,['Cantidad', 'Valor unitario', 'Valor Total'])    
+    Valor_Operativo.insert(0,['Cantidad', 'Valor Mes', 'Valor 6 Meses'])    
     Etiquetas_Operativos=['Nombre', 'Profesional titulado', 'Maestro de obra', 'Obrero', 
                           'Total de gastos operativos']
     D_Operativo=dict(zip(Etiquetas_Operativos,Valor_Operativo))  
@@ -442,9 +441,9 @@ def costos():
     for k in range(2):    
         """>>>>-----------------COSTOS DE LA PRODUCCIÓN-------------------------<<<"""
         if(k==0):
-            Capacidad_hornilla=mem_capacidad+25
-        elif (k==1):
             Capacidad_hornilla=mem_capacidad
+        elif (k==1):
+            Capacidad_hornilla=mem_capacidad+25
 
         #Variables
         Valor_Cana=float(Operativos['Tonelada de Caña'].values)	
@@ -496,24 +495,23 @@ def costos():
         
         Costo_kg_Mtto=math.ceil(Mtto/(Produ_diaria*Dias_trabajo_semana*4*12))
         """>>>>>>>>>>>>>>-------------TOTALES PRODUCCION--------------<<<<<<<<<<<<<<<"""
-        Consolidado_totales_2=[Costo_kg_Motor, Costo_kg_Diesel, Costo_kg_control, Costo_kg_cana, Costo_kg_otros, Costo_kg_Mtto, Costo_kg_Contrato]
+        Consolidado_totales_2=[Costo_kg_Motor, Costo_kg_control, Costo_kg_cana, Costo_kg_otros, Costo_kg_Mtto, Costo_kg_Contrato]
         Costo_total_kg=sum(Consolidado_totales_2)
         if(k==0):
             lista_produccion_1=Consolidado_totales_2
             lista_produccion_1.append(Costo_total_kg)
             lista_produccion_1.insert(0,Capacidad_hornilla)
-            lista_produccion_1.insert(0,'SI')
+            lista_produccion_1.insert(0,'NO')
         elif (k==1):
             lista_produccion_2=Consolidado_totales_2
             lista_produccion_2.append(Costo_total_kg)
             lista_produccion_2.insert(0,Capacidad_hornilla)
-            lista_produccion_2.insert(0,'NO')
+            lista_produccion_2.insert(0,'SI')
 
     """>>>>>>>>>>>>>>>>>>>>>Codificar rotulo del informe<<<<<<<<<<<<<<<<"""  
     Etiquetas_produccion=['¿El diseño incorpora recuperador de calor?',
                           'Capacidad de la hornilla [kg/h]',
                           'Costo de funcionamiento del molino por kg (Motor eléctrico)', 
-                          'Costo de funcionamiento del molino por kg (Motor diesel o gasolina)', 
                           'Costo de funcionamiento del controlador por kg',
                           'Costo del kg de caña',
                           'Costo de los insumos para la producción (Cera-Empaques-Clarificante)',
@@ -651,7 +649,7 @@ def costos():
             Produccion_anual_kg=lista_financiero_1[8]
             Valor_Salvamento=lista_financiero_1[9]
             Ingreso_anual=lista_financiero_1[10]   
-            Costo_total_kg=lista_produccion_1[9]
+            Costo_total_kg=lista_produccion_1[8]
             mem_ruido=Ingreso_anual
         elif (k==1):
             Total_proyecto=mem_total_proyecto
@@ -660,7 +658,7 @@ def costos():
             Produccion_anual_kg=lista_financiero_2[8]
             Valor_Salvamento=lista_financiero_2[9]
             Ingreso_anual=lista_financiero_2[10]   
-            Costo_total_kg=lista_produccion_2[9]
+            Costo_total_kg=lista_produccion_2[8]
             mem_ruido=Ingreso_anual
         #Depreciación Anual, Mtto, Ingresos, Flujo de caja
         Estado_caja=[0, 0, 0, Valor_Salvamento-(Total_proyecto+Costo_financiero)]
