@@ -65,7 +65,7 @@ class Documento_Latex():
                               )
                     tlg.append(Parrafo)                
                     Parrafo= (', cuya productividad puede aumentar al incorporar el sistema de recuperación de calor (hasta '+str(round(Diccionario['Capacidad estimada de la hornilla']+25))+' kg/h) como se muestra en las tablas del análisis financiero y al final del informe.'
-                              +'No obstante, la corporación ofrece los siguientes servicios de asistencia técnica para ajustar los valores provistos en esta propuesta de valor:'
+                              +' No obstante, la corporación ofrece los siguientes servicios de asistencia técnica para ajustar los valores provistos en esta propuesta de valor:'
                               )
                     tlg.append(Parrafo)
                     

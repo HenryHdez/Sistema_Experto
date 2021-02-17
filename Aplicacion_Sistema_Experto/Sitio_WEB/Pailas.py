@@ -240,6 +240,11 @@ def Dibujar_planta(Vector_Entrada, Tipo_Hornilla, Etapas, Nombres_Ubicaciones, C
             if(inter==0):
                 canvas.drawImage(Nombre_ducto, Desplazamiento, 270, width=Espacio*0.6, height=Espacio*0.6) 
                 canvas.drawImage(Nombre_Paila, Desplazamiento, 270, width=Espacio*0.6, height=Espacio*0.6)
+                #Melotera
+                canvas.setFont('Helvetica-Bold', 14)
+                canvas.drawString(740, 450, 'Paila: Melotera')                
+                canvas.drawImage('static/Vistas/Superior/'+'Plana_sin_aletas.png', 750, 370, width=Espacio*0.6, height=Espacio*0.6)
+                #>>>>>>>
                 canvas.setFont('Helvetica-Bold', 14)
                 canvas.drawString(Desplazamiento+12, 245, 'Paila: '+str(i+1))   
                 Desplazamiento=Desplazamiento+Espacio-10
@@ -308,8 +313,12 @@ def Dibujar_planta(Vector_Entrada, Tipo_Hornilla, Etapas, Nombres_Ubicaciones, C
             canvas.setPageSize((970,628))
             canvas.drawImage('static/Vistas/Otros/Formato.png', 0, 0, width=970, height=628)
             Altura=Dimensiones_Camara[5]
+            Mem_A1=Altura
             Grados_inc=0
             for i in range(Etapas):   
+                if(i==Etapas-1):
+                    Altura=Mem_A1  
+                    Grados_inc=0
                 if(i>0):
                     canvas.showPage()
                 if Vector_Entrada[i][0]==1:
@@ -351,7 +360,7 @@ def Dibujar_planta(Vector_Entrada, Tipo_Hornilla, Etapas, Nombres_Ubicaciones, C
                 else:
                     Grados_inc=0.3
                     Altura=Altura-(Altura*Grados_inc)
-                
+ 
                 canvas.showPage()
                 canvas.drawImage(ruta_ladrillos_2, 0, 0,  width=970, height=628) 
                 canvas=Dibujar_Rotulo(canvas, Nombres_Ubicaciones[i], 'Ubicación de los ladrillos')
@@ -761,7 +770,8 @@ def Dibujar_plano(Nombre_Sitio,Nombre_archivo,Tipo_paila,H_fl,H_fn,Ancho,L,Ho,Hc
             Crear_plano_pdf('static/Pailas/Plana_con_aletas.png', Nombre_archivo,
                             Nombre_Sitio, 'Diagrama de una paila plana con aletas', Valores_plano, [10,11,12,13,14,15,16,17],0)
         else:
-            Cantidad_pailas[1]=Cantidad_pailas[1]+1
+            if(Nombre_Sitio!="Paila Melotera"):
+                Cantidad_pailas[1]=Cantidad_pailas[1]+1
             Lista_de_pailas[1]='Plana SA'
             Crear_plano_pdf('static/Pailas/Plana_sin_aletas.png', Nombre_archivo,
                             Nombre_Sitio, 'Diagrama de una paila plana sin aletas', Valores_plano, [7,8,9,10,11,12,13,14,15,16,17],0)
@@ -1182,11 +1192,19 @@ def Mostrar_pailas(Vol_aux, Etapas, Sitio, T_Hornilla, Cap_hornilla):
         if(i==Etapas-1):
             R_A=(H_fl+H_fn)*1000
             R_B=(A*1000)+100
+        if(i==0):
+            #Melotera
+            Dibujar_plano("Paila Melotera","static/pdf01/B2_Etapa_"+"Zelotera",1,
+                          H_fl,H_fn,A,L,H,Hc,lista_par[1],lista_par[2],lista_par[0],lista_par[5],
+                          lista_par[4],lista_par[6],lista_par[8],lista_par[7],False
+                          )
+            #>>>>>>>>
         """Eliminar comentarios para probar el algoritmo de optimización"""
         #Comprobar_diseno(Volumen,i,int(Tipo_paila[0][i]),H_fl,H_fn,A,L,H,Hc,bool(Tipo_paila[1][i]))
         #print("________>>>>>>>>>>>>>____________")
         #print(str(iteraciones))
         #print(str(f)) 
+
     Dibujar_planta(Pailas_Planta,T_Hornilla, sum(Cantidad_pailas), Nombres_Ubi, Cap_hornilla, R_A, R_B)    
     df = pd.DataFrame([Lista_de_pailas, Cantidad_pailas])
     df.to_excel('static/Temp/Temp2.xlsx')
