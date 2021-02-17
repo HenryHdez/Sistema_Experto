@@ -242,8 +242,8 @@ def Dibujar_planta(Vector_Entrada, Tipo_Hornilla, Etapas, Nombres_Ubicaciones, C
                 canvas.drawImage(Nombre_Paila, Desplazamiento, 270, width=Espacio*0.6, height=Espacio*0.6)
                 #Melotera
                 canvas.setFont('Helvetica-Bold', 14)
-                canvas.drawString(740, 450, 'Paila: Melotera')                
-                canvas.drawImage('static/Vistas/Superior/'+'Plana_sin_aletas.png', 750, 370, width=Espacio*0.6, height=Espacio*0.6)
+                canvas.drawString(720, 450, 'Paila: Melotera')                
+                canvas.drawImage('static/Vistas/Superior/'+'Plana_sin_aletas.png', 690, 370, width=Espacio*0.6, height=Espacio*0.6)
                 #>>>>>>>
                 canvas.setFont('Helvetica-Bold', 14)
                 canvas.drawString(Desplazamiento+12, 245, 'Paila: '+str(i+1))   
@@ -606,7 +606,7 @@ def Dibujar_Cotas(canvas,sel_Plano,Dimensiones, Nombre_Usuario, Altura, Grados_i
         Valores_Dim.append(Dimensiones[4]+120)           #C
         Valores_Dim.append(Dimensiones[2])               #D 
         Valores_Dim.append(Dimensiones[2]+480)           #E 
-        Valores_Dim.append(round(Altura)+480)            #F       
+        Valores_Dim.append(round(Altura)+120)            #F       
         Valores_Dim.append(round(Altura))                #G 
         Valores_Dim.append(Dimensiones[3])               #H 
         Valores_Dim.append(Grados_inc*100)               #Inc

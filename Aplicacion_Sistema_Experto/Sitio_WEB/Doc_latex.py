@@ -53,13 +53,13 @@ class Documento_Latex():
                     tlg.append('\n \n') #Salto de línea en parráfo
                     tlg.append('\nApreciado(s) productor(es):')
                     tlg.append('\n \n') #Salto de línea en parráfo
-                    Parrafo= ('Con base en la información suministrada, está aplicación ha tasado (ver Sección 1) la construcción de una hornilla '+
-                              T_Hornilla+' con capacidad de '+ str(Diccionario['Capacidad estimada de la hornilla']) +' kg/h; adecuada para el procesamiento de hasta '+
+                    Parrafo= ('Con base en la información suministrada, está aplicación propone (ver Sección 1) la construcción de una hornilla '+
+                              T_Hornilla+' con capacidad de '+ str(Diccionario['Capacidad estimada de la hornilla']) +' kg/h'+' (la eficiencia estimada de la hornilla es del '+ str(round(Diccionario['Eficiencia de la hornilla']))+'%). '+'; adecuada para el procesamiento de hasta '+
                               str(Diccionario['Área cosechada al mes'])+
-                              ' ha'+' de caña, con un rendimiento de '+ str(float(Diccionario['Caña molida al mes']))+
+                              ' ha'+' de caña, con una producción de '+ str(round(float(Diccionario['Caña molida al mes'])))+
                               ' t/mes y un periodo vegetativo de '+ str(Diccionario['Periodo vegetativo'])+' meses. Teniendo en cuenta que'+
                               ' se realizan '+str(Diccionario['Número de moliendas al mes'])+' moliendas al mes se estableció una jornada laboral de '+
-                              str(Diccionario['Días de trabajo de la hornilla a la semana'])+ ' días a la semana de '+str(Diccionario['Horas de trabajo de la hornilla al día'])+ ' horas laborables cada una '+'(la eficiencia estimada de la hornilla es del '+ str(Diccionario['Eficiencia de la hornilla'])+'%). '+
+                              str(Diccionario['Días de trabajo de la hornilla a la semana'])+ ' días a la semana de '+str(Diccionario['Horas de trabajo de la hornilla al día'])+ ' horas laborables cada una.'+
                               '\n Además, la aplicación estima que para garantizar una operación apropiada de la hornilla '+
                               ' se requiere de un área disponible de al menos '+str(round(Diccionario['Capacidad estimada de la hornilla']*4.3))+' m²'
                               )

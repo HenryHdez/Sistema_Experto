@@ -411,7 +411,7 @@ def costos():
     total_operativos=estimar_total(Valor_Operativo)
     """>>>>>>>>>>>>>>>>>>>>>Codificar rotulo del informe<<<<<<<<<<<<<<<<"""
     Valor_Operativo.append([' ',' ',total_operativos])
-    Valor_Operativo.insert(0,['Cantidad', 'Valor Mes', 'Valor 6 Meses'])    
+    Valor_Operativo.insert(0,['Cantidad', 'Valor Mes', 'Valor 3 Meses'])    
     Etiquetas_Operativos=['Nombre', 'Profesional titulado', 'Maestro de obra', 'Obrero', 
                           'Total de gastos operativos']
     D_Operativo=dict(zip(Etiquetas_Operativos,Valor_Operativo))  
