@@ -36,7 +36,8 @@ def Unir_Informe(nombre, ruta_carp, borrar_F):
     from PyPDF2 import PdfFileMerger, PdfFileReader
     from shutil import rmtree
     listaPdfs = os.listdir(ruta_carp)
-    listaPdfs
+    listaPdfs=sorted(listaPdfs)
+    print(listaPdfs)
     merger = PdfFileMerger()
     if(borrar_F!=2 and borrar_F!=3):
         for file in listaPdfs:
@@ -242,8 +243,8 @@ def Dibujar_planta(Vector_Entrada, Tipo_Hornilla, Etapas, Nombres_Ubicaciones, C
                 canvas.drawImage(Nombre_Paila, Desplazamiento, 270, width=Espacio*0.6, height=Espacio*0.6)
                 #Melotera
                 canvas.setFont('Helvetica-Bold', 14)
-                canvas.drawString(720, 450, 'Paila: Melotera')                
-                canvas.drawImage('static/Vistas/Superior/'+'Plana_sin_aletas.png', 690, 370, width=Espacio*0.6, height=Espacio*0.6)
+                canvas.drawString(790, 420, 'Paila: Melotera')                
+                canvas.drawImage('static/Vistas/Superior/'+'Plana_sin_aletas.png', 800, 340, width=Espacio*0.6, height=Espacio*0.6)
                 #>>>>>>>
                 canvas.setFont('Helvetica-Bold', 14)
                 canvas.drawString(Desplazamiento+12, 245, 'Paila: '+str(i+1))   

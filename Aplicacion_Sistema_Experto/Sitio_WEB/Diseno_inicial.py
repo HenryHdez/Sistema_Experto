@@ -10,7 +10,7 @@ import pandas as pd
 
 """----->>>>Selección del molino<<<<----"""
 def Seleccionar_Molino(Kilos_Hora):
-    Molino=pd.read_excel('static/Catalogos/Molinos.xlsx')
+    Molino=pd.read_excel('static/Catalogos/Molinos.xlsx', engine='openpyxl')
     Marca=Molino['Marca'].values
     Modelo=Molino['Modelo'].values
     Kilos=Molino['kghora'].values

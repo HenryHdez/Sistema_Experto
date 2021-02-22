@@ -1,4 +1,6 @@
-'''----Definición de las librerías requeridas para la ejecución de la aplicación---'''
+# !/usr/bin/env python 
+# -*- coding: utf-8 -*-
+"""----Definición de las librerías requeridas para la ejecución de la aplicación---"""
 from flask import Flask, request, render_template        #Interfaz gráfica WEB
 from difflib import SequenceMatcher as SM                #Detección de secuencias en estructuras de texto
 from werkzeug.utils import secure_filename               #Encriptar información archivos de pdf
@@ -66,8 +68,8 @@ def usua():
     global Nivel_brpane 
     global Cana_ha
     df             = pd.read_json("static/Catalogos/Colombia.json")
-    paises         = pd.read_excel("static/Catalogos/Paises.xlsx") 
-    cana           = pd.read_excel("static/Catalogos/Variedades.xlsx")
+    paises         = pd.read_excel("static/Catalogos/Paises.xlsx", engine='openpyxl') 
+    cana           = pd.read_excel("static/Catalogos/Variedades.xlsx", engine='openpyxl')
     Deptos_cana    = cana['Depto'].values
     Ciudad_cana    = cana['Ciudad'].values
     Tipo_cana      = cana['Tipo'].values
@@ -264,7 +266,7 @@ def generar_valores_informe():
     for i in Formulario_3_Etiquetas:
         Formulario_3_Valores.append(Diccionario[i])
         
-    Molino=pd.read_excel('static/Temp/Temp.xlsx',skipcolumn = 0,)
+    Molino=pd.read_excel('static/Temp/Temp.xlsx', engine='openpyxl',skipcolumn = 0,)
     Marca=Molino['Marca'].values
     Modelo=Molino['Modelo'].values
     Kilos=Molino['kg/hora'].values
@@ -643,4 +645,6 @@ def contac_rta():
 
 #Función principal    
 if __name__ == '__main__':
+    #Comente la linea descomentada y descomente la siguiente para ejecución en docker
     app.run()
+    #app.run(debug=True, host='0.0.0.0', port='7000')
