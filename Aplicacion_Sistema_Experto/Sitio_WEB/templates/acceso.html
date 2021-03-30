@@ -26,31 +26,29 @@
         
 {% block content %}
     <h1 class="display-4">INGRESO</h1>
+    <hr class="hr-titulo">
     <p align="justify" class="lead">{{aviso}}</p>
     <hr class="my-4">
-    <!--Comente la línea del formulario descomentada y descomente la siguiente para su ejecución en docker-->
-    <form action = "http://127.0.0.1:5000/base" method = "POST">
-    <!--<form action = "http://localhost:7000/base" method = "POST">--> 
-        <table align="center">
-            <tr>
-               <td style="width:450px"> <b>Número del documento de identidad:</b> </td>
-               <td style="width:450px"> <input type = "number" name = "Documentoa" placeholder="1234567" style="width : 250px; text-align:center;" maxlength="15" required/> </td>
+    <form class="row" action = "http://localhost:7000/base" method = "POST">
+        <table class="col-md-6 col-sm-12 form-row m-auto" align="center">
+            <tr class="col-12 form-group">
+               <td class="col-12"> <b>Número del documento de identidad:</b> </td>
+               <td class="col-12"> <input type = "number" name = "Documentoa" placeholder="1234567" maxlength="15" required/> </td>
             </tr>
 
-            <tr>
-               <td style="width:450px"> <b>Contraseña:</b> </td>
-               <td style="width:450px"> <input type = "password" name = "Clavea" maxlength="10" placeholder="0000" style="width : 250px; text-align:center;" required/> </td>
+            <tr class="col-12 form-group">
+               <td class="col-12"> <b>Contraseña:</b> </td>
+               <td class="col-12"> <input type = "password" name = "Clavea" maxlength="10" placeholder="0000" required/> </td>
             </tr>
                                                
-            <tr>
-                <td style="width:450px"></td>
-                <td style="width:450px"><input class="btn btn-success btn-lg" type = "submit" value = "Ingresar" style="width:250px"/></td>
+            <tr class="botones-formulario">
+                <td>
+                  <input class="btn btn-info btn-enviar" type = "submit" value = "Ingresar"/>
+                </td>
+                <td>
+                  <a class="btn btn-danger btn-resetear" href="/" role="button">Salir</a>
+                </td>
             </tr>
-
-            <tr>
-                <td style="width:450px"></td>
-                <td style="width:450px"><a class="btn btn-danger btn-lg" href="/" role="button" style="width:250px">Salir</a>
-            </tr>
-        </table>                 
+        </table>                  
 {% endblock %}
 

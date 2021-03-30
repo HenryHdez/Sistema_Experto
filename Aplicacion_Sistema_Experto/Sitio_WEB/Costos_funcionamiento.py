@@ -292,6 +292,7 @@ def costos():
     for pun_i in range(len(Pailas_disponibles_1)):
         if(Cantidad_pailas[pun_i]>0):
             a=float(Hornilla[Pailas_disponibles_1[pun_i]].values)
+            a=a*((0.004*Capacidad_hornilla)+0.2)
             Valor_Hornilla.append([Cantidad_pailas[pun_i], a, a*Cantidad_pailas[pun_i]])  
             Etiquetas_Hornilla.append(Pailas_disponibles_2[pun_i])
     

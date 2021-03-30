@@ -25,18 +25,21 @@
 
 {% block content %}
       <h1 class="display-4">PRESENTACIÓN</h1>
-      <p align="justify" class="lead">La APP Sistema experto es una aplicación desarrollada que de forma automática estima las dimensiones de una hornilla
+      <hr class="hr-titulo">
+      <p class="lead">La APP Sistema experto es una aplicación desarrollada que de forma automática estima las dimensiones de una hornilla
       para la producción de panela y genera una propuesta de valor para su implementación con un alto nivel de confianza.</p>
       <hr class="my-4">
-      <a href="nosotros"> Haga clic en este enlace para conocer más detalles de la aplicación.</a>
-      <br>
-      <br>
-      <br>
-      <br>
-      <a class="btn btn-info btn-lg" href="usuario" role="button" style="width:250px">Iniciar aplicación</a>
-      <br>
-      <br>
-      <a class="btn btn-success btn-lg" href="acceso" role="button" style="width:250px">Usuario Corporativo</a>
+      <div class="col-12 nosotros-seccion">
+        <a href="nosotros" class="btn-nosotros"> Haga clic en este enlace para conocer más detalles de la aplicación.</a>
+      </div>
+
+      <div class="col-12 inicio-app-seccion">
+        <a class="btn btn-info btn-lg btn-iniciar-app" href="usuario" role="button" style="width:250px">Iniciar aplicación</a>
+        <a class="btn btn-success btn-lg btn-usuario-corp" href="acceso" role="button" style="width:250px">Usuario Corporativo</a>
+      </div>
+      <div class="col-12 inicio-app-seccion">
+        <a download="Manual" href="{{url_for('static', filename='/Catalogos/Manual.pdf')}}">Haga clic aqui para descargar el manual de la aplicación</a>
+      </div>
 {% endblock %}
        
 

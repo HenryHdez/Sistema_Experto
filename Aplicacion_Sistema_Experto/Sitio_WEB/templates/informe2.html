@@ -1,41 +1,42 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <div class="jumbotron" style="background: rgba(178,176,176,0.5);">
-        <h3><b>DATOS DE LA(S) VARIEDAD(ES) DE CAÑA SELECCIONADA(S)</b></h3>
-        <hr class="my-4">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <div class="jumbotron">
+        <h3 class="display-1">DATOS DE LA(S) VARIEDAD(ES) DE CAÑA SELECCIONADA(S)</h3>
+        <hr class="hr-titulo">
 
         <table align="center" cellpadding="0" cellspacing="0">
         {% for id in Etiquetas %}
-            <tr>
-               <td style="width:450px"> <b>{{ id }}</b> </td>
-               <td style="width:450px"> {{ Valores[loop.index-1] }} </td>
+            <tr class="row">
+               <td class="col-md-6 col-sm-12"> <b>{{ id }}</b> </td>
+               <td class="col-md-6 col-sm-12 mb-4"> {{ Valores[loop.index-1] }} </td>
             </tr>
         {% endfor %}
         </table>
         
         <hr class="my-4">
-        <h3><b>VISTA PREVIA DE LA(S) VARIEDAD(ES) DE CAÑA SELECCIONADA(S)</b></h3>
-        <hr class="my-4">
+        <h3 class="display-1">VISTA PREVIA DE LA(S) VARIEDAD(ES) DE CAÑA SELECCIONADA(S)</h3>
+        <hr class="hr-titulo">
         <table align="center" cellpadding="0" cellspacing="0">
                                       
             {% for i in range(0,Cant_fotos,2) %}
-            <tr>
+            <tr class="row">
 
-                <td>
+                <td class="col-md-6 col-sm-12">
                     <h5><b>Variedad de caña {{i+1}}</b></h5>
                     <OBJECT id="Foto2">
-                        <img src={{url_for('static', filename='Latex/'+Dir[i])}} width="300" height="350">
+                        <img src={{url_for('static', filename='Latex/'+Dir[i])}} width="100%" height="100%">
                     </OBJECT>         
                 </td>  
 
-                <td>
+                <td class="col-md-6 col-sm-12">
                     <p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>            
                 </td>
                 
                 {%if(i+1 < Cant_fotos)%}
-                <td>
+                <td class="col-md-6 col-sm-12">
                     <h5><b>Variedad de caña {{i+2}}</b></h5>
                     <OBJECT id="Foto3">
-                        <img src={{url_for('static', filename='Latex/'+Dir[i+1])}} width="300" height="350">
+                        <img src={{url_for('static', filename='Latex/'+Dir[i+1])}} width="100%" height="100%">
                     </OBJECT>         
                 </td> 
                 {%endif%}

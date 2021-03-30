@@ -153,7 +153,8 @@ def generar_valores_informe():
         amsnm=amsnm.tolist()
         H2O=df.aguasubterranea
         H2O=H2O.tolist()
-        altura_media=amsnm[D_aux.index(Dept)]
+        altura_media=int(result.get('Altura'))#amsnm[D_aux.index(Dept)]
+        #print(altura_media)
         NivelFre=H2O[D_aux.index(Dept)]
         Nombre_Rot="Hornilla: "+a['Nombre de usuario']+" ("+a['Departamento']+'-'+a['Ciudad']+")"
     else:
@@ -253,14 +254,15 @@ def generar_valores_informe():
     """Optimizar tamaño de las pailas"""
     Pailas.Mostrar_pailas(
             Diccionario_2['Volumen de jugo [m^3/kg]'],
+            #Diccionario_2['Volumen de jugo [L]'],
             int(Diccionario_2['Etapas']),
             Nombre_Rot,
             Diccionario['Tipo de hornilla'],
             Diccionario['Capacidad estimada de la hornilla']
             )
     """Presentar información del molino"""
-    Formulario_3_Etiquetas=['Caña molida al mes', 'Área cosechada al mes',	 'Caña molida a la semana',		
-                            'Caña molida por Hora', 'Jugo crudo',	 'Jugo clarificado', 'Masa de panela',		
+    Formulario_3_Etiquetas=['Caña molida al mes'  , 'Área cosechada al mes', 'Caña molida a la semana',		
+                            'Caña molida por Hora', 'Jugo crudo', 'Jugo clarificado', 'Masa de panela',		
                             'Capacidad del Molino']
     Formulario_3_Valores=[]
     for i in Formulario_3_Etiquetas:
@@ -305,10 +307,11 @@ def generar_valores_informe():
                 Diccionario['Pais'], 
                 Diccionario['Departamento'],
                 Diccionario['Ciudad'], 
-                Crear_archivo_base_64("static/Informe_WEB.pdf"), 
-                Crear_archivo_base_64("static/Planos_WEB.pdf"), 
-                Crear_archivo_base_64("static/B3_Etapa_Planta_WEB.pdf"), 
-                Crear_archivo_base_64("static/Calculos_WEB.pdf"))
+                "a","b","c","d")
+    #            Crear_archivo_base_64("static/Informe_WEB.pdf"), 
+    #            Crear_archivo_base_64("static/Planos_WEB.pdf"), 
+    #            Crear_archivo_base_64("static/B3_Etapa_Planta_WEB.pdf"), 
+    #            Crear_archivo_base_64("static/Calculos_WEB.pdf"))
     Operaciones_db(2,usuarios)        #Usar base de datos
 
 #Filtrar caracteres desconocidos de las cadenas de texto de los archivos temporales
@@ -434,8 +437,8 @@ def Operaciones_db(Operacion, usuarios):
     r_b=[]
     Cadena_sql= "DELETE FROM Clientes WHERE ID IN "
     try:
-        cnxn = pyodbc.connect(driver='{SQL Server Native Client 11.0}', 
-                      host='COMOSDSQL08\MSSQL2016DSC', 
+        cnxn = pyodbc.connect(driver='FreeTDS', 
+                      host='172.16.11.44\MSSQL2016DSC', 
                       database='SistemaExpertoPanela', 
                       user='WebSisExpPanela', 
                       password='sIuusnOsE9bLlx7g60Mz')
@@ -532,7 +535,7 @@ def base_batos():
         datos_usuario = request.form
         Nombre_Usuario=datos_usuario.get('Documentoa')
         Clave_Usuario=datos_usuario.get('Clavea')
-        if(Nombre_Usuario=="12345" and Clave_Usuario=="0000"):
+        if(Nombre_Usuario=="1234567" and Clave_Usuario=="112233"):
             #Listas para almacenamiento temporal de los datos de usuario
             Etiquetas_ID=[]
             Etiquetas_Nombres=[]
@@ -645,6 +648,5 @@ def contac_rta():
 
 #Función principal    
 if __name__ == '__main__':
-    #Comente la linea descomentada y descomente la siguiente para ejecución en docker
-    app.run()
     #app.run(debug=True, host='0.0.0.0', port='7000')
+    app.run(host='0.0.0.0', port='7000')

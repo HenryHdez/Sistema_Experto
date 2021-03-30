@@ -1,35 +1,36 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <div class="jumbotron" style="background: rgba(178,176,176,0.5);">
-        <h3><b>INFORMACIÓN DE(L O LOS) MOLINO(S) PRE-SELECCIONADO(S)</b></h3>
-        <hr class="my-4">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <div class="jumbotron">
+        <h3 class="display-1">INFORMACIÓN DE(L O LOS) MOLINO(S) PRE-SELECCIONADO(S)</h3>
+        <hr class="hr-titulo">
         <p class="lead"><b>Parámetros de selección de un molino de acuerdo con los cálculos de la hornilla.</b></p>
         <table align="center">
         {% for i, item in result.items() %}
-            <tr>
+            <tr class="row">
                 {%if i=="Caña molida al mes"%}
-                   <td style="width:450px"> <b>{{ i }}</b> </td>
-                   <td style="width:450px"> {{ item }} t/mes </td>
+                   <td class="col-md-6 col-sm-12"> <b>{{ i }}</b> </td>
+                   <td class="col-md-6 col-sm-12 mb-4"> {{ item }} t/mes </td>
                 {%elif i=="Área cosechada al mes"%}
-                   <td style="width:450px"> <b>{{ i }}</b> </td>
-                   <td style="width:450px"> {{ item }} ha/mes </td>
+                   <td class="col-md-6 col-sm-12"> <b>{{ i }}</b> </td>
+                   <td class="col-md-6 col-sm-12 mb-4"> {{ item }} ha/mes </td>
                 {%elif i=="Caña molida a la semana"%}
-                   <td style="width:450px"> <b>{{ i }}</b> </td>
-                   <td style="width:450px"> {{ item }} t/semana </td>
+                   <td class="col-md-6 col-sm-12"> <b>{{ i }}</b> </td>
+                   <td class="col-md-6 col-sm-12 mb-4"> {{ item }} t/semana </td>
                 {%elif i=="Caña molida por Hora"%}
-                   <td style="width:450px"> <b>{{ i }}</b> </td>
-                   <td style="width:450px"> {{ item }} t/hora </td>
+                   <td class="col-md-6 col-sm-12"> <b>{{ i }}</b> </td>
+                   <td class="col-md-6 col-sm-12 mb-4"> {{ item }} t/hora </td>
                 {%elif i=="Masa de panela"%}
-                   <td style="width:450px"> <b>{{ i }}</b> </td>
-                   <td style="width:450px"> {{ item }} kg/hora </td>
+                   <td class="col-md-6 col-sm-12"> <b>{{ i }}</b> </td>
+                   <td class="col-md-6 col-sm-12 mb-4"> {{ item }} kg/hora </td>
                 {%elif i=="Capacidad del Molino"%}
-                   <td style="width:450px"> <b>{{ i }}</b> </td>
-                   <td style="width:450px"> {{ item }} kg/hora (calculado)</td>
+                   <td class="col-md-6 col-sm-12"> <b>{{ i }}</b> </td>
+                   <td class="col-md-6 col-sm-12 mb-4"> {{ item }} kg/hora (calculado)</td>
                 {%elif i=='Jugo crudo' or i=='Jugo clarificado'%}
-                   <td style="width:450px">  </td>
-                   <td style="width:450px">  </td>                
+                   <td class="col-md-6 col-sm-12">  </td>
+                   <td class="col-md-6 col-sm-12 mb-4">  </td>                
                 {%else%}
-                   <td style="width:450px"> <b>{{ i }}</b> </td>
-                   <td style="width:450px"> {{ item }} </td>
+                   <td class="col-md-6 col-sm-12"> <b>{{ i }}</b> </td>
+                   <td class="col-md-6 col-sm-12 mb-4"> {{ item }} </td>
                 {% endif %}
             </tr>            
         {% endfor %}
@@ -42,32 +43,18 @@
         
         <table align="center">
         {% for id, item in Molinos.items() %}
-            <tr>
-               <td style="width:450px"> <b>{{ id }}</b> </td>
+            <tr class="row">
+               <td class="col-md-6 col-sm-12 mb-4"> <b>{{ id }}</b> </td>
                {% for uj in item %}
                    {% if (id=='Disponible en')%}
-                       <td style="width:450px"> <a href= {{uj}} target="_blank">Ver fabricante</a> </td>
+                       <td> <a href= {{uj}} target="_blank">Ver fabricante</a> </td>
                    {%else%}
-                       <td style="width:450px"> {{ uj }} </td>
+                       <td> {{ uj }} </td>
                    {% endif %}
                {% endfor %}
             </tr>
         {% endfor %}
         </table>
-        </br>   
-        </br>
-        </br>
-        </br>
-        </br>
-        </br>
-        </br> 
-        </br>
-        </br>
-        </br>  
-        </br>
-        </br> 
-        </br>
-        </br>
       </br>
     </div>
 

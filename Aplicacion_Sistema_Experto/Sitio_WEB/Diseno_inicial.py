@@ -61,7 +61,7 @@ def Normalizar_Capacidad(Capacidad_Hornilla, Nivel_Freat):
     global Tipo_Hornilla
     if (Capacidad_Hornilla<=100):
         Capacidad_Hornilla=75
-        Cant_Pailas=6
+        Cant_Pailas=5
         Tipo_Hornilla="Plana de una camara"
     elif((Capacidad_Hornilla>100) and (Capacidad_Hornilla<=125)):
         Capacidad_Hornilla=125
@@ -72,7 +72,7 @@ def Normalizar_Capacidad(Capacidad_Hornilla, Nivel_Freat):
             Tipo_Hornilla=random.choice(["Plana de una camara","Ward cimpa","Mini-ward"])      
     elif((Capacidad_Hornilla>125) and (Capacidad_Hornilla<=150)):
         Capacidad_Hornilla=150
-        Cant_Pailas=7
+        Cant_Pailas=6
         if (Nivel_Freat<=100):
             Tipo_Hornilla="Plana de una camara"
         else: 
@@ -87,11 +87,11 @@ def Normalizar_Capacidad(Capacidad_Hornilla, Nivel_Freat):
         ##################Sin recuperador#########
     elif((Capacidad_Hornilla>175) and (Capacidad_Hornilla<=250)):
         Capacidad_Hornilla=200
-        Cant_Pailas=8
+        Cant_Pailas=7
         Tipo_Hornilla="Plana de una camara"
     elif(Capacidad_Hornilla>250):
         Capacidad_Hornilla=250 
-        Cant_Pailas=8
+        Cant_Pailas=7
         Tipo_Hornilla="Plana de una camara" 
     return [Capacidad_Hornilla, Cant_Pailas, Tipo_Hornilla]
         

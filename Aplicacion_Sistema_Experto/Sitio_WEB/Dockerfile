@@ -2,6 +2,27 @@ FROM ubuntu:18.04
 
 WORKDIR /opt/app
 
+# apt-get Utilidades del sistema
+RUN apt-get update && apt-get install -y \
+    curl apt-utils apt-transport-https debconf-utils gcc build-essential g++-5\
+    && rm -rf /var/lib/apt/lists/*
+
+# Agregar repositorio
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+RUN curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
+
+# INSTALAR libssl - required for sqlcmd to work on Ubuntu 18.04
+RUN apt-get update && apt-get install -y libssl1.0.0 libssl-dev
+
+# INSTALAR SQL Server drivers
+RUN apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql17 unixodbc-dev
+
+# INSTALAR SQL Server tools
+RUN apt-get update && ACCEPT_EULA=Y apt-get install -y mssql-tools
+RUN echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
+RUN /bin/bash -c "source ~/.bashrc"
+
+WORKDIR /opt/app
 # INSTALAR PIP
 RUN apt update && apt install -y python3-pip
 
@@ -28,7 +49,7 @@ ENV LANG en_US.UTF-8
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update \
-        && apt-get install -y --no-install-recommends \
+        && apt-get install -y --no-install-recommends --fix-missing\
                  littler \
          r-base \
          r-base-dev \
@@ -50,14 +71,18 @@ RUN apt-get install -y texlive-latex-extra
 RUN apt-get install texlive-lang-spanish
 RUN apt-get install -y unixodbc-dev
 
+#INSTALACION DE FREETDS
+RUN apt-get install -y unixodbc-dev freetds-dev freetds-bin tdsodbc
+
 #INSTALACIÓN DE PAQUETES
 COPY requirements.txt /opt/app/requirements.txt
 RUN pip3 install -r requirements.txt
 
 #Correr python
+COPY odbcinst.ini /etc/odbcinst.ini
 COPY __pycache__ /opt/app/__pycache__
-COPY instance /opt/app/instance 
-COPY otros /opt/app/otros 
+#COPY instance /opt/app/instance 
+#COPY otros /opt/app/otros 
 COPY static /opt/app/static 
 COPY templates /opt/app/templates 
 COPY COL_adm1.sf.rds /opt/app/COL_adm1.sf.rds 

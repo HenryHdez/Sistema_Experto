@@ -25,11 +25,10 @@
 
 {% block content %}
         <h1 class="display-4">USUARIOS REGISTRADOS</h1>
+        <hr class="hr-titulo">
         <p align="justify" class="lead">Está sección contiene información relacionada con los usuarios que han usado la aplicación.</p>
         <hr class="my-4"> 
-        <!--Comente la línea del formulario descomentada y descomente la siguiente para su ejecución en docker-->
-        <form action = "http://127.0.0.1:5000/borrar2" method = "POST">
-        <!--<form action = "http://localhost:7000/borrar2" method = "POST">-->   
+        <form action = "http://localhost:7000/borrar2" method = "POST">   
             <table align="center">
                 <tr align="center">
                     <th style="width:450px" align="center"> <b>Nombre</b> </th>
@@ -38,10 +37,10 @@
                     <th style="width:450px" align="center"> <b>Pais</b> </th>
                     <th style="width:450px" align="center"> <b>Departamento</b> </th>
                     <th style="width:450px" align="center"> <b>Ciudad</b> </th>
-                    <th style="width:450px" align="center"> <b>Usuario</b> </th>
-                    <th style="width:450px" align="center"> <b>Pailas</b> </th>
-                    <th style="width:450px" align="center"> <b>Ducto</b> </th>
-                    <th style="width:450px" align="center"> <b>Cálculos</b> </th>
+                    <!--<th style="width:450px" align="center"> <b>Usuario</b> </th>-->
+                    <!--<th style="width:450px" align="center"> <b>Pailas</b> </th>-->
+                    <!--<th style="width:450px" align="center"> <b>Ducto</b> </th>-->
+                    <!--<th style="width:450px" align="center"> <b>Cálculos</b> </th>-->
                     <th style="width:450px" align="center"> <b>Eliminar</b> </th>
                 </tr>
     
@@ -53,10 +52,10 @@
                        <td style="width:450px" align="center"> {{Eti3a[i]}}</td>
                        <td style="width:450px" align="center"> {{Eti4[i]}}</td>
                        <td style="width:450px" align="center"> {{Eti5[i]}}</td>
-                       <td style="width:450px" align="center"> <a download="Informe_Usuario" href={{url_for('static', filename=Eti6[i])}}><img src="{{url_for('static', filename='Iconos/D1.png')}}" width="50" height="50" outline="1" border="1" style="border: 1px gray solid" border-radius= "10px"; /></a></td>
-                       <td style="width:450px" align="center"> <a download="Informe_Planos" href={{url_for('static', filename=Eti7[i])}}><img src="{{url_for('static', filename='Iconos/D2.png')}}" width="50" height="50" outline="1" border="1" style="border: 1px gray solid" border-radius= "10px"; /></a></td>
-                       <td style="width:450px" align="center"> <a download="Informe_Recinto" href={{url_for('static', filename=Eti8[i])}}><img src="{{url_for('static', filename='Iconos/D1.png')}}" width="50" height="50" outline="1" border="1" style="border: 1px gray solid" border-radius= "10px"; /></a></td>
-                       <td style="width:450px" align="center"> <a download="Informe_Calculos" href={{url_for('static', filename=Eti9[i])}}><img src="{{url_for('static', filename='Iconos/D2.png')}}" width="50" height="50" outline="1" border="1" style="border: 1px gray solid" border-radius= "10px"; /></a></td>
+                       <!--<td style="width:450px" align="center"> <a download="Informe_Usuario" href={{url_for('static', filename=Eti6[i])}}><img src="{{url_for('static', filename='Iconos/D1.png')}}" width="50" height="50" outline="1" border="1" style="border: 1px gray solid" border-radius= "10px"; /></a></td>-->
+                       <!--<td style="width:450px" align="center"> <a download="Informe_Planos" href={{url_for('static', filename=Eti7[i])}}><img src="{{url_for('static', filename='Iconos/D2.png')}}" width="50" height="50" outline="1" border="1" style="border: 1px gray solid" border-radius= "10px"; /></a></td>-->
+                       <!--<td style="width:450px" align="center"> <a download="Informe_Recinto" href={{url_for('static', filename=Eti8[i])}}><img src="{{url_for('static', filename='Iconos/D1.png')}}" width="50" height="50" outline="1" border="1" style="border: 1px gray solid" border-radius= "10px"; /></a></td>-->
+                       <!--<td style="width:450px" align="center"> <a download="Informe_Calculos" href={{url_for('static', filename=Eti9[i])}}><img src="{{url_for('static', filename='Iconos/D2.png')}}" width="50" height="50" outline="1" border="1" style="border: 1px gray solid" border-radius= "10px"; /></a></td>-->
                        <td style="width:450px" align="center"> <input type="checkbox" id="CH_{{Eti0[i]}}" name="CH_{{Eti0[i]}}"></td>
                     </tr>
                 {%endfor%}

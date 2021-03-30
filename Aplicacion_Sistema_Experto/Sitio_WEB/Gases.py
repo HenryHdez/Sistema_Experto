@@ -49,7 +49,7 @@ def Calcular_parrillas(Area_Calculada,Capacidad_Hornilla,i,Calor_suministrado,Ti
         Area_Calculada=(Longitud_Seccion*Numero_secciones_Lon)*(Ancho_seccion*Numero_secciones_An2)  
 
     #>>>>>>-------------Aqui se pone la geometría de la camara para hallar el vólumen
-    Volumen_Calculado=Calor_suministrado/300
+    Volumen_Calculado=Calor_suministrado/450 #Tener presente
     Ancho_camara=Ancho_parrilla+0.3
     Longitud_Camara=(Longitud_Seccion*Numero_secciones_Lon)+0.3
     Altura_camara=Volumen_Calculado/(Ancho_camara*Longitud_Camara)
@@ -285,7 +285,7 @@ def Q_Cedido_gas(Calor_estimado):
     Lista_Contenido=np.ones((16, Etapas))
     """Calculo de la hornilla por etapas"""   
     CSS_Cana=float(Diccionario_Entr['CSS del jugo de Caña'])
-    print(Diccionario_Entr['Temperatura del ambiente'])
+#    print(Diccionario_Entr['Temperatura del ambiente'])
     Temp_amb=float(Diccionario_Entr['Temperatura del ambiente'])
     Presion =float(Diccionario_Entr['Presión atmosférica'])/760.0
     Tension_superficial=0.05546

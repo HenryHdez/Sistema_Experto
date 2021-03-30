@@ -26,32 +26,31 @@
         
 {% block content %}
     <h1 class="display-4">FORMULARIO</h1>
+    <hr class="hr-titulo">
     <p align="justify" class="lead">Por favor, complete los siguientes campos (* indica que el campo es obligatorio).</p>
     <hr class="my-4">
-    <!--Comente la línea del formulario descomentada y descomente la siguiente para su ejecución en docker-->
-    <form action = "http://127.0.0.1:5000/informe" method = "POST">
-    <!--<form action = "http://localhost:7000/informe" method = "POST">-->
+    <form class="row" action = "http://localhost:7000/informe" method = "POST">
 
-        <table align="center">
-            <tr>
-               <td style="width:450px"> <b>Nombre de usuario o entidad*:</b> </td>
-               <td style="width:450px"> <input type = "text" name = "Nombre de usuario" placeholder="Ej. AGROSAVIA" style="width : 250px; text-align:center;" maxlength="20" required/> </td>
+        <table class="form-row">
+            <tr class="col-md-6 col-sm-12 form-group">
+               <td class="col-12"> <b>Nombre de usuario o entidad*:</b> </td>
+               <td class="col-12"> <input type = "text" name = "Nombre de usuario" placeholder="Ej. AGROSAVIA" maxlength="20" required/> </td>
             </tr>
 
-            <tr>
-               <td style="width:450px"> <b>Correo electrónico*:</b> </td>
-               <td style="width:450px"> <input type = "email" name = "Correo" maxlength="200" value="@" style="width : 250px; text-align:center;" required/> </td>
+            <tr class="col-md-6 col-sm-12 form-group">
+               <td class="col-12"> <b>Correo electrónico*:</b> </td>
+               <td class="col-12"> <input type = "email" name = "Correo" maxlength="200" value="@" required/> </td>
             </tr>
 
-            <tr>
-               <td style="width:450px"> <b>Número de contacto*:</b> </td>
-               <td style="width:450px"> <input type = "number" name = "Telefono" maxlength="10" placeholder="Ej. 3121234567" style="width : 250px; text-align:center;" required/> </td>
+            <tr class="col-md-6 col-sm-12 form-group">
+               <td class="col-12"> <b>Número de contacto*:</b> </td>
+               <td class="col-12"> <input type = "number" name = "Telefono" maxlength="10" placeholder="Ej. 3121234567" required/> </td>
             </tr>
                                                                         
-            <tr>
-                <td style="width:450px"> <b>Pais:</b> </td>
-                <td style="width:450px"> 
-                    <select id="Pais" name="Pais" style="width : 250px; text-align:center;" onchange="Ocultar_depto();">
+            <tr class="col-md-6 col-sm-12 form-group">
+                <td class="col-12"> <b>Pais:</b> </td>
+                <td class="col-12"> 
+                    <select id="Pais" name="Pais" onchange="Ocultar_depto();">
                         {% for i in paises_lista %}
                             <option value= "{{i}}">{{i}}</option>"
                         {% endfor %}
@@ -59,10 +58,10 @@
                 </td>
             </tr> 
             
-            <tr>
-                <td style="width:450px"> <b>Departamento:</b> </td>
-                <td style="width:450px"> 
-                    <select id="Deptos" name="Departamento" style="width : 250px; text-align:center;" onchange="SeleccionarDepto();">
+            <tr class="col-md-6 col-sm-12 form-group">
+                <td class="col-12"> <b>Departamento:</b> </td>
+                <td class="col-12"> 
+                    <select id="Deptos" name="Departamento" onchange="SeleccionarDepto();">
                         {% for i, valor in departamentos.items() %}
                             {% if i == 27 %}
                                 <option value= "{{valor}}" selected>{{valor}}</option>"
@@ -74,10 +73,10 @@
                 </td>
             </tr> 
              
-            <tr>
-                <td style="width:450px"> <b>Ciudad:</b> </td>
-                <td style="width:450px"> 
-                    <select id="Ciudad" name= "Ciudad" style="width : 250px; text-align:center;" onchange="Seleccionarvariedad();">
+            <tr class="col-md-6 col-sm-12 form-group">
+                <td class="col-12"> <b>Ciudad:</b> </td>
+                <td class="col-12"> 
+                    <select id="Ciudad" name= "Ciudad" onchange="Seleccionarvariedad();">
                         {% for i in provincia[27] %}
                             <option value= "{{i}}">{{i}}</option>"
                         {% endfor %}
@@ -85,134 +84,128 @@
                 </td>
             </tr> 
             
-            <tr>
-               <td style="width:450px"> <b>Área de caña sembrada (Hectáreas):</b> </td>
-               <td style="width:450px"> <input id="Area_Semb" type = "decimal" name = "Área caña sembrada" style="width : 250px; text-align:center;" value="18"  min="0.1" max="300"/> </td>
-            </tr>
-
-            <tr>
-               <td style="width:450px"> <b>Área proyectada para cultivo en los proximos 5 años (Hectáreas):</b> </td>
-               <td style="width:450px"> <input type = "number" name = "Área proyectada para cultivo en los proximos 5 años" style="width : 250px; text-align:center;" value="0"  min="0" max="300"/> </td>
+            <tr class="col-md-6 col-sm-12 form-group">
+               <td class="col-12"> <b>Altura del sitio (metros):</b> </td>
+               <td class="col-12"> <input id="Altura" type = "decimal" name = "Altura" value="1000"  min="0" max="9999"/> </td>
             </tr>
             
-            <tr>
-               <td style="width:450px"> <b>Número de moliendas al mes:</b> </td>
-               <td style="width:450px"> <input type = "number" name = "Número de moliendas al mes" style="width : 250px; text-align:center;" value="2" min="0" max="999"/> </td>
+            <tr class="col-md-6 col-sm-12 form-group">
+               <td class="col-12"> <b>Área de caña sembrada (Hectáreas):</b> </td>
+               <td class="col-12"> <input id="Area_Semb" type = "decimal" name = "Área caña sembrada" value="18"  min="0.1" max="300"/> </td>
             </tr>
 
-            <tr>
-               <td style="width:450px"> <b>Días de trabajo de la hornilla a la semana:</b> </td>
-               <td style="width:450px"> <input type = "number" name = "Días de trabajo de la hornilla a la semana" style="width : 250px; text-align:center;" value="6" min="1" max="7"/> </td>
+            <tr class="col-md-6 col-sm-12 form-group">
+               <td class="col-12"> <b>Área proyectada para cultivo en los proximos 5 años (Hectáreas):</b> </td>
+               <td class="col-12"> <input type = "number" name = "Área proyectada para cultivo en los proximos 5 años" value="0"  min="0" max="300"/> </td>
+            </tr>
+            
+            <tr class="col-md-6 col-sm-12 form-group">
+               <td class="col-12"> <b>Número de moliendas al mes:</b> </td>
+               <td class="col-12"> <input type = "number" name = "Número de moliendas al mes" value="2" min="0" max="999"/> </td>
             </tr>
 
-            <tr>
-               <td style="width:450px"> <b>Horas de trabajo de la hornilla al día:</b> </td>
-               <td style="width:450px"> <input type = "number" name = "Horas de trabajo de la hornilla al día" style="width : 250px; text-align:center;" value="12" min="1" max="24"/> </td>
+            <tr class="col-md-6 col-sm-12 form-group">
+               <td class="col-12"> <b>Días de trabajo de la hornilla a la semana:</b> </td>
+               <td class="col-12"> <input type = "number" name = "Días de trabajo de la hornilla a la semana" value="6" min="1" max="7"/> </td>
+            </tr>
+
+            <tr class="col-md-6 col-sm-12 form-group">
+               <td class="col-12"> <b>Horas de trabajo de la hornilla al día:</b> </td>
+               <td class="col-12"> <input type = "number" name = "Horas de trabajo de la hornilla al día" value="12" min="1" max="24"/> </td>
             </tr>
                                     
-            <tr>
-                <td style="width:450px"> <b>¿Utiliza fertilizante y realiza control de la maleza?</b> </td>
-                <td style="width:450px"> 
-                    <select id="Fertiliza" style="width : 250px;" onchange="Respuesta();">
+            <tr class="col-md-6 col-sm-12 form-group">
+                <td class="col-12"> <b>¿Utiliza fertilizante y realiza control de la maleza?</b> </td>
+                <td class="col-12"> 
+                    <select id="Fertiliza" onchange="Respuesta();">
                       <option value="NO">NO</option>
                       <option value="SI">SI</option>
                     </select>  
                 </td>
             </tr>
                        
-            <tr>
-                <td style="width:450px"> <b>¿Conoce las variedades de caña sembradas?</b> </td>
-                <td style="width:450px"> 
-                    <select id="Ocultaritem" style="width : 250px;" onchange="OcultarCSS();">
+            <tr class="col-md-6 col-sm-12 form-group">
+                <td class="col-12"> <b>¿Conoce las variedades de caña sembradas?</b> </td>
+                <td class="col-12"> 
+                    <select id="Ocultaritem" onchange="OcultarCSS();">
                       <option value="NO">NO</option>
                       <option value="SI">SI</option>
                     </select>  
                 </td>
             </tr>
-
-            <tr>
-                <td style="width:450px"><br/></td>
-                <td style="width:450px"><br/></td>
-            </tr>
                         
-            <tr id="Celdab1">
-                <td style="width:450px"></td>
-                <td style="width:450px"><input class="btn btn-success" type = "submit" value = "Generar informe" /></td>
+            <tr class="col-12 form-group" id="Celdab1">
+                <td class="col-12">
+                    <input class="btn btn-success button-slider" type = "submit" value = "Generar informe"/>
+                </td>
             </tr>
         </table> 
-        
-        <hr class="my-4">
 
-        <table id="Tabla1" align="center" style="visibility:hidden"> 
+        <table class="form-row" id="Tabla1" align="center" style="visibility:hidden;">
         
-            <div id="Titulo" style="visibility:hidden"><H3><b>Complete la siguiente información</b></H3></div>
+            <div id="Titulo" style="visibility:hidden;">
+                <H3>
+                    <b>Complete la siguiente información</b>
+                </H3>
+            </div>
             
-            <tr>
-               <td style="width:450px"> <br/> </td>
-               <td style="width:450px"> <br/> </td>
-            </tr>
-            
-            <tr>
-               <td style="width:450px"> <b>Variedades de caña sembrada</b> </td>
-               <td style="width:450px"> <input id="ECantidadCana" type = "number" name = "Variedades de caña sembrada" style="width : 250px; text-align:center;" value="1" min="1" max="10" onchange="CantidadCana();"/> </td>
-               <td style="width:450px"> <b>Área sembrada en el sitio</b> </td>
+            <tr class="col-md-6 col-sm-12 form-group">
+               <td class="col-12"> <b>Variedades de caña sembrada</b> </td>
+               <td class="col-12"> <input id="ECantidadCana" type = "number" name = "Variedades de caña sembrada" value="1" min="1" max="10" onchange="CantidadCana();"/> </td>
+               <td class="col-12"> <b>Área sembrada en el sitio</b> </td>
             </tr>
             
             {%for i in range(1, 11)%}                       
-                <tr>
-                    <td style="width:450px"> <b>Variedad de caña {{i}}:</b> </td>
+                <tr class="col-md-6 col-sm-12 form-group">
+                    <td class="col-12"> <b>Variedad de caña {{i}}:</b> </td>
                     
                     {%if i==1%}
-                    <td style="width:450px"> 
-                        <select id="Cana_{{i}}" style="width : 250px;" name="Variedad de Caña {{i}}" onchange="ActualizarCSS_{{i}}();">
+                    <td class="col-12"> 
+                        <select id="Cana_{{i}}" name="Variedad de Caña {{i}}" onchange="ActualizarCSS_{{i}}();">
                             {% for u in Variedad_cana_1 %}
                                 <option value= "{{loop.index}}">"{{u}}"</option>"
                             {% endfor %}
                         </select>  
                     </td>
-                    <td style="width:450px"> <input id = "Hectareas_{{i}}" type = "number" style="width : 170px; text-align:center;" value="0.5" step="0.5" min="0" max="100" onchange="Actualizar_ha();"/> ha </td>
+                    <td class="col-12"> <input id = "Hectareas_{{i}}" type = "number" value="0.5" step="0.5" min="0" max="100" onchange="Actualizar_ha();"/> ha </td>
                     
                     {%else%}
-                    <td style="width:450px"> 
-                        <select id="Cana_{{i}}" style="width : 250px;" name="Variedad de Caña {{i}}" onchange="ActualizarCSS_{{i}}();" disabled>
+                    <td class="col-12"> 
+                        <select id="Cana_{{i}}" name="Variedad de Caña {{i}}" onchange="ActualizarCSS_{{i}}();" disabled>
                             {% for u in Variedad_cana_1 %}
                                 <option value= "{{loop.index}}">"{{u}}"</option>"
                             {% endfor %}
                         </select>  
                     </td>                  
-                    <td style="width:450px"> <input id = "Hectareas_{{i}}" type = "number" style="width : 170px; text-align:center;" value="0.5" step="0.5" min="0" max="100" onchange="Actualizar_ha();" disabled/> ha </td>
+                    <td class="col-12"> <input id = "Hectareas_{{i}}" type = "number" value="0.5" step="0.5" min="0" max="100" onchange="Actualizar_ha();" disabled/> ha </td>
                     {%endif%}    
                 </tr>
             {%endfor%}
             
-            <tr>
-               <td style="width:450px"> <b>Concentración de Solidos Solubles (CSS) de la última variedad de caña seleccionada [°Brix]:</b> </td>
-               <td style="width:450px"> <input id="CSS de la caña" type = "text" name = "CSS de la caña" style="width : 250px; text-align:center;" value="19.2" disabled/> </td>
+            <tr class="col-md-6 col-sm-12 form-group">
+               <td class="col-12"> <b>Concentración de Solidos Solubles (CSS) de la última variedad de caña seleccionada [°Brix]:</b> </td>
+               <td class="col-12"> <input id="CSS de la caña" type = "text" name = "CSS de la caña" value="19.2" disabled/> </td>
             </tr>
             
-            <tr>
-                <td style="width:450px"><b>Vista previa de la última variedad de caña seleccionada:</b></td>
-                <td>
+            <tr class="col-md-6 col-sm-12 form-group">
+                <td class="col-12"><b>Vista previa de la última variedad de caña seleccionada:</b></td>
+                <td class="col-12">
                     <OBJECT id="Foto">
                         <img src="{{url_for('static', filename='/Latex/Cana/POJ2878.png')}}" width="200" height="250">
                     </OBJECT>         
                 </td>
             </tr> 
-
-            <tr>
-                <td style="width:450px"><br/></td>
-                <td style="width:450px"><br/></td>
-            </tr>
             
-            <tr>
-                <td style="width:450px"></td>
-                <td style="width:450px"><input class="btn btn-success" type = "submit" value = "Generar informe" /></td>
+            <tr class="col-12 form-group">
+                <td class="col-12">
+                    <input class="btn btn-success button-slider" type = "submit" value = "Generar informe"/>
+                </td>
             </tr>
         </table>                    
         
         <!--Rotulo oculto para almacenar las ciudades y las 
         variedades de caña temporalmente-->
-        <select id="CiudadOculto" style="visibility:hidden">
+        <select class="form-group-lg" id="CiudadOculto" style="visibility:hidden;">
             {% for j, valor in provincia.items() %}
                 {% if j == 27 %}
                     <option value= "{{valor}}" selected>{{valor}}</option>"
@@ -222,13 +215,13 @@
             {% endfor %}
         </select> 
                 
-        <select id="CanaOculto" style="visibility:hidden">
+        <select class="form-group-lg" id="CanaOculto" style="visibility:hidden;">
             {% for k in Ciudad_cana_1 %}
                 <option value= {{loop.index}}>{{k}}</option>"
             {% endfor %}
         </select> 
 
-        <input id="FertilizaOculto" name = "Usa fertilizante" type = "text" value="NO" style="visibility:hidden">
+        <input class="form-row" id="FertilizaOculto" name = "Usa fertilizante" type = "text" value="NO" style="visibility:hidden;">
         
         <!--Termina el combo oculto-->
     </form>  

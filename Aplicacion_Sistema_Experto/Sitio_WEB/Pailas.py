@@ -8,6 +8,7 @@ Created on Mon Apr 13 08:53:50 2020
 from Costos_funcionamiento import Fondo
 #Librerás para la generación de contenido
 import math
+import numpy
 import random
 import time
 import os
@@ -37,7 +38,6 @@ def Unir_Informe(nombre, ruta_carp, borrar_F):
     from shutil import rmtree
     listaPdfs = os.listdir(ruta_carp)
     listaPdfs=sorted(listaPdfs)
-    print(listaPdfs)
     merger = PdfFileMerger()
     if(borrar_F!=2 and borrar_F!=3):
         for file in listaPdfs:
@@ -155,7 +155,7 @@ def Dimensiones_parrilla(Ancho_seccion, Longitud_Seccion, Secciones_totales, Anc
     Dimensiones_Camara.append(Longitud_Camara)
     Dimensiones_Camara.append(Altura_camara)
     
-def Dibujar_planta(Vector_Entrada, Tipo_Hornilla, Etapas, Nombres_Ubicaciones, Capacidad_hornilla, Altura_UP, Ancho_UP):
+def Dibujar_planta(Vector_Entrada, Tipo_Hornilla, Etapas, Nombres_Ubicaciones, Capacidad_hornilla, Altura_UP, Ancho_UP, Lista_Falcas):
     global Dimensiones_Pailas
     global Dimensiones_Camara
 #    print(Dimensiones_Pailas)
@@ -176,47 +176,61 @@ def Dibujar_planta(Vector_Entrada, Tipo_Hornilla, Etapas, Nombres_Ubicaciones, C
             canvas.setPageSize((970,628))
             canvas.drawImage('static/Vistas/Otros/Formato.png', 0, 0, width=970, height=628)  
         #>>>>>>>>>>>>>>>----------------------------Vista superior----------------------<<<<<<<<<<<<<<<<<<<<<
-        Espacio=700/Etapas
-        Desplazamiento=215
+        Espacio=650/Etapas
+        Desplazamiento=170
         if(inter==0):
             for i in range (Etapas):
                 #Dibujar Parte superior y selección de camáras
                 canvas.drawImage('static/Vistas/Ductos/Pared_superior.png', Desplazamiento-40, 270, width=Espacio*0.4, height=Espacio*0.6)        
                 canvas.drawImage('static/Vistas/Ductos/Pared_superior.png', 815, 270, width=Espacio*0.4, height=Espacio*0.6)
                 Desplazamiento=Desplazamiento+Espacio-10
-        Espacio=700/Etapas
-        Desplazamiento=215
+        if(Etapas==6):
+            Espacio=650/Etapas
+            Desplazamiento=200
+            Escala_F=0.6
+            Escala_F2=1
+        elif(Etapas==5):
+            Espacio=625/Etapas
+            Desplazamiento=220
+            Escala_F=0.625
+            Escala_F2=1
+        elif(Etapas==7):
+            Espacio=660/Etapas
+            Desplazamiento=190
+            Escala_F=0.6
+            Escala_F2=1.1
         for i in range (Etapas):
             if(inter==0):
+                Nombre_ducto='static/Vistas/Ductos/'+'Ladrillos.png'
                 if Vector_Entrada[i][0]==1:
-                    Nombre_ducto='static/Vistas/Ductos/'+'Dplana_superior.png'
+                    #Nombre_ducto='static/Vistas/Ductos/'+'Dplana_superior.png'
                     if Vector_Entrada[i][1]==True:
                         Nombre_Paila='static/Vistas/Superior/'+'Plana_con_aletas.png'
                     else:
                         Nombre_Paila='static/Vistas/Superior/'+'Plana_sin_aletas.png'
                 elif Vector_Entrada[i][0]==2: 
-                    Nombre_ducto='static/Vistas/Ductos/'+'Dplana_superior.png'
+                    #Nombre_ducto='static/Vistas/Ductos/'+'Dplana_superior.png'
                     if Vector_Entrada[i][1]==True:
                         Nombre_Paila='static/Vistas/Superior/'+'Pirotubular_circular_con_aletas.png'
                     else:
                         Nombre_Paila='static/Vistas/Superior/'+'Pirotubular_circular_sin_aletas.png'
                 elif Vector_Entrada[i][0]==3:
-                    Nombre_ducto='static/Vistas/Ductos/'+'Dsemiesferica_superior.png'
+                    #Nombre_ducto='static/Vistas/Ductos/'+'Dsemiesferica_superior.png'
                     Nombre_Paila='static/Vistas/Superior/'+'Semiesferica.png' 
                 elif Vector_Entrada[i][0]==4:
-                    Nombre_ducto='static/Vistas/Ductos/'+'Dsemicilindrica_superior.png'
+                    #Nombre_ducto='static/Vistas/Ductos/'+'Dsemicilindrica_superior.png'
                     if Vector_Entrada[i][1]==True:
                         Nombre_Paila='static/Vistas/Superior/'+'Semicilindrica_con_aletas.png'
                     else:
                        Nombre_Paila='static/Vistas/Superior/'+'Semicilindrica_sin_aletas.png'
                 elif Vector_Entrada[i][0]==5:
-                    Nombre_ducto='static/Vistas/Ductos/'+'Dplana_superior.png'
+                    #Nombre_ducto='static/Vistas/Ductos/'+'Dplana_superior.png'
                     if Vector_Entrada[i][1]==True:
                         Nombre_Paila='static/Vistas/Superior/'+'Pirotubular_cuadrada_con_aletas.png'
                     else:
                         Nombre_Paila='static/Vistas/Superior/'+'Pirotubular_cuadrada_sin_aletas.png'
                 elif Vector_Entrada[i][0]==6:
-                    Nombre_ducto='static/Vistas/Ductos/'+'Dplana_superior.png'
+                    #Nombre_ducto='static/Vistas/Ductos/'+'Dplana_superior.png'
                     if Vector_Entrada[i][1]==True:
                         Nombre_Paila='static/Vistas/Superior/'+'Cuadrada_acanalada_con_aletas.png'
                     else:
@@ -224,27 +238,28 @@ def Dibujar_planta(Vector_Entrada, Tipo_Hornilla, Etapas, Nombres_Ubicaciones, C
                     
             if(Tipo_Hornilla=='Plana de una camara'):
                 if(inter==0):
-                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea1_superior.png', 840, 271, width=Espacio*0.8, height=Espacio*0.75)
-                    canvas.drawImage('static/Vistas/Camaras/Plana2_superior.png', 45, 270, width=Espacio*1.4, height=Espacio*0.6)        
+                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea1_superior.png', 830, 271, width=Espacio*0.8, height=Espacio*0.75)
+                    canvas.drawImage('static/Vistas/Camaras/Plana2_superior.png', 37, 270, width=Espacio*1.4*Escala_F2, height=Espacio*Escala_F)        
             elif(Tipo_Hornilla=='Plana de dos camaras'):
                 if(inter==0):
-                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea1_superior.png', 840, 271, width=Espacio*0.8, height=Espacio*0.75)
-                    canvas.drawImage('static/Vistas/Camaras/Doble_superior.png', 45, 153, width=Espacio*1.2, height=Espacio*1.6)         
+                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea1_superior.png', 830, 271, width=Espacio*0.8, height=Espacio*0.75)
+                    canvas.drawImage('static/Vistas/Camaras/Doble_superior.png', 37, 153, width=Espacio*1.2*Escala_F2, height=Espacio*(Escala_F+1))         
             elif(Tipo_Hornilla=='Ward cimpa'):
                 if(inter==0):
-                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea1_superior.png', 840, 271, width=Espacio*0.8, height=Espacio*0.75)
-                    canvas.drawImage('static/Vistas/Camaras/Cimpa_superior.png', 45, 270, width=Espacio*1.4, height=Espacio*0.6)
+                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea1_superior.png', 830, 271, width=Espacio*0.8, height=Espacio*0.75)
+                    canvas.drawImage('static/Vistas/Camaras/Cimpa_superior.png', 37, 270, width=Espacio*1.4*Escala_F2, height=Espacio*Escala_F)
             elif(Tipo_Hornilla=='Mini-ward'):
                 if(inter==0):
-                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea1_superior.png', 840, 271, width=Espacio*0.8, height=Espacio*0.75)
-                    canvas.drawImage('static/Vistas/Camaras/Ward_superior.png', 45, 270, width=Espacio*1.4, height=Espacio*0.6)
+                    canvas.drawImage('static/Vistas/Chimeneas/Chimenea1_superior.png', 830, 271, width=Espacio*0.8, height=Espacio*0.75)
+                    canvas.drawImage('static/Vistas/Camaras/Ward_superior.png', 37, 270, width=Espacio*1.4*Escala_F2, height=Espacio*Escala_F)
             if(inter==0):
-                canvas.drawImage(Nombre_ducto, Desplazamiento, 270, width=Espacio*0.6, height=Espacio*0.6) 
-                canvas.drawImage(Nombre_Paila, Desplazamiento, 270, width=Espacio*0.6, height=Espacio*0.6)
+                canvas.drawImage(Nombre_ducto, Desplazamiento-9, 270, width=Espacio, height=Espacio*Escala_F) 
+                canvas.drawImage(Nombre_ducto, Desplazamiento+9, 270, width=Espacio, height=Espacio*Escala_F) 
+                canvas.drawImage(Nombre_Paila, Desplazamiento, 270, width=Espacio*0.6, height=Espacio*Escala_F)
                 #Melotera
                 canvas.setFont('Helvetica-Bold', 14)
-                canvas.drawString(790, 420, 'Paila: Melotera')                
-                canvas.drawImage('static/Vistas/Superior/'+'Plana_sin_aletas.png', 800, 340, width=Espacio*0.6, height=Espacio*0.6)
+                canvas.drawString(760, 245, 'Paila: Melotera')                
+                canvas.drawImage('static/Vistas/Superior/'+'Plana_sin_aletas.png', 770, 270, width=Espacio*Escala_F, height=Espacio*Escala_F)
                 #>>>>>>>
                 canvas.setFont('Helvetica-Bold', 14)
                 canvas.drawString(Desplazamiento+12, 245, 'Paila: '+str(i+1))   
@@ -286,7 +301,7 @@ def Dibujar_planta(Vector_Entrada, Tipo_Hornilla, Etapas, Nombres_Ubicaciones, C
                 canvas.drawImage('static/Vistas/Camaras/Cimpa_cotas.png', 0, 0,  width=970, height=628)
                 canvas=Dibujar_Cotas_Camara(canvas,'Cámara hornilla', Dimensiones_Pailas[0][4], Dimensiones_Pailas[0][3], 2)
                 canvas.showPage()
-                canvas.drawImage('static/Vistas/Chimeneas/Chimenea2_cotas.png', 0, 0,  width=970, height=628)
+                canvas.drawImage('static/Vistas/Chimeneas/Chimenea1_cotas.png', 0, 0,  width=970, height=628)
                 canvas=Dibujar_Cotas_Chimenea(canvas,'Chimenea hornilla', Capacidad_hornilla, Altura_UP)
                 canvas.showPage()
                 canvas.drawImage('static/Vistas/Chimeneas/Valvula_1.png', 0, 0,  width=970, height=628)   
@@ -296,12 +311,12 @@ def Dibujar_planta(Vector_Entrada, Tipo_Hornilla, Etapas, Nombres_Ubicaciones, C
         elif(Tipo_Hornilla=='Mini-ward'):
             if(inter==0):
                 canvas.drawImage('static/Vistas/Camaras/Ward_cotas.png', 0, 0,  width=970, height=628)     
-                canvas=Dibujar_Cotas_Camara(canvas,'Cámara hornilla', Dimensiones_Pailas[0][4], Altura_UP,Dimensiones_Pailas[0][3], 4)
+                canvas=Dibujar_Cotas_Camara(canvas,'Cámara hornilla', Dimensiones_Pailas[0][4], Dimensiones_Pailas[0][3], 4)
                 canvas.showPage()
-                canvas.drawImage('static/Vistas/Chimeneas/Chimenea2_cotas.png', 0, 0,  width=970, height=628)
+                canvas.drawImage('static/Vistas/Chimeneas/Chimenea1_cotas.png', 0, 0,  width=970, height=628)
                 canvas=Dibujar_Cotas_Chimenea(canvas,'Chimenea hornilla', Capacidad_hornilla, Altura_UP)
                 canvas.showPage()
-                canvas.drawImage('static/Vistas/Chimeneas/Cámara hornilla_1.png', 0, 0,  width=970, height=628)   
+                canvas.drawImage('static/Vistas/Chimeneas/Valvula_1.png', 0, 0,  width=970, height=628)   
                 Dibujar_Cotas_Valvula_1(canvas,'Válvula de tiro para la chimenea', Capacidad_hornilla, Ancho_UP) 
             if(inter==1):
                 canvas.drawImage('static/Vistas/Chimeneas/Recuperador.png', 0, 0,  width=970, height=628)  
@@ -313,13 +328,15 @@ def Dibujar_planta(Vector_Entrada, Tipo_Hornilla, Etapas, Nombres_Ubicaciones, C
             canvas = canvas.Canvas("static/B3_Etapa_Planta_WEB.pdf", pagesize=letter)
             canvas.setPageSize((970,628))
             canvas.drawImage('static/Vistas/Otros/Formato.png', 0, 0, width=970, height=628)
-            Altura=Dimensiones_Camara[5]
-            Mem_A1=Altura
-            Grados_inc=0
-            for i in range(Etapas):   
-                if(i==Etapas-1):
-                    Altura=Mem_A1  
-                    Grados_inc=0
+            Altura=0.0
+            Grados_inc=0.06
+            Memoria=0.0
+            for i in range(Etapas):    
+                Grados_inc=float(math.atan(Grados_inc))
+                Falca_actual=float(Lista_Falcas[i]*1000)
+                Longitud=1300.0+Memoria+(Falca_actual/2)
+                Memoria=Memoria+Falca_actual+50
+                Altura=Dimensiones_Camara[5]-(Longitud*Grados_inc)
                 if(i>0):
                     canvas.showPage()
                 if Vector_Entrada[i][0]==1:
@@ -353,14 +370,8 @@ def Dibujar_planta(Vector_Entrada, Tipo_Hornilla, Etapas, Nombres_Ubicaciones, C
                     ruta_ladrillos_3='static/Vistas/Ductos/Dplana_ladrillos_3.png' 
                 canvas.showPage()
                 canvas.drawImage(ruta_ladrillos, 0, 0,  width=970, height=628) 
-                canvas=Dibujar_Rotulo(canvas, Nombres_Ubicaciones[i], 'Ubicación de los ladrillos')
-                
-                if(Vector_Entrada[i][0]==1 or Vector_Entrada[i][0]==2 or Vector_Entrada[i][0]==5 or Vector_Entrada[i][0]==6):
-                    Grados_inc=0.02
-                    Altura=Altura-(Altura*Grados_inc)
-                else:
-                    Grados_inc=0.3
-                    Altura=Altura-(Altura*Grados_inc)
+                canvas=Dibujar_Rotulo(canvas, Nombres_Ubicaciones[i], 'Ubicación de los ladrillos')                
+
  
                 canvas.showPage()
                 canvas.drawImage(ruta_ladrillos_2, 0, 0,  width=970, height=628) 
@@ -585,13 +596,14 @@ def Dibujar_Cotas_Camara(canvas,Nombre_Usuario, Longitud_paila_1, Ancho_paila_1,
     return canvas
         
 def Dibujar_Cotas(canvas,sel_Plano,Dimensiones, Nombre_Usuario, Altura, Grados_inc):     
-    Conv=['A','B','C','D','E','F','G','H','I','J','K','L','M','N']
+    Conv=['A','B','Z','C','D','E','F','G','H','I','J','K','L','M','N']
     Valores_Dim=[]
     a=0
     if(sel_Plano==1):        
         ruta_cotas='static/Vistas/Ductos/Dplana_cotas.png'
         Valores_Dim.append(Dimensiones[4])              #A
         Valores_Dim.append(Dimensiones[4]+120)          #B 
+        Valores_Dim.append(abs(round(Altura-Dimensiones[1])))#Z
         Valores_Dim.append(Dimensiones[2])              #C
         Valores_Dim.append(Dimensiones[2]+480)          #D 
         Valores_Dim.append(Dimensiones[3])              #E 
@@ -604,6 +616,7 @@ def Dibujar_Cotas(canvas,sel_Plano,Dimensiones, Nombre_Usuario, Altura, Grados_i
         ruta_cotas='static/Vistas/Ductos/Dsemicilindrica_cotas.png'
         Valores_Dim.append(Dimensiones[17])              #A
         Valores_Dim.append(Dimensiones[4])               #B 
+        Valores_Dim.append(abs(round(Altura-Dimensiones[1]))) #Z
         Valores_Dim.append(Dimensiones[4]+120)           #C
         Valores_Dim.append(Dimensiones[2])               #D 
         Valores_Dim.append(Dimensiones[2]+480)           #E 
@@ -614,7 +627,8 @@ def Dibujar_Cotas(canvas,sel_Plano,Dimensiones, Nombre_Usuario, Altura, Grados_i
     elif(sel_Plano==3):
         ruta_cotas='static/Vistas/Ductos/Dsemiesferica_cotas.png'
         a=2
-        Valores_Dim.append(Dimensiones[2])              #C
+        Valores_Dim.append(abs(round(Altura-Dimensiones[1]))) #Z
+        Valores_Dim.append(Dimensiones[2])                    #C
         Valores_Dim.append(120)                         #D 
         Valores_Dim.append(round(Altura))               #E 
         Valores_Dim.append(round(Altura)+120)           #F         
@@ -623,7 +637,9 @@ def Dibujar_Cotas(canvas,sel_Plano,Dimensiones, Nombre_Usuario, Altura, Grados_i
         Valores_Dim.append(Dimensiones[2]+480)          #I 
         Valores_Dim.append(Dimensiones[2]-70)           #J 
         Valores_Dim.append(Dimensiones[2])              #K 
-        Valores_Dim.append(Dimensiones[2]+480)          #L       
+        Valores_Dim.append(Dimensiones[2]+480)          #L  
+        Valores_Dim.append(120)                         #M
+        Valores_Dim.append(120)                         #N
         Valores_Dim.append(Grados_inc*100)              #Inc
     canvas.drawImage(ruta_cotas, 0, 0,  width=970, height=628)
     #Dimensiones de las cotas
@@ -822,13 +838,15 @@ def Dibujar_plano(Nombre_Sitio,Nombre_archivo,Tipo_paila,H_fl,H_fn,Ancho,L,Ho,Hc
         if Activar_Aletas==True:
             Cantidad_pailas[9]=Cantidad_pailas[9]+1
             Lista_de_pailas[9]='Cuadrada acanalada'
+            #Valores_plano[1]=Valores_plano[7]
             Crear_plano_pdf('static/Pailas/Cuadrada_acanalada_con_aletas.png', Nombre_archivo,
-                            Nombre_Sitio, 'Diagrama de una paila cuadrada acanalada con aletas', Valores_plano, [10,11,12,13,14,17],1)
+                            Nombre_Sitio, 'Diagrama de una paila cuadrada acanalada con aletas', Valores_plano, [1,10,11,12,13,14,17],1)
         else:
             Cantidad_pailas[10]=Cantidad_pailas[10]+1
             Lista_de_pailas[10]='Cuadrada acanalada SA'
+            #Valores_plano[1]=Valores_plano[7]
             Crear_plano_pdf('static/Pailas/Cuadrada_acanalada_sin_aletas.png', Nombre_archivo,
-                            Nombre_Sitio, 'Diagrama de una paila cuadrada acanalada sin aletas', Valores_plano, [7,8,9,10,11,12,13,14,17],1)     
+                            Nombre_Sitio, 'Diagrama de una paila cuadrada acanalada sin aletas', Valores_plano, [1,7,8,9,10,11,12,13,14,17],1)     
 
 
 """**************************************************************************"""
@@ -873,11 +891,11 @@ def Semicilindrica(H,Hc,A,L,Hfa,B_Aletas):
     h_Aletas=0.1
     Ang=68*math.pi/180
     #Oculto en la base
-    R=((A/2)**2+(H**2))/(2*H)
+    R=(((A/2)**2)+(H**2))/(2*H)
     d=R-A
     Teta=2*math.asin((A/2)/R)
     s=Teta*R
-    Asccil=(R**2)*(Teta)/2-((R**2)*math.sin(Teta)/2)
+    Asccil=((R**2)*(Teta)/2)-((R**2)*math.sin(Teta)/2)
     Vcil=Asccil*L
     Acil=s*L
     Rca=((R**2)+(Hc**2))/(2*Hc)
@@ -885,13 +903,13 @@ def Semicilindrica(H,Hc,A,L,Hfa,B_Aletas):
     Vca=(H/(R*2))*Vsc
     Asc=2*math.pi*Rca*Hc
     Aca=Asc*(H/(R*2))
-    x1=A+2*(Hfa/math.tan(Ang))
-    x2=(L+2*Hc)+2*(Hfa/math.tan(Ang))
+    x1=A+(2*(Hfa/math.tan(Ang)))
+    x2=(L+2*Hc)+(2*(Hfa/math.tan(Ang)))
     A1=x1*x2
-    R1=((A/2)**2+(Hc**2))/(2*Hc)
+    R1=(((A/2)**2)+(Hc**2))/(2*Hc)
     Teta1=2*math.asin((A/2)/R1)
     Ax=((R1**2)*Teta1/2)-((R1**2)*math.sin(Teta1)/2)
-    A2=A*L+2*Ax
+    A2=(A*L)+(2*Ax)
     V=(Hfa*(A1+A2+math.sqrt(A1*A2)))/3
     #No oculto en la base
     Arco=Acil+(2*Aca)
@@ -1082,7 +1100,9 @@ def Mostrar_pailas(Vol_aux, Etapas, Sitio, T_Hornilla, Cap_hornilla):
     Nombres_Ubi=[]
     Dimensiones_Pailas=[]
     Tipo_paila=[[],[]]
-    Total_pailas=6   #Diseños de pailas disponibles
+    Lista_Falcas=[]
+    Lista=[]
+    Lista2=[]
 #    Tipo_paila[0].append(1)
 #    Tipo_paila[0].append(2)
 #    Tipo_paila[0].append(3)
@@ -1107,69 +1127,139 @@ def Mostrar_pailas(Vol_aux, Etapas, Sitio, T_Hornilla, Cap_hornilla):
 #    Tipo_paila[1].append(False)
 #    Tipo_paila[1].append(False)
 #    Tipo_paila[1].append(False)
-    for i in range(Etapas-1,-1,-1):
-        if(i<4):
-            Tipo_paila[0].append(random.choice([3,4]))
+    for i in range(Etapas):
+        #<100 litros semiesferica   0.1
+        #>100 <200 semicilindrica   0.1     0.2
+        #>200 de otras              0.2
+        if(i<Etapas-3):            
+            Tipo_paila[0].append(3)
             Tipo_paila[1].append(False)
+        elif(float(Vol_aux[i])<=0.15):
+            Tipo_paila[0].append(3)
+            Tipo_paila[1].append(False)            
+        elif(float(Vol_aux[i])>0.15 and float(Vol_aux[i])<=0.3):            
+            Tipo_paila[0].append(4)
+            Tipo_paila[1].append(random.choice([True,False]))
         else:
-            Tipo_paila[0].append(random.randint(1,Total_pailas))
+            Paila_seleccionada=random.choice([1,2,5,6])
+            Tipo_paila[0].append(Paila_seleccionada)
             Tipo_paila[1].append(random.choice([True,False]))  
+                   
     """---->>>>Algoritmo de optimización (Ascenso a la colina)<<<<----"""
     for i in range(Etapas-1,-1,-1):
         f_1=10000000
         iteraciones=0
+        #Vol_aux[i]=float(Vol_aux[i])
         Volumen=float(Vol_aux[i])
+        
         #Recuerde H_fl o Hfa es lo mismo
         #Asignación de valores iniciales (variables de entrada)
+        #H_fl 300 y 600 todas
+        #A 800 y 1200 Semiesferica
+        #A 1000 y 1600 semicilidrica
+        #A 1200 y 2400
+        #L=A*1.5
+        #Las mas grandes 1 m de ancho minimo
+        
+        #H_fn semiesferica y semicilindrica 300 y 500, las demas 500
+        #Hc 160 y 200
+        H_fl = comprobar_individuo(0.30, 0.60, abs(random.uniform(0.30, 0.60)))
         if(Tipo_paila[0][i]==3):
+            Ancho_max=1.2
+            Ancho_min=0.8
+        elif(Tipo_paila[0][i]==4):
             Ancho_max=1.6
-            Ancho_min=0.75
+            Ancho_min=1.0            
         else:
-            Ancho_max=4.0
-            Ancho_min=0.6
-        H_fl = comprobar_individuo(0.50, 1.20, abs(random.uniform(0.50, 1.20)))
+            Ancho_max=2.4
+            Ancho_min=1.2
+        if(i==0):
+            Ancho_max=0.9
+            Ancho_min=0.8
         A    = comprobar_individuo(Ancho_min, Ancho_max, abs(random.uniform(Ancho_min, Ancho_max)))
         if(Tipo_paila[0][i]==3 or Tipo_paila[0][i]==4):
             Max_Fn=(A/2)-0.1
+            Min_Fn=0.3
         else:
-            Max_Fn=1.50
-        H_fn = comprobar_individuo(0.40, Max_Fn, abs(random.uniform(0.40, Max_Fn)))
-        L    = comprobar_individuo(0.80, 6.00, abs(random.uniform(0.80, 6.00)))
-        H    = comprobar_individuo(0.10, 1.20, abs(random.uniform(0.02, 1.50)))
-        Hc   = comprobar_individuo(0.16, 0.20, abs(random.uniform(0.05, 0.50)))
-        f_tem=Valor_Aptitud(Volumen,int(Tipo_paila[0][i]),H_fl,H_fn,A,L,H,Hc,bool(Tipo_paila[1][i]))
-        f=f_tem[0]
-        #Memorias temporales
+            Max_Fn=0.5
+            Min_Fn=0.4
+        H_fn  = comprobar_individuo(Min_Fn, Max_Fn, abs(random.uniform(Min_Fn, Max_Fn)))
+        L     = A*abs(random.uniform(1.2, 1.5))
+        H     = comprobar_individuo(0.10, 1.20, abs(random.uniform(0.10, 1.20)))
+        Hc    = comprobar_individuo(0.16, 0.20, abs(random.uniform(0.16, 0.20)))
+        f_tem = Valor_Aptitud(Volumen,int(Tipo_paila[0][i]),H_fl,H_fn,A,L,H,Hc,bool(Tipo_paila[1][i]))
+        f     = f_tem[0]
+
+        #Memorias temporales       
         H_fl_1 = 0
         H_fn_1 = 0
-        A_1 = 0
-        L_1 = 0
-        H_1 = 0
-        Hc_1 = 0
-        while ((0.2<f)and(iteraciones<50000)):
+        A_1    = 0
+        L_1    = 0
+        H_1    = 0
+        Hc_1   = 0        
+        primer_ite=False
+        while ((0.1<f)and(iteraciones<200000)):
             if(f_1<f):
-                H_fl = H_fl_1
-                H_fn = H_fn_1
-                A    = A_1
-                L    = L_1
-                H    = H_1
-                Hc   = Hc_1
-                f_tem=Valor_Aptitud(Volumen,int(Tipo_paila[0][i]),H_fl,H_fn,A,L,H,Hc,bool(Tipo_paila[1][i]))
-                f=f_tem[0]
-                lista_par=f_tem[1][1:10]   
-            H_fl_1 = comprobar_individuo(0.50, 1.20, abs(random.uniform(0.50, 1.20)))
-            A_1    = comprobar_individuo(Ancho_min, Ancho_max, abs(random.uniform(Ancho_min, Ancho_max)))
+                H_fl  = H_fl_1
+                H_fn  = H_fn_1
+                A     = A_1
+                L     = L_1
+                H     = H_1
+                Hc    = Hc_1
+                f_tem = Valor_Aptitud(Volumen,int(Tipo_paila[0][i]),H_fl,H_fn,A,L,H,Hc,bool(Tipo_paila[1][i]))
+                f     = f_tem[0]
+                lista_par = f_tem[1][1:10]  
+                primer_ite=True
+            n11 = numpy.random.normal(0,1) 
+            H_fl_1 = H_fl + n11
+            H_fl_1 = comprobar_individuo(0.30, 0.60, H_fl_1)            #abs(random.uniform(0.30, 0.60)))
+            n11 = numpy.random.normal(0,1) 
+            A_1    = A + n11
+            A_1    = comprobar_individuo(Ancho_min, Ancho_max, A_1)     # abs(random.uniform(Ancho_min, Ancho_max)))
             if(Tipo_paila[0][i]==3 or Tipo_paila[0][i]==4):
                 Max_Fn=(A_1/2)-0.1
+                Min_Fn=0.3
             else:
-                Max_Fn=1.50
-            H_fn_1 = comprobar_individuo(0.40, Max_Fn, abs(random.uniform(0.40, Max_Fn)))
-            L_1    = comprobar_individuo(0.80, 6.00, abs(random.uniform(0.80, 6.00)))
-            H_1    = comprobar_individuo(0.10, 1.20, abs(random.uniform(0.10, 1.20)))
-            Hc_1   = comprobar_individuo(0.16, 0.20, abs(random.uniform(0.16, 0.20)))
-            f_tem=Valor_Aptitud(Volumen,int(Tipo_paila[0][i]),H_fl_1,H_fn_1,A_1,L_1,H_1,Hc_1,bool(Tipo_paila[1][i]))
-            f_1=f_tem[0]
+                Max_Fn=0.5
+                Min_Fn=0.4
+            n11    = numpy.random.normal(0,1) 
+            H_fn_1 = H_fn + n11 
+            H_fn_1 = comprobar_individuo(Min_Fn, Max_Fn, H_fn_1)        #abs(random.uniform(0.40, Max_Fn)))
+            n11    = numpy.random.normal(0,1) 
+            L_1    = A*abs(random.uniform(1.2, 1.5))
+            n11    = numpy.random.normal(0,1) 
+            H_1    = H + n11 
+            H_1    = comprobar_individuo(0.10, 1.20, H_1)               #abs(random.uniform(0.10, 1.20)))
+            n11    = numpy.random.normal(0,1) 
+            Hc_1   = Hc + n11 
+            Hc_1   = comprobar_individuo(0.16, 0.20, Hc_1)              #abs(random.uniform(0.16, 0.20)))
+            f_tem  = Valor_Aptitud(Volumen,int(Tipo_paila[0][i]),H_fl_1,H_fn_1,A_1,L_1,H_1,Hc_1,bool(Tipo_paila[1][i]))
+            f_1    = f_tem[0]
+            if(primer_ite==True):
+                a1=int(Tipo_paila[0][i])
+                a2=H_fl
+                a3=H_fn
+                a4=A
+                a5=L
+                a6=H
+                a7=Hc
+                a8=lista_par[1]
+                a9=lista_par[2]
+                a10=lista_par[0]
+                a11=lista_par[5]
+                a12=lista_par[4]
+                a13=lista_par[6]
+                a14=lista_par[8]
+                a15=lista_par[7]
+                a16=bool(Tipo_paila[1][i])   
             iteraciones=iteraciones+1
+        #print(f)
+        #print(f_1)
+        #print(Volumen)
+        #print(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16)
+        #print(Lista2)
+        Lista.append(a2)
+        Lista2.append([a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16])                
         """--->>>Llamado a la función para esquematizar un plano en archivo pdf<<<----"""
         #lista_par[0]>>>Ang
         #lista_par[1]>>>N_Aletas_Canal ó N_Aletas
@@ -1180,33 +1270,55 @@ def Mostrar_pailas(Vol_aux, Etapas, Sitio, T_Hornilla, Cap_hornilla):
         #lista_par[6]>>>lT
         #lista_par[7]>>>N_Canales
         #lista_par[8]>>>lC
+    #print(Lista2)
+    Lista2.sort(key=lambda x: x[3])
+    Lista_Temp=[]
+    for i in range(Etapas):
+        if (Lista2[i][0]==3):
+            Lista_Temp.append(Lista2[i])
+    for i in range(Etapas):
+        if (Lista2[i][0]==4):
+            Lista_Temp.append(Lista2[i])  
+    for i in range(Etapas):
+        if (Lista2[i][0]!=3 and Lista2[i][0]!=4):
+            Lista_Temp.append(Lista2[i])
+    Lista2=Lista_Temp
+    Lista2[0], Lista2[1] = Lista2[1], Lista2[0]
+    a2=max(Lista)
+    for i in range(Etapas):
+        Lista2[i][1]=a2
+    #print(Lista2)
+    #Lista2.reverse()
+    for i in range(Etapas):
+        Lista_Falcas.append(Lista2[i][4])
+    for i in range(Etapas):       
         if(i<9):
-            Texto_etapa= "0"+str(Etapas-i)
+            Texto_etapa= "0"+str(i+1)
         else:
-            Texto_etapa= str(Etapas-i)
+            Texto_etapa= str(i+1)
         Nombres_Ubi.append(Sitio+" [Paila: "+Texto_etapa+"]")
-        Dibujar_plano(Sitio+" [Paila: "+Texto_etapa+"]","static/pdf01/B2_Etapa_"+Texto_etapa,int(Tipo_paila[0][i]),
-                      H_fl,H_fn,A,L,H,Hc,lista_par[1],lista_par[2],lista_par[0],lista_par[5],
-                      lista_par[4],lista_par[6],lista_par[8],lista_par[7],bool(Tipo_paila[1][i])
-                      )
-        Pailas_Planta.append([int(Tipo_paila[0][i]),bool(Tipo_paila[1][i]),An_g,Lo_g]) 
+        Dibujar_plano(Sitio+" [Paila: "+Texto_etapa+"]","static/pdf01/B2_Etapa_"+Texto_etapa,Lista2[i][0],
+                      Lista2[i][1],Lista2[i][2],Lista2[i][3],Lista2[i][4],Lista2[i][5],Lista2[i][6],
+                      Lista2[i][7],Lista2[i][8],Lista2[i][9],Lista2[i][10],Lista2[i][11],Lista2[i][12],
+                      Lista2[i][13],Lista2[i][14],Lista2[i][15])
+        Pailas_Planta.append([Lista2[i][0],Lista2[i][15],An_g,Lo_g]) 
         if(i==Etapas-1):
-            R_A=(H_fl+H_fn)*1000
-            R_B=(A*1000)+100
-        if(i==0):
+            R_A=(Lista2[i][1]+Lista2[i][2])*1000
+            R_B=(Lista2[i][3]*1000)+100
             #Melotera
             Dibujar_plano("Paila Melotera","static/pdf01/B2_Etapa_"+"Zelotera",1,
-                          H_fl,H_fn,A,L,H,Hc,lista_par[1],lista_par[2],lista_par[0],lista_par[5],
-                          lista_par[4],lista_par[6],lista_par[8],lista_par[7],False
-                          )
+                          Lista2[i][1],Lista2[i][2],Lista2[i][3],Lista2[i][4],Lista2[i][5],Lista2[i][6],
+                          Lista2[i][7],Lista2[i][8],Lista2[i][9],Lista2[i][10],Lista2[i][11],Lista2[i][12],
+                          Lista2[i][13],Lista2[i][14],False)
             #>>>>>>>>
         """Eliminar comentarios para probar el algoritmo de optimización"""
-        #Comprobar_diseno(Volumen,i,int(Tipo_paila[0][i]),H_fl,H_fn,A,L,H,Hc,bool(Tipo_paila[1][i]))
+        #Comprobar_diseno(float(Vol_aux[Etapas-1-i]), i, Lista2[i][0], Lista2[i][1],Lista2[i][2],Lista2[i][3],Lista2[i][4],Lista2[i][5],
+        #                 Lista2[i][6],Lista2[i][15])
+                         #int(Tipo_paila[0][i]),H_fl,H_fn,A,L,H,Hc,bool(Tipo_paila[1][i]))
         #print("________>>>>>>>>>>>>>____________")
         #print(str(iteraciones))
         #print(str(f)) 
-
-    Dibujar_planta(Pailas_Planta,T_Hornilla, sum(Cantidad_pailas), Nombres_Ubi, Cap_hornilla, R_A, R_B)    
+    Dibujar_planta(Pailas_Planta,T_Hornilla, sum(Cantidad_pailas), Nombres_Ubi, Cap_hornilla, R_A, R_B, Lista_Falcas)    
     df = pd.DataFrame([Lista_de_pailas, Cantidad_pailas])
     df.to_excel('static/Temp/Temp2.xlsx')
     Cantidad_pailas=[0,0,0,0,0,0,0,0,0,0,0]
