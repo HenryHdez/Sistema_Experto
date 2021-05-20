@@ -29,8 +29,8 @@
     <hr class="hr-titulo">
     <p align="justify" class="lead">Por favor, complete los siguientes campos (* indica que el campo es obligatorio).</p>
     <hr class="my-4">
-    <form class="row" action = "http://localhost:7000/informe" method = "POST">
-
+    <!--<form class="row" action = "http://localhost:7000/informe" method = "POST">-->
+        <form class="row" action = "http://sistemapanela.agrosavia.co:7000/informe" method = "POST">
         <table class="form-row">
             <tr class="col-md-6 col-sm-12 form-group">
                <td class="col-12"> <b>Nombre de usuario o entidad*:</b> </td>
@@ -100,18 +100,28 @@
             </tr>
             
             <tr class="col-md-6 col-sm-12 form-group">
-               <td class="col-12"> <b>Número de moliendas al mes:</b> </td>
-               <td class="col-12"> <input type = "number" name = "Número de moliendas al mes" value="2" min="0" max="999"/> </td>
+               <td class="col-12"> <b>¿Cada cuanto va a realizar una molienda? (días):</b> </td>
+               <td class="col-12"> <input type = "number" name = "¿Cada cuanto va a realizar una molienda? (días)" value="16" min="15" max="20"/> </td>
             </tr>
 
             <tr class="col-md-6 col-sm-12 form-group">
-               <td class="col-12"> <b>Días de trabajo de la hornilla a la semana:</b> </td>
-               <td class="col-12"> <input type = "number" name = "Días de trabajo de la hornilla a la semana" value="6" min="1" max="7"/> </td>
+               <td class="col-12"> <b>Meses de trabajo por año:</b> </td>
+               <td class="col-12"> <input type = "number" name = "Meses de trabajo por año" value="12" min="1" max="12"/> </td>
             </tr>
 
             <tr class="col-md-6 col-sm-12 form-group">
-               <td class="col-12"> <b>Horas de trabajo de la hornilla al día:</b> </td>
-               <td class="col-12"> <input type = "number" name = "Horas de trabajo de la hornilla al día" value="12" min="1" max="24"/> </td>
+               <td class="col-12"> <b>Semanas de trabajo por mes:</b> </td>
+               <td class="col-12"> <input type = "number" name = "Semanas de trabajo por mes" value="2" min="1" max="4"/> </td>
+            </tr>
+
+            <tr class="col-md-6 col-sm-12 form-group">
+               <td class="col-12"> <b>Días de trabajo de la hornilla por semana:</b> </td>
+               <td class="col-12"> <input type = "decimal" name = "Días de trabajo de la hornilla por semana" value="5.5" min="1" max="7"/> </td>
+            </tr>
+
+            <tr class="col-md-6 col-sm-12 form-group">
+               <td class="col-12"> <b>Horas de trabajo de la hornilla por día:</b> </td>
+               <td class="col-12"> <input type = "number" name = "Horas de trabajo de la hornilla por día" value="12" min="1" max="24"/> </td>
             </tr>
                                     
             <tr class="col-md-6 col-sm-12 form-group">

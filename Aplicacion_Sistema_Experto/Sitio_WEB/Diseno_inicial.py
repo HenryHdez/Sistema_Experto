@@ -128,21 +128,25 @@ def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
     #Área de caña sembrada para el calculo
     Crecimiento=float(Diccionario['Área proyectada para cultivo en los proximos 5 años'])
     Crecimiento=Crecimiento+float(Diccionario['Área caña sembrada'])
-    Area_cana_calculo=(Crecimiento+float(Diccionario['Área caña sembrada']))/2
-    Cana_esperada_hectarea=float(Diccionario['Caña producida por hectárea (t/ha)'])
+    Area_cana_calculo=Crecimiento
+    
+    Cana_esperada_hectarea=float(Diccionario['Rendimiento de caña (t/ha)'])
+    
     P_vegetativo=float(Diccionario['Periodo vegetativo'])
-    #Caña molida al mes = Area sembrada de caña para calculo*Caña esperada por hectarea/Periodo vegetativo
-    Cana_molida_mes=(Area_cana_calculo*Cana_esperada_hectarea)/P_vegetativo
+    # Caña molida al mes = Area sembrada de caña para calculo*Caña esperada por hectarea/Periodo vegetativo
+    Cana_molida_mes=(Area_cana_calculo*Cana_esperada_hectarea)/(P_vegetativo)
     # Area cosechada al mes = Caña esperada por hectarea/Caña molida al mes
     Area_Cosechada_mes=Cana_molida_mes/Cana_esperada_hectarea
     #Caña molida a la semana = Caña molida al mes/numero de moliendas
     Cana_molida_semana=Cana_molida_mes/float(Diccionario['Número de moliendas al mes'])
     #Caña molida por hora = Caña molida a la semana/Dias de trabajo*Horas al dia
-    Cana_molida_hora=Cana_molida_semana/(float(Diccionario['Días de trabajo de la hornilla a la semana'])*float(Diccionario['Horas de trabajo de la hornilla al día']))
+    Cana_molida_hora=Cana_molida_semana/(float(Diccionario['Días de trabajo de la hornilla por semana'])*float(Diccionario['Horas de trabajo de la hornilla por día']))
     #Jugo Crudo=Caña molida por hora*porcentaje de extraccion
     Jugo_Crudo=Cana_molida_hora*Porcentaje_extraccion
     #Jugo Clarificado=Jugo_Crudo-((Jugo_Crudo*Bagacillo en Prelimpiador+((Jugo_Crudo-(Jugo_Crudo*Bagacillo en Prelimpiador))*(Cachaza))
-    Jugo_Clarificado=Jugo_Crudo-((Jugo_Crudo*Bagazillo_Prelimpiador+((Jugo_Crudo-(Jugo_Crudo*Bagazillo_Prelimpiador))*(Cachaza))))
+    Jugo_Clarificado=Jugo_Crudo-(((Jugo_Crudo*Bagazillo_Prelimpiador)+(Jugo_Crudo*Cachaza))*Jugo_Crudo)
+
+    #Jugo_Clarificado=Jugo_Crudo-((Jugo_Crudo*Bagazillo_Prelimpiador+((Jugo_Crudo-(Jugo_Crudo*Bagazillo_Prelimpiador))*(Cachaza))))
     #Masa de panela=((Jugo_Clarificado*CSS de la caña))/CCS de la panela)*1000
     CSS_Cana=float(Diccionario['Grados Brix de la caña (promedio)']) *0.6
     CSS_Panela=float(Diccionario['Grados Brix de la panela (promedio)'])
@@ -150,7 +154,7 @@ def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
     #Capacidad del molino=constante*caña molida hora*1000
     Capacidad_molino=Cana_molida_hora*1.3*1000
     #Capacidad de la hornilla=Masa de panela
-    Capacidad_Hornilla=Masa_panela
+    Capacidad_Hornilla=Masa_panela*1.61
     #Normalización de la capacidad de la hornilla
     Mem_Fre=Diccionario['Nivel freático'].split()
     ############>>>>>>>>-----------<<<<<<<<<<<
@@ -209,9 +213,11 @@ def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
     """>>>>>>>>>>>>>>>>Eficiencia<<<<<<<<<<<<<<<<<<<<<<<"""
     Eficiencia=(Total_Etapa/Calor_Suministrado)*100
     if(Eficiencia>40):
-        Eficiencia=random.randint(35, 41)
+        Eficiencia=random.randint(35, 41) 
+    
     """Ampliación del diccionario"""
-    Etiquetas=['DATOS DE ENTRADA',
+    Etiquetas=[
+               'DATOS DE ENTRADA',
                'Capacidad estimada de la hornilla',			
                'Factor de consumo de bagazo',
                'Tipo de hornilla',
@@ -230,7 +236,7 @@ def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
                'Temperatura del ambiente',			
                'Humedad inicial bagazo',			
                'Presión atmosférica',			
-               'Temperatura de ebullición del agua',
+               'Temperatura de ebullición del agua',  
                'CAPACIDAD MOLINO',
                'Caña molida al mes',	
                'Área cosechada al mes',		
@@ -281,7 +287,8 @@ def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
                'Total(F.L.) [kW]'
                ]
     
-    Valores=['DATOS DE ENTRADA',
+    Valores=[           
+            'DATOS DE ENTRADA',
              math.ceil(Capacidad_Hornilla),
              round(Factor_consumo_bagazo,3),
              Tipo_Hornilla,

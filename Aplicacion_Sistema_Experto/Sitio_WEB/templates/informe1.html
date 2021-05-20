@@ -6,7 +6,9 @@
         <table align="center">
         {% for i in Etiquetas %}
             <tr class="row">
-            {%if i=="Área caña sembrada"%}
+            {%if i=="Altura"%}
+            
+            {%elif i=="Área caña sembrada"%}
                <td class="col-md-6 col-sm-12"> <b>{{ i }}</b> </td>
                <td class="col-md-6 col-sm-12 mb-4"> {{ Valores[loop.index-1] }} ha </td>
             {%elif i=="Crecimiento aproximado del área sembrada"%}

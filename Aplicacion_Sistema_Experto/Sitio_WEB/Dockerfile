@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:18.04 as build
 
 WORKDIR /opt/app
 
@@ -6,21 +6,6 @@ WORKDIR /opt/app
 RUN apt-get update && apt-get install -y \
     curl apt-utils apt-transport-https debconf-utils gcc build-essential g++-5\
     && rm -rf /var/lib/apt/lists/*
-
-# Agregar repositorio
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
-RUN curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
-
-# INSTALAR libssl - required for sqlcmd to work on Ubuntu 18.04
-RUN apt-get update && apt-get install -y libssl1.0.0 libssl-dev
-
-# INSTALAR SQL Server drivers
-RUN apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql17 unixodbc-dev
-
-# INSTALAR SQL Server tools
-RUN apt-get update && ACCEPT_EULA=Y apt-get install -y mssql-tools
-RUN echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
-RUN /bin/bash -c "source ~/.bashrc"
 
 WORKDIR /opt/app
 # INSTALAR PIP

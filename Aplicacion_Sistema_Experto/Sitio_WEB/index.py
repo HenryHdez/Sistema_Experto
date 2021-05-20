@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """----Definición de las librerías requeridas para la ejecución de la aplicación---"""
 from flask import Flask, request, render_template        #Interfaz gráfica WEB
+##from flask_socketio import SocketIO
 from difflib import SequenceMatcher as SM                #Detección de secuencias en estructuras de texto
 from werkzeug.utils import secure_filename               #Encriptar información archivos de pdf
 from email.mime.multipart import MIMEMultipart           #Creación del cuerpo del correo electrónico 1
@@ -26,6 +27,8 @@ import Gases                                             #Calculo de las propied
 
 #Generación de la interfaz WEB
 app = Flask(__name__)
+#app.config['SERVER_NAME']='Misitio.com:5000'
+#socketio = SocketIO(app)
 #Creación de directorio temporal para almacenar archivos
 uploads_dir = os.path.join(app.instance_path, 'uploads')
 try:
@@ -67,6 +70,7 @@ def usua():
     global Nivel_Calidad
     global Nivel_brpane 
     global Cana_ha
+    global Periodo
     df             = pd.read_json("static/Catalogos/Colombia.json")
     paises         = pd.read_excel("static/Catalogos/Paises.xlsx", engine='openpyxl') 
     cana           = pd.read_excel("static/Catalogos/Variedades.xlsx", engine='openpyxl')
@@ -82,6 +86,7 @@ def usua():
     Nivel_Calidad  = cana['Calidad'].values 
     Nivel_brpane   = cana['BrPanela'].values
     Cana_ha        = cana['ProduccionCana'].values
+    Periodo        = cana['Periodo'].values
     Variedad_cana  = []
     for i in range(0, len(Deptos_cana)):
         if(i==0):
@@ -118,7 +123,6 @@ def generar_valores_informe():
     global result
     global altura_media
     global NivelFre
-    global Diccionario
     global Formulario_1_Etiquetas
     global Formulario_1_Valores
     global Formulario_2_Etiquetas
@@ -184,9 +188,10 @@ def generar_valores_informe():
     Formulario_2a_Etiquetas=[]
     Formulario_2a_Valores=[]
     Directorio =[]
-    G_brix_cana=0.0;
-    G_brix_panela=0.0;    
-    ha_cana_conta=0.0;
+    G_brix_cana=0.0
+    G_brix_panela=0.0
+    ha_cana_conta=0.0
+    Periodo_v=0
     for contacana in range(1,cantidadcanas):
         try:
             Valor_cana_buscar='Variedad de Caña '+str(contacana)
@@ -213,20 +218,32 @@ def generar_valores_informe():
             G_brix_panela=G_brix_panela+float(Nivel_brpane[index])
             Directorio.append('Cana/'+Tipo_cana[index]+'.png')
             ha_cana_conta=ha_cana_conta+float(Cana_ha[index])
+            Periodo_v=float(Periodo[index])+Periodo_v
         except:
             print("Variedad no disponible")
+        ha_cana_conta_p=ha_cana_conta/(cantidadcanas-1)
+        Periodo_v=Periodo_v/(cantidadcanas-1)
     #FORMULARIO 1
     #Agregar caña esperada por ha
+    #=(Hectareas*L*12/periodo vegetativo)*Factor correccion
+    Factor_Correccion=0.5
     if(a['Usa fertilizante']=='NO'):
-        ha_cana_conta=round((ha_cana_conta/cantidadcanas)*0.5,3)
+        Factor_Correccion=0.5
     else:
-        ha_cana_conta=round((ha_cana_conta/cantidadcanas)*0.8,3)
-    Formulario_1_Etiquetas.append('Caña producida por hectárea (t/ha)')
-    Formulario_1_Valores.append(str(ha_cana_conta))
+        Factor_Correccion=0.8
+   
+    ha_cana_conta_2=ha_cana_conta_p*Factor_Correccion
+
+    Formulario_1_Etiquetas.append('Rendimiento de caña (t/ha)')
+    Formulario_1_Valores.append(str(ha_cana_conta_2))
     #Determinar periodo vegetativo
     Formulario_1_Etiquetas.append('Periodo vegetativo')
-    Formulario_1_Valores.append(str(round(math.exp((altura_media+5518.9)/2441.1),0)))
-    Diccionario=dict(zip(Formulario_1_Etiquetas,Formulario_1_Valores))  
+    Formulario_1_Valores.append(str(Periodo_v))
+    #Formulario_1_Valores.append(str(round(math.exp((altura_media+5518.9)/2441.1),0)))
+    Formulario_1_Etiquetas.append('Número de moliendas al mes')
+    Numero_Moliendas=30/(float(result.get('¿Cada cuanto va a realizar una molienda? (días)'))+4)
+    Formulario_1_Valores.append(str(Numero_Moliendas))  
+          
     #FORMULARIO 2
     #Exportar variedades de caña seleccionadas
     datos_temp=[Formulario_2_Etiquetas,Formulario_2_Valores]
@@ -242,13 +259,60 @@ def generar_valores_informe():
     Formulario_2a_Valores.append(G_brix_cana)
     Formulario_2a_Etiquetas.append('Grados Brix de la panela (promedio)')
     Formulario_2a_Valores.append(G_brix_panela)    
+
+
+    '''>>>>>>>>---------------Excel-------------<<<<<<<<'''
+    #Área de caña sembrada para el calculo
+    Crecimiento=float(result.get('Área proyectada para cultivo en los proximos 5 años'))
+    Crecimiento=Crecimiento+float(result.get('Área caña sembrada'))
+    
+    Produccion_anual_cana=(Crecimiento*12*ha_cana_conta_2)/Periodo_v
+    Produccion_jugo_crudo=60*Produccion_anual_cana/100#ha_cana_conta_2
+    Jugo_clarificado=Produccion_jugo_crudo-(Produccion_anual_cana*6/100)
+    Cachaza_por_ano=Produccion_jugo_crudo*6/100
+    Melto_ano=Cachaza_por_ano*0.55
+    Panela_anual=G_brix_cana*Jugo_clarificado/G_brix_panela
+    Panela_Mensual=Panela_anual/float(result.get('Meses de trabajo por año'))
+    Panela_Semanal=Panela_Mensual/float(result.get('Semanas de trabajo por mes'))
+    Panela_diaria=(Panela_Semanal/float(result.get('Días de trabajo de la hornilla por semana')))*1000
+    
+    Panela_Hora=Panela_diaria/float(result.get('Horas de trabajo de la hornilla por día'))
+    Cana_molida=(Produccion_anual_cana/(float(result.get('Meses de trabajo por año'))*
+                                       float(result.get('Semanas de trabajo por mes'))*
+                                       float(result.get('Días de trabajo de la hornilla por semana'))*
+                                       float(result.get('Horas de trabajo de la hornilla por día'))))*1000
+    Formulario_1_Etiquetas.append('Producción anual de caña esperada [t]')
+    Formulario_1_Valores.append(str(round(Produccion_anual_cana))) 
+    Formulario_1_Etiquetas.append('Producción anual de jugo crudo [t]')
+    Formulario_1_Valores.append(str(round(Produccion_jugo_crudo))) 
+    Formulario_1_Etiquetas.append('Producción anual de jugo clatificado [t]')
+    Formulario_1_Valores.append(str(round(Jugo_clarificado))) 
+    Formulario_1_Etiquetas.append('Cachaza por año [t]')
+    Formulario_1_Valores.append(str(round(Cachaza_por_ano)))
+    Formulario_1_Etiquetas.append('Melto por año [t]')
+    Formulario_1_Valores.append(str(round(Melto_ano))) 
+    Formulario_1_Etiquetas.append('Producción de panela anual [t]')
+    Formulario_1_Valores.append(str(round(Panela_anual))) 
+    Formulario_1_Etiquetas.append('Producción de panela mensual [t]')
+    Formulario_1_Valores.append(str(round(Panela_Mensual))) 
+    Formulario_1_Etiquetas.append('Producción de panela semanal [t]')
+    Formulario_1_Valores.append(str(round(Panela_Semanal))) 
+    Formulario_1_Etiquetas.append('Producción de panela diaria [kg]')
+    Formulario_1_Valores.append(str(round(Panela_diaria))) 
+    Formulario_1_Etiquetas.append('Panela producida por hora [kg]')
+    Formulario_1_Valores.append(str(round(Panela_Hora)))     
+    Formulario_1_Etiquetas.append('Caña molida [kg/hora]')
+    Formulario_1_Valores.append(str(round(Cana_molida)))   
+    
+    """----------->>>>Actualización de diccionarios<<<<<<<<<<--------"""
+    Diccionario=dict(zip(Formulario_1_Etiquetas,Formulario_1_Valores))
     Dict_aux=dict(zip(Formulario_2a_Etiquetas,Formulario_2a_Valores))
-    Diccionario.update(Dict_aux)
+    Diccionario.update(Dict_aux)  
     """------------>>>>>>>>>>HORNILLA<<<<<<<<<<<<<<<<----------------"""
     """Calculo de la hornilla"""
     Diccionario   = Diseno_inicial.datos_entrada(Diccionario,0,0)
     Diccionario_2 = Diseno_inicial.Calculo_por_etapas(Diccionario)
-
+    
     """Estimar propiedades de los gases"""
     Gases.Optimizacion(Diccionario,Diccionario_2)
     """Optimizar tamaño de las pailas"""
@@ -285,16 +349,16 @@ def generar_valores_informe():
     Diccionario_3=dict(zip(Formulario_3_Etiquetas,Formulario_3_Valores))
     """Analisis financiero"""
     Costos_funcionamiento.Variables(float(Diccionario['Capacidad estimada de la hornilla']),
-                                    float(Diccionario['Horas de trabajo de la hornilla al día']), 
-                                    float(Diccionario['Días de trabajo de la hornilla a la semana']), 
+                                    float(Diccionario['Horas de trabajo de la hornilla por día']), 
+                                    float(Diccionario['Días de trabajo de la hornilla por semana']), 
                                     float(Diccionario['Número de moliendas al mes']),
                                     float(Diccionario['Caña molida al mes']))
     Costos_funcionamiento.costos()
     
     """Generar portada"""
-    Eficiencia_hornilla="20" #Cambiar
+    Eficiencia_hornilla="20" #Cambiar 
     Doc_latex.Documento_Latex.portada(Diccionario,Eficiencia_hornilla,Diccionario['Tipo de hornilla'])
-    Doc_latex.Documento_Latex.seccion1(Diccionario,Diccionario_2)
+    Doc_latex.Documento_Latex.seccion1(Diccionario, Diccionario_2)
     Doc_latex.Documento_Latex.generar_pdf()
     sleep(1)
     """Creación del pdf"""
@@ -427,7 +491,6 @@ def infor():
     #Continuar ejecución
     if request.method == 'POST':
         result = request.form
-#        print(result)
         generar_valores_informe()
         return render_template('informe.html') 
 
@@ -437,11 +500,12 @@ def Operaciones_db(Operacion, usuarios):
     r_b=[]
     Cadena_sql= "DELETE FROM Clientes WHERE ID IN "
     try:
-        cnxn = pyodbc.connect(driver='FreeTDS', 
+        cnxn = pyodbc.connect(driver='FreeTDS',
                       host='172.16.11.44\MSSQL2016DSC', 
                       database='SistemaExpertoPanela', 
                       user='WebSisExpPanela', 
                       password='sIuusnOsE9bLlx7g60Mz')
+        #pyodbc.connect(driver='FreeTDS',#driver='FreeTDS',
         cursor = cnxn.cursor()
         #Consulta
         if(Operacion==0):               
@@ -648,5 +712,4 @@ def contac_rta():
 
 #Función principal    
 if __name__ == '__main__':
-    #app.run(debug=True, host='0.0.0.0', port='7000')
     app.run(host='0.0.0.0', port='7000')

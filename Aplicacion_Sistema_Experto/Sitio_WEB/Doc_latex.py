@@ -57,10 +57,10 @@ class Documento_Latex():
                     Parrafo= ('Con base en la información suministrada, está aplicación propone (ver Sección 1) la construcción de una hornilla '+
                               T_Hornilla+' con capacidad de '+ str(Diccionario['Capacidad estimada de la hornilla']) +' kg/h'+' (la eficiencia estimada de la hornilla es del '+ str(round(Diccionario['Eficiencia de la hornilla']))+'%). '+'; adecuada para el procesamiento de hasta '+
                               str(Diccionario['Área cosechada al mes'])+
-                              ' ha'+' de caña, con una producción de '+ str(round(float(Diccionario['Caña molida al mes'])))+
+                              ' ha'+' de caña, con una producción de panela '+ str(round(float(Diccionario['Producción de panela mensual [t]'])))+
                               ' t/mes y un periodo vegetativo de '+ str(Diccionario['Periodo vegetativo'])+' meses. Teniendo en cuenta que'+
                               ' se realizan '+str(Diccionario['Número de moliendas al mes'])+' moliendas al mes se estableció una jornada laboral de '+
-                              str(Diccionario['Días de trabajo de la hornilla a la semana'])+ ' días a la semana de '+str(Diccionario['Horas de trabajo de la hornilla al día'])+ ' horas laborables cada una.'+
+                              str(Diccionario['Días de trabajo de la hornilla por semana'])+ ' días a la semana de '+str(Diccionario['Horas de trabajo de la hornilla por día'])+ ' horas laborables cada una.'+
                               '\n Además, la aplicación estima que para garantizar una operación apropiada de la hornilla '+
                               ' se requiere de un área disponible de al menos '+str(round(Diccionario['Capacidad estimada de la hornilla']*4.3))+' m²'
                               )
@@ -152,13 +152,14 @@ class Documento_Latex():
     def seccion1(D1, D2):
         global doc
         '''>>>>>>>>>>>>>>>Presentación de los datos de usuario<<<<<<<<<<<<<<<<<'''        
-        doc = Documento_Latex.titulos_I (doc, 'DATOS DEL USUARIO')         
+        doc = Documento_Latex.titulos_I (doc, 'DATOS DEL USUARIO PARA GENERAR EL INFORME')   
         with doc.create(Tabular('lccccl')) as table:
             for i in D1:
                 if(str(i)=='DATOS DE ENTRADA'):
                     break
                 else:
-                    if((SM(None, 'Variedad de Caña', i).ratio()<0.85) and
+                    if((SM(None, 'Altura', i).ratio()<0.85) and
+                       (SM(None, 'Variedad de Caña', i).ratio()<0.85) and
                        (SM(None, 'Usa fertilizante', i).ratio()<0.85) and
                        (SM(None, 'Grados Brix de la panela (promedio)', i).ratio()<0.85) and
                        (SM(None, '--', str(D1[i])).ratio()<0.85)):
@@ -182,6 +183,14 @@ class Documento_Latex():
                             T1=str(D1[i])+" t/semana" 
                         elif (str(i)=='Caña molida por Hora'):
                             T1=str(D1[i])+" t/hora"
+                        elif (str(i)=='Área cosechada al mes'):
+                            T1=str(D1[i]*12)+" L/año"
+                        elif (str(i)=='Caña molida al año'):
+                            T1=str(D1[i])+" t/año"
+                        elif (str(i)=='Jugo producido al año'):
+                            T1=str(D1[i])+" t/año"
+                        elif (str(i)=='Bagazo secado al año'):
+                            T1=str(D1[i])+" t/año"
                         table.add_row((bold(str(i)), ' ', ' ', ' ', ' ',T1))
         doc.append(NewPage())
         
