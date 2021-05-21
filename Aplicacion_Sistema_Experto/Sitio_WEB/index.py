@@ -90,9 +90,9 @@ def usua():
     Variedad_cana  = []
     for i in range(0, len(Deptos_cana)):
         if(i==0):
-            Variedad_cana.append(Tipo_cana[i]+", -Valor por defecto-, °Brix= "+str(Grados_Bx[i]))
+            Variedad_cana.append(Tipo_cana[i]+", -Valor por defecto-, rendimiento= "+str(Cana_ha[i])+ ", periodo vegetativo= "+str(Periodo[i]))
         else:
-            Variedad_cana.append(Tipo_cana[i]+", Disponible en: "+Deptos_cana[i]+"-"+Ciudad_cana[i]+", °Brix= "+str(Grados_Bx[i]))
+            Variedad_cana.append(Tipo_cana[i]+", Disponible en: "+Deptos_cana[i]+"-"+Ciudad_cana[i]+", rendimiento= "+str(Cana_ha[i])+ ", periodo vegetativo= "+str(Periodo[i]))
     return render_template('usuario.html', 
                            paises_lista=paises['Nombre'],
                            departamentos=df.departamento, 
@@ -157,7 +157,7 @@ def generar_valores_informe():
         amsnm=amsnm.tolist()
         H2O=df.aguasubterranea
         H2O=H2O.tolist()
-        altura_media=int(result.get('Altura'))#amsnm[D_aux.index(Dept)]
+        altura_media=float(result.get('Altura'))#amsnm[D_aux.index(Dept)]
         #print(altura_media)
         NivelFre=H2O[D_aux.index(Dept)]
         Nombre_Rot="Hornilla: "+a['Nombre de usuario']+" ("+a['Departamento']+'-'+a['Ciudad']+")"
