@@ -5,14 +5,14 @@
         <a class="nav-link" href="/">Principal</a>
       </li>
       <li class="nav-item active">
-        <a class="nav-link" href="usuario">Aplicación<span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="usuario">Formulario<span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link disabled" href="informe1" aria-disabled="true">Informe</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link disabled" href="presentar" aria-disabled="true">Mapas</a>
-      </li>
+      <!--<li class="nav-item">-->
+      <!--<a class="nav-link disabled" href="presentar" aria-disabled="true">Mapas</a>-->
+      <!--</li>-->
       <li class="nav-item">
         <a class="nav-link" href="contacto">Contacto</a>
       </li>
@@ -29,26 +29,26 @@
     <hr class="hr-titulo">
     <p align="justify" class="lead">Por favor, complete los siguientes campos (* indica que el campo es obligatorio).</p>
     <hr class="my-4">
-    <form class="row" action = "http://localhost:7000/informe" method = "POST">
-    <!--    <form class="row" action = "http://sistemapanela.agrosavia.co:7000/informe" method = "POST">-->
+     <!--<form class="row" action = "http://localhost:7000/informe" method = "POST">-->
+     <form class="row" action = "http://sistemapanela.agrosavia.co:7000/informe" method = "POST">
         <table class="form-row">
             <tr class="col-md-6 col-sm-12 form-group">
-               <td class="col-12"> <b>Nombre de usuario o entidad*:</b> </td>
+               <td class="col-12"> <p> <b>Nombre de usuario o entidad*:</b> </p> </td>
                <td class="col-12"> <input type = "text" name = "Nombre de usuario" placeholder="Ej. AGROSAVIA" maxlength="20" required/> </td>
             </tr>
 
             <tr class="col-md-6 col-sm-12 form-group">
-               <td class="col-12"> <b>Correo electrónico*:</b> </td>
+               <td class="col-12"> <p> <b>Correo electrónico*:</b> </p> </td>
                <td class="col-12"> <input type = "email" name = "Correo" maxlength="200" value="@" required/> </td>
             </tr>
 
             <tr class="col-md-6 col-sm-12 form-group">
-               <td class="col-12"> <b>Número de contacto*:</b> </td>
+               <td class="col-12"> <p> <b>Número de contacto*:</b> </p> </td>
                <td class="col-12"> <input type = "number" name = "Telefono" maxlength="10" placeholder="Ej. 3121234567" required/> </td>
             </tr>
                                                                         
             <tr class="col-md-6 col-sm-12 form-group">
-                <td class="col-12"> <b>Pais:</b> </td>
+                <td class="col-12"> <p> <b>Pais:</b> </p> </td>
                 <td class="col-12"> 
                     <select id="Pais" name="Pais" onchange="Ocultar_depto();">
                         {% for i in paises_lista %}
@@ -59,7 +59,7 @@
             </tr> 
             
             <tr class="col-md-6 col-sm-12 form-group">
-                <td class="col-12"> <b>Departamento:</b> </td>
+                <td class="col-12"> <p> <b>Departamento:</b> </p> </td>
                 <td class="col-12"> 
                     <select id="Deptos" name="Departamento" onchange="SeleccionarDepto();">
                         {% for i, valor in departamentos.items() %}
@@ -74,7 +74,7 @@
             </tr> 
              
             <tr class="col-md-6 col-sm-12 form-group">
-                <td class="col-12"> <b>Ciudad:</b> </td>
+                <td class="col-12"> <p> <b>Ciudad:</b> </p> </td>
                 <td class="col-12"> 
                     <select id="Ciudad" name= "Ciudad" onchange="Seleccionarvariedad();">
                         {% for i in provincia[27] %}
@@ -85,47 +85,51 @@
             </tr> 
             
             <tr class="col-md-6 col-sm-12 form-group">
-               <td class="col-12"> <b>Altura del sitio (800 a 1800 metros sobre el nivel del mar):</b> </td>
+               <td class="col-12"> <p> <b>Altura del sitio (800 a 1800 metros sobre el nivel del mar):</b> </p> </td>
                <td class="col-12"> <input id="Altura" type = "number" name = "Altura" value="1000" step="0.5" min="800" max="1800"/> </td>
             </tr>
             
             <tr class="col-md-6 col-sm-12 form-group">
-               <td class="col-12"> <b>Área de caña sembrada (Hectáreas):</b> </td>
+               <td class="col-12"> <p> <b>Área de caña sembrada (Hectáreas):</b> </p> </td>
                <td class="col-12"> <input id="Area_Semb" type = "number" name = "Área caña sembrada" value="18" step="0.5" min="10" max="80" onchange="Actualizar_caja()"/> </td>
             </tr>
 
             <tr class="col-md-6 col-sm-12 form-group">
-               <td class="col-12"> <b>Área proyectada para cultivo en los proximos 5 años (Hectáreas):</b> </td>
-               <td class="col-12"> <input type = "number" name = "Área proyectada para cultivo en los proximos 5 años" value="0" step="0.5"  min="0" max="10"/> </td>
+               <td class="col-12"> <p> <b>Área proyectada para cultivo en los proximos 5 años (Hectáreas):</b> </p> </td>
+               <td class="col-12"> <input type = "number" name = "Área proyectada para cultivo en los proximos 5 años" value="0" step="0.5"  min="0" max="80"/> </td>
             </tr>
             
             <tr class="col-md-6 col-sm-12 form-group">
-               <td class="col-12"> <b>¿Cada cuanto va a realizar una molienda? (días 1 a 340):</b> </td>
-               <td class="col-12"> <input type = "number" name = "¿Cada cuanto va a realizar una molienda? (días)" value="16" min="1" max="340"/> </td>
+               <td class="col-12"> <p id="Molidastexto"> <b>¿Cada cuantos días quiere moler? (días 1 a 24):</p> </h6> </td>
+               <td class="col-12"> <input id="Molienda" type = "number" name = "¿Cada cuantos días quiere moler? (días)" value="16" min="1" max="24" onchange="Estimar_Molienda()"/> </td>
             </tr>
 
             <tr class="col-md-6 col-sm-12 form-group">
-               <td class="col-12"> <b>Meses de trabajo por año (1 a 12):</b> </td>
-               <td class="col-12"> <input id="meses_ano" type = "number" name = "Meses de trabajo por año" step="0.5" value="12" min="1" max="12"/> </td>
+               <td class="col-12"> <p style="color:#FF0000"><b id="meses_ano_2" hidden=true>El parámetro asignado desborda la capacidad del sistema; se sugiere el asignado de forma automática (Meses de trabajo por año).</b></p></td>
+               <td class="col-12"> <p> <b id="meses_ano_1">Meses de trabajo por año (1 a 12):</b>  </p> </td>
+               <td class="col-12"> <input id="meses_ano" type = "number" name = "Meses de trabajo por año" step="1" value="12" min="1" max="12" onchange="Estimar_dias_w()"/> </td>
             </tr>
 
             <tr class="col-md-6 col-sm-12 form-group">
-               <td class="col-12"> <b>Semanas de trabajo por mes (1 a 4):</b> </td>
-               <td class="col-12"> <input id="semanas_mes" type = "number" name = "Semanas de trabajo por mes" step="0.5" value="4" min="1" max="4"/> </td>
+               <td class="col-12"> <p style="color:#FF0000"><b id="semanas_mes_2" hidden=true>El parámetro asignado desborda la capacidad del sistema; se sugiere el asignado de forma automática (Semanas de trabajo por mes).</b></p></td>
+               <td class="col-12"> <p> <b  id="semanas_mes_1">Numero de moliendas al año:</b> </p> </td>
+               <td class="col-12"> <input id="semanas_mes" type = "number" name = "Número de moliendas al año" step="1" value="17" min="1" max="100"/> </td>
             </tr>
 
             <tr class="col-md-6 col-sm-12 form-group">
-               <td class="col-12"> <b>Días de trabajo de la hornilla por semana (3 a 7):</b> </td>
-               <td class="col-12"> <input id="dias_semana" type = "number" name = "Días de trabajo de la hornilla por semana" step="0.5" value="5.5" step="0.5" min="3" max="7"/> </td>
+               <td class="col-12"> <p style="color:#FF0000"><b id="dias_semana_2" hidden=true>El parámetro asignado desborda la capacidad del sistema; se sugiere el asignado de forma automática (Dias de trabajo a la semana).</b></p></td>
+               <td class="col-12"> <p> <b id="dias_semana_1">Días de trabajo de la hornilla por semana (3 a 7):</b> </p> </td>
+               <td class="col-12"> <input id="dias_semana" type = "number" name = "Días de trabajo de la hornilla por semana" step="0.5" value="5.5" step="0.5" min="3" max="7" onchange="Estimar_dias_w()"/> </td>
             </tr>
 
             <tr class="col-md-6 col-sm-12 form-group">
-               <td class="col-12"> <b>Horas de trabajo de la hornilla por día (12 a 24):</b> </td>
+               <td class="col-12"> <p style="color:#FF0000"><b id="horas_dia_2" hidden=true>El parámetro asignado desborda la capacidad del sistema; se sugiere el asignado de forma automática (Horas de trabajo al dia).</b></p></td>
+               <td class="col-12"> <p> <b id="horas_dia_1">Horas de trabajo de la hornilla por día (12 a 24):</b> </p> </td>
                <td class="col-12"> <input id="horas_dia" type = "number" name = "Horas de trabajo de la hornilla por día" step="0.5" value="24" min="12" max="24"/> </td>
             </tr>
                                     
             <tr class="col-md-6 col-sm-12 form-group">
-                <td class="col-12"> <b>¿Utiliza fertilizante y realiza control de la maleza?</b> </td>
+                <td class="col-12"> <p> <b>¿Utiliza fertilizante y realiza control de la maleza?</b> </p> </td>
                 <td class="col-12"> 
                     <select id="Fertiliza" onchange="Respuesta();">
                       <option value="NO">NO</option>
@@ -135,7 +139,7 @@
             </tr>
                        
             <tr class="col-md-6 col-sm-12 form-group">
-                <td class="col-12"> <b>¿Conoce las variedades de caña sembradas?</b> </td>
+                <td class="col-12"> <p> <b>¿Conoce las variedades de caña sembradas?</b> </p> </td>
                 <td class="col-12"> 
                     <select id="Ocultaritem" onchange="OcultarCSS();">
                       <option value="NO">NO</option>
@@ -383,21 +387,29 @@
                  if(coeficiente<0.09){
                      document.getElementById("Area_Semb").max=30;
                      document.getElementById("meses_ano").value=12;
-                     document.getElementById("semanas_mes").value=4;
+                     document.getElementById("semanas_mes").value=17;
                      document.getElementById("dias_semana").value=5.5;
                      document.getElementById("horas_dia").value=24;
-                     document.getElementById("meses_ano").disabled = true;
-                     document.getElementById("semanas_mes").disabled = true;
-                     document.getElementById("dias_semana").disabled = true;
-                     document.getElementById("horas_dia").disabled = true;
+                     document.getElementById("meses_ano_1").hidden = true;
+                     document.getElementById("meses_ano_2").hidden = false;
+                     document.getElementById("semanas_mes_1").hidden = true;
+                     document.getElementById("semanas_mes_2").hidden = false;
+                     document.getElementById("dias_semana_1").hidden = true;  
+                     document.getElementById("dias_semana_2").hidden = false;
+                     document.getElementById("horas_dia_1").hidden = true;                  
+                     document.getElementById("horas_dia_2").hidden = false;  
                  }
                  
                  else{
                      document.getElementById("Area_Semb").max=90;
-                     document.getElementById("meses_ano").disabled = false;
-                     document.getElementById("semanas_mes").disabled = false;
-                     document.getElementById("dias_semana").disabled = false;
-                     document.getElementById("horas_dia").disabled = false;
+                     document.getElementById("meses_ano_2").hidden = true;
+                     document.getElementById("meses_ano_1").hidden = false;
+                     document.getElementById("semanas_mes_2").hidden = true;
+                     document.getElementById("semanas_mes_1").hidden = false;
+                     document.getElementById("dias_semana_2").hidden = true;  
+                     document.getElementById("dias_semana_1").hidden = false;
+                     document.getElementById("horas_dia_2").hidden = true;                  
+                     document.getElementById("horas_dia_1").hidden = false; 
                      }
                      
                  Abririmagen(Var_cana+".png");          
@@ -417,6 +429,29 @@
               document.getElementById("Foto").appendChild(x);
 			}     
         </script>			  
+        
+        <script type="text/javascript">
+         function Estimar_dias_w(){
+              var meses=(360/document.getElementById("meses_ano").value)-Math.ceil(document.getElementById("dias_semana").value); 
+              meses = Math.floor(meses) 
+              document.getElementById("Molidastexto").innerHTML="¿Cada cuantos días quiere moler? (días 1 a "+meses+")";
+              document.getElementById("Molienda").max=parseInt(meses);
+              Estimar_Molienda();       
+			}     
+        </script>
+        
+        <script type="text/javascript">
+         function Estimar_Molienda(){
+              //Tomar valor de la cantidad que ingrese el productor
+              var molida = parseFloat(document.getElementById("Molienda").value);
+              var semes  = parseFloat(document.getElementById("dias_semana").value);
+              var meses  = parseFloat(document.getElementById("meses_ano").value);
+              var molidas_ano=Math.ceil((30/(molida+semes))*meses);
+              document.getElementById("semanas_mes").value=molidas_ano;
+              
+              //Camara WARD cuando da menos de 15        
+			}     
+        </script>
 
         <script type="text/javascript">
          function OcultarCSS(){
@@ -434,7 +469,7 @@
                   document.getElementById("Tabla1").style.visibility = "visible";
                   document.getElementById("Titulo").style.visibility = "visible";
                   document.getElementById("Celdab1").style.visibility = "hidden";
-                  document.getElementById("Area_Semb").value = "0.5";
+                  document.getElementById("Area_Semb").value = "10";
                  }                
 			}     
         </script>	
@@ -488,7 +523,7 @@
                   Numero=0.00;
               }
               if(Acumulador==0){
-                  Acumulador=0.5;
+                  Acumulador=10.0;
               }
               document.getElementById("Area_Semb").value=Acumulador.toString();                                     
 			}     

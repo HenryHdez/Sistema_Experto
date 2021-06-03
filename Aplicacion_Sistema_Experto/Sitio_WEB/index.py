@@ -14,8 +14,7 @@ from rpy2.robjects import r                              #Interfaz entre PYTHON 
 from rpy2.robjects import numpy2ri                       #Interfaz entre PYTHON y R
 from time import sleep                                   #Suspensión temporal
 import pandas as pd                                      #Gestión de archivos de texto
-import os                                                #Hereda funciones del sistema operativo para su uso en PYTHON
-import math                                              #Operaciones matemáticas                    
+import os                                                #Hereda funciones del sistema operativo para su uso en PYTHON                    
 import base64                                            #Codifica contenido en base64 para su almacenamiento en una WEB
 import pyodbc                                            #Interfaz de conexión con la base de datos
 import Doc_latex                                         #Gestión de documentos en LATEX en PYTHON debe tener preinstalado MIKTEX
@@ -159,12 +158,12 @@ def generar_valores_informe():
         H2O=H2O.tolist()
         altura_media=float(result.get('Altura'))#amsnm[D_aux.index(Dept)]
         #print(altura_media)
-        NivelFre=H2O[D_aux.index(Dept)]
+        #NivelFre='Minimo 4 metros'#H2O[D_aux.index(Dept)]
         Nombre_Rot="Hornilla: "+a['Nombre de usuario']+" ("+a['Departamento']+'-'+a['Ciudad']+")"
     else:
         a=result.to_dict() 
         altura_media=200
-        NivelFre='desde 100 m'   
+        #NivelFre='Minimo 4 metros'   
         a['Departamento']='--'
         a['Ciudad']='--'
         Nombre_Rot="Hornilla: "+a['Nombre de usuario']+" ("+a['Pais']+")"
@@ -178,8 +177,8 @@ def generar_valores_informe():
         Formulario_1_Valores.append(a[i])
     Formulario_1_Etiquetas.append('Altura media sobre el nivel del mar')
     Formulario_1_Valores.append(str(altura_media)+' m')
-    Formulario_1_Etiquetas.append('Nivel freático')
-    Formulario_1_Valores.append(str(NivelFre))    
+    Formulario_1_Etiquetas.append('Nivel freático requerido')
+    Formulario_1_Valores.append('Mínimo 4 metros')    
     """Creación de la segunda parte del diccionario"""
     a=result.to_dict()
     cantidadcanas=int(a['Variedades de caña sembrada'])+1
@@ -240,10 +239,13 @@ def generar_valores_informe():
     Formulario_1_Etiquetas.append('Periodo vegetativo')
     Formulario_1_Valores.append(str(Periodo_v))
     #Formulario_1_Valores.append(str(round(math.exp((altura_media+5518.9)/2441.1),0)))
-    Formulario_1_Etiquetas.append('Número de moliendas al mes')
-    Numero_Moliendas=30/(float(result.get('¿Cada cuanto va a realizar una molienda? (días)'))+4)
-    Formulario_1_Valores.append(str(Numero_Moliendas))  
-          
+    #Formulario_1_Etiquetas.append('Numero de moliendas al año')
+    a1=float(result.get('¿Cada cuantos días quiere moler? (días)'))
+    a2=float(result.get('Días de trabajo de la hornilla por semana'))
+    a3=float(result.get('Meses de trabajo por año'))
+    Numero_Moliendas=round((30/(a1+a2))*a3,3)
+    #Formulario_1_Valores.append(str(Numero_Moliendas))   
+      
     #FORMULARIO 2
     #Exportar variedades de caña seleccionadas
     datos_temp=[Formulario_2_Etiquetas,Formulario_2_Valores]
@@ -254,12 +256,11 @@ def generar_valores_informe():
     df1.to_excel('static/Temp/Temp5.xlsx')  
     #Grados brix promedio para publicar en el informe
     G_brix_cana=round(G_brix_cana/len(Directorio),3)       
-    G_brix_panela=round(G_brix_panela/len(Directorio),3)
+    G_brix_panela=90.5#round(G_brix_panela/len(Directorio),3)
     Formulario_2a_Etiquetas.append('Grados Brix de la caña (promedio)')
     Formulario_2a_Valores.append(G_brix_cana)
     Formulario_2a_Etiquetas.append('Grados Brix de la panela (promedio)')
     Formulario_2a_Valores.append(G_brix_panela)    
-
 
     '''>>>>>>>>---------------Excel-------------<<<<<<<<'''
     #Área de caña sembrada para el calculo
@@ -267,25 +268,27 @@ def generar_valores_informe():
     Crecimiento=Crecimiento+float(result.get('Área caña sembrada'))
     
     Produccion_anual_cana=(Crecimiento*12*ha_cana_conta_2)/Periodo_v
+    
     Produccion_jugo_crudo=60*Produccion_anual_cana/100#ha_cana_conta_2
-    Jugo_clarificado=Produccion_jugo_crudo-(Produccion_anual_cana*6/100)
-    Cachaza_por_ano=Produccion_jugo_crudo*6/100
+    Jugo_clarificado=Produccion_jugo_crudo-(Produccion_jugo_crudo*(4/100))
+    Cachaza_por_ano=Produccion_jugo_crudo*(4/100)
     Melto_ano=Cachaza_por_ano*0.55
     Panela_anual=G_brix_cana*Jugo_clarificado/G_brix_panela
-    Panela_Mensual=Panela_anual/float(result.get('Meses de trabajo por año'))
-    Panela_Semanal=Panela_Mensual/float(result.get('Semanas de trabajo por mes'))
-    Panela_diaria=(Panela_Semanal/float(result.get('Días de trabajo de la hornilla por semana')))*1000
+    Panela_Molienda=Panela_anual/Numero_Moliendas
+    #Panela_Semanal=Panela_Mensual/float(result.get('Número de moliendas al año'))
+    Panela_diaria=(Panela_Molienda/float(result.get('Días de trabajo de la hornilla por semana')))*1000
     
     Panela_Hora=Panela_diaria/float(result.get('Horas de trabajo de la hornilla por día'))
-    Cana_molida=(Produccion_anual_cana/(float(result.get('Meses de trabajo por año'))*
-                                       float(result.get('Semanas de trabajo por mes'))*
-                                       float(result.get('Días de trabajo de la hornilla por semana'))*
-                                       float(result.get('Horas de trabajo de la hornilla por día'))))*1000
+    
+    Cana_molida=(Produccion_anual_cana/(Numero_Moliendas*
+                                        float(result.get('Días de trabajo de la hornilla por semana'))*
+                                        float(result.get('Horas de trabajo de la hornilla por día'))))*1000
+                                        
     Formulario_1_Etiquetas.append('Producción anual de caña esperada [t]')
     Formulario_1_Valores.append(str(round(Produccion_anual_cana))) 
     Formulario_1_Etiquetas.append('Producción anual de jugo crudo [t]')
     Formulario_1_Valores.append(str(round(Produccion_jugo_crudo))) 
-    Formulario_1_Etiquetas.append('Producción anual de jugo clatificado [t]')
+    Formulario_1_Etiquetas.append('Producción anual de jugo clarificado [t]')
     Formulario_1_Valores.append(str(round(Jugo_clarificado))) 
     Formulario_1_Etiquetas.append('Cachaza por año [t]')
     Formulario_1_Valores.append(str(round(Cachaza_por_ano)))
@@ -293,10 +296,8 @@ def generar_valores_informe():
     Formulario_1_Valores.append(str(round(Melto_ano))) 
     Formulario_1_Etiquetas.append('Producción de panela anual [t]')
     Formulario_1_Valores.append(str(round(Panela_anual))) 
-    Formulario_1_Etiquetas.append('Producción de panela mensual [t]')
-    Formulario_1_Valores.append(str(round(Panela_Mensual))) 
-    Formulario_1_Etiquetas.append('Producción de panela semanal [t]')
-    Formulario_1_Valores.append(str(round(Panela_Semanal))) 
+    Formulario_1_Etiquetas.append('Producción de panela por molienda [t]')
+    Formulario_1_Valores.append(str(round(Panela_Molienda)))  
     Formulario_1_Etiquetas.append('Producción de panela diaria [kg]')
     Formulario_1_Valores.append(str(round(Panela_diaria))) 
     Formulario_1_Etiquetas.append('Panela producida por hora [kg]')
@@ -322,7 +323,8 @@ def generar_valores_informe():
             int(Diccionario_2['Etapas']),
             Nombre_Rot,
             Diccionario['Tipo de hornilla'],
-            Diccionario['Capacidad estimada de la hornilla']
+            Diccionario['Capacidad estimada de la hornilla'],
+            altura_media
             )
     """Presentar información del molino"""
     Formulario_3_Etiquetas=['Caña molida al mes'  , 'Área cosechada al mes', 'Caña molida a la semana',		
@@ -351,7 +353,7 @@ def generar_valores_informe():
     Costos_funcionamiento.Variables(float(Diccionario['Capacidad estimada de la hornilla']),
                                     float(Diccionario['Horas de trabajo de la hornilla por día']), 
                                     float(Diccionario['Días de trabajo de la hornilla por semana']), 
-                                    float(Diccionario['Número de moliendas al mes']),
+                                    float(Diccionario['Número de moliendas al año']),
                                     float(Diccionario['Caña molida al mes']))
     Costos_funcionamiento.costos()
     

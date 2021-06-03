@@ -340,31 +340,31 @@ def Dibujar_planta(Vector_Entrada, Tipo_Hornilla, Etapas, Nombres_Ubicaciones, C
                 if(i>0):
                     canvas.showPage()
                 if Vector_Entrada[i][0]==1:
-                    canvas=Dibujar_Cotas(canvas,1,Dimensiones_Pailas[i], Nombres_Ubicaciones[i], Altura, Grados_inc)
+                    canvas=Dibujar_Cotas(canvas,1,Dimensiones_Pailas[i], Nombres_Ubicaciones[i], Altura, Grados_inc, i)
                     ruta_ladrillos='static/Vistas/Ductos/Dplana_ladrillos.png'
                     ruta_ladrillos_2='static/Vistas/Ductos/Dplana_ladrillos_2.png'
                     ruta_ladrillos_3='static/Vistas/Ductos/Dplana_ladrillos_3.png'
                 elif Vector_Entrada[i][0]==2: 
-                    canvas=Dibujar_Cotas(canvas,1,Dimensiones_Pailas[i], Nombres_Ubicaciones[i], Altura, Grados_inc)
+                    canvas=Dibujar_Cotas(canvas,1,Dimensiones_Pailas[i], Nombres_Ubicaciones[i], Altura, Grados_inc, i)
                     ruta_ladrillos='static/Vistas/Ductos/Dplana_ladrillos.png'
                     ruta_ladrillos_2='static/Vistas/Ductos/Dplana_ladrillos_2.png'
                     ruta_ladrillos_3='static/Vistas/Ductos/Dplana_ladrillos_3.png'
                 elif Vector_Entrada[i][0]==3:
-                    canvas=Dibujar_Cotas(canvas,3,Dimensiones_Pailas[i], Nombres_Ubicaciones[i], Altura, Grados_inc)
+                    canvas=Dibujar_Cotas(canvas,3,Dimensiones_Pailas[i], Nombres_Ubicaciones[i], Altura, Grados_inc, i)
                     ruta_ladrillos='static/Vistas/Ductos/Dsemiesferica_ladrillos.png' 
                     ruta_ladrillos_2='static/Vistas/Ductos/Dsemiesferica_ladrillos_2.png'
                     ruta_ladrillos_3='static/Vistas/Ductos/Dsemiesferica_ladrillos_3.png'
                 elif Vector_Entrada[i][0]==4:
-                    canvas=Dibujar_Cotas(canvas,2,Dimensiones_Pailas[i], Nombres_Ubicaciones[i], Altura, Grados_inc)
+                    canvas=Dibujar_Cotas(canvas,2,Dimensiones_Pailas[i], Nombres_Ubicaciones[i], Altura, Grados_inc, i)
                     ruta_ladrillos='static/Vistas/Ductos/Dsemicilindrica_ladrillos.png' 
                     ruta_ladrillos_2='static/Vistas/Ductos/Dsemicilindrica_ladrillos_2.png'
                 elif Vector_Entrada[i][0]==5:
-                    canvas=Dibujar_Cotas(canvas,1,Dimensiones_Pailas[i], Nombres_Ubicaciones[i], Altura, Grados_inc)
+                    canvas=Dibujar_Cotas(canvas,1,Dimensiones_Pailas[i], Nombres_Ubicaciones[i], Altura, Grados_inc, i)
                     ruta_ladrillos='static/Vistas/Ductos/Dplana_ladrillos.png'
                     ruta_ladrillos_2='static/Vistas/Ductos/Dplana_ladrillos_2.png'
                     ruta_ladrillos_3='static/Vistas/Ductos/Dplana_ladrillos_3.png'
                 elif Vector_Entrada[i][0]==6:
-                    canvas=Dibujar_Cotas(canvas,1,Dimensiones_Pailas[i], Nombres_Ubicaciones[i], Altura, Grados_inc)
+                    canvas=Dibujar_Cotas(canvas,1,Dimensiones_Pailas[i], Nombres_Ubicaciones[i], Altura, Grados_inc, i)
                     ruta_ladrillos='static/Vistas/Ductos/Dplana_ladrillos.png'
                     ruta_ladrillos_2='static/Vistas/Ductos/Dplana_ladrillos_2.png'
                     ruta_ladrillos_3='static/Vistas/Ductos/Dplana_ladrillos_3.png' 
@@ -595,52 +595,66 @@ def Dibujar_Cotas_Camara(canvas,Nombre_Usuario, Longitud_paila_1, Ancho_paila_1,
     canvas=Dibujar_Rotulo(canvas, Nombre_Usuario, 'Dimensiones de la camára y la parrilla')  
     return canvas
         
-def Dibujar_Cotas(canvas,sel_Plano,Dimensiones, Nombre_Usuario, Altura, Grados_inc):     
+def Dibujar_Cotas(canvas,sel_Plano,Dimensiones, Nombre_Usuario, Altura, Grados_inc, conta): 
+    global Altura_snm
+    if(conta<3):
+        y_ducto=(Altura_snm*0.02)-16   
+        if(Altura_snm<800):
+            y_ducto=0
+        if(Altura_snm>1800):
+            y_ducto=20
+    else:
+        y_ducto=(Altura_snm*-0.02)+16   
+        if(Altura_snm<800):
+            y_ducto=0
+        if(Altura_snm>1800):
+            y_ducto=-20
+
     Conv=['A','B','Z','C','D','E','F','G','H','I','J','K','L','M','N']
     Valores_Dim=[]
     a=0
     if(sel_Plano==1):        
         ruta_cotas='static/Vistas/Ductos/Dplana_cotas.png'
-        Valores_Dim.append(Dimensiones[4])              #A
-        Valores_Dim.append(Dimensiones[4]+120)          #B 
-        Valores_Dim.append(abs(round(Altura-Dimensiones[1])))#Z
-        Valores_Dim.append(Dimensiones[2])              #C
-        Valores_Dim.append(Dimensiones[2]+480)          #D 
-        Valores_Dim.append(Dimensiones[3])              #E 
-        Valores_Dim.append(round(Altura))               #F       
-        Valores_Dim.append(round(Altura)+480)           #G 
-        Valores_Dim.append(Dimensiones[2]+120)          #H 
-        Valores_Dim.append(Dimensiones[2]+480)          #I  
-        Valores_Dim.append(Grados_inc*100)              #Inc
+        Valores_Dim.append(Dimensiones[4])                              #A
+        Valores_Dim.append(Dimensiones[4]+120)                          #B 
+        Valores_Dim.append(abs(round(Altura-Dimensiones[1]+y_ducto)))   #Z
+        Valores_Dim.append(Dimensiones[2])                              #C
+        Valores_Dim.append(Dimensiones[2]+480)                          #D 
+        Valores_Dim.append(Dimensiones[3])                              #E 
+        Valores_Dim.append(round(Altura+y_ducto))                       #F       
+        Valores_Dim.append(round(Altura+480+y_ducto))                   #G 
+        Valores_Dim.append(Dimensiones[2]+120)                          #H 
+        Valores_Dim.append(Dimensiones[2]+480)                          #I  
+        Valores_Dim.append(Grados_inc*100)                              #Inc
     elif(sel_Plano==2):
         ruta_cotas='static/Vistas/Ductos/Dsemicilindrica_cotas.png'
-        Valores_Dim.append(Dimensiones[17])              #A
-        Valores_Dim.append(Dimensiones[4])               #B 
-        Valores_Dim.append(abs(round(Altura-Dimensiones[1]))) #Z
-        Valores_Dim.append(Dimensiones[4]+120)           #C
-        Valores_Dim.append(Dimensiones[2])               #D 
-        Valores_Dim.append(Dimensiones[2]+480)           #E 
-        Valores_Dim.append(round(Altura)+120)            #F       
-        Valores_Dim.append(round(Altura))                #G 
-        Valores_Dim.append(Dimensiones[3])               #H 
-        Valores_Dim.append(Grados_inc*100)               #Inc
+        Valores_Dim.append(Dimensiones[17])                             #A
+        Valores_Dim.append(Dimensiones[4])                              #B 
+        Valores_Dim.append(abs(round(Altura-Dimensiones[1]+y_ducto)))   #Z
+        Valores_Dim.append(Dimensiones[4]+120)                          #C
+        Valores_Dim.append(Dimensiones[2])                              #D 
+        Valores_Dim.append(Dimensiones[2]+480)                          #E 
+        Valores_Dim.append(round(Altura+120+y_ducto))                   #F       
+        Valores_Dim.append(round(Altura+y_ducto))                       #G 
+        Valores_Dim.append(Dimensiones[3])                              #H 
+        Valores_Dim.append(Grados_inc*100)                              #Inc
     elif(sel_Plano==3):
         ruta_cotas='static/Vistas/Ductos/Dsemiesferica_cotas.png'
         a=2
-        Valores_Dim.append(abs(round(Altura-Dimensiones[1]))) #Z
-        Valores_Dim.append(Dimensiones[2])                    #C
-        Valores_Dim.append(120)                         #D 
-        Valores_Dim.append(round(Altura))               #E 
-        Valores_Dim.append(round(Altura)+120)           #F         
-        Valores_Dim.append(Dimensiones[2]-60)           #G 
-        Valores_Dim.append(Dimensiones[2]+100)          #H 
-        Valores_Dim.append(Dimensiones[2]+480)          #I 
-        Valores_Dim.append(Dimensiones[2]-70)           #J 
-        Valores_Dim.append(Dimensiones[2])              #K 
-        Valores_Dim.append(Dimensiones[2]+480)          #L  
-        Valores_Dim.append(120)                         #M
-        Valores_Dim.append(120)                         #N
-        Valores_Dim.append(Grados_inc*100)              #Inc
+        Valores_Dim.append(abs(round(Altura-Dimensiones[1]+y_ducto)))   #Z
+        Valores_Dim.append(Dimensiones[2])                              #C
+        Valores_Dim.append(120)                                         #D 
+        Valores_Dim.append(round(Altura+y_ducto))                       #E 
+        Valores_Dim.append(round(Altura+120+y_ducto))                   #F         
+        Valores_Dim.append(Dimensiones[2]-60)                           #G 
+        Valores_Dim.append(Dimensiones[2]+100)                          #H 
+        Valores_Dim.append(Dimensiones[2]+480)                          #I 
+        Valores_Dim.append(Dimensiones[2]-70)                           #J 
+        Valores_Dim.append(Dimensiones[2])                              #K 
+        Valores_Dim.append(Dimensiones[2]+480)                          #L  
+        Valores_Dim.append(120)                                         #M
+        Valores_Dim.append(120)                                         #N
+        Valores_Dim.append(Grados_inc*100)                              #Inc
     canvas.drawImage(ruta_cotas, 0, 0,  width=970, height=628)
     #Dimensiones de las cotas
     canvas.setLineWidth(0.5)
@@ -721,7 +735,6 @@ def Crear_plano_pdf(directorio_imagen, Nombre_archivo, Nombre_Usuario, Nombre_Pa
     canvas.line(830,224,830,Puntero-2)
     canvas.line(870,224,870,Puntero-2)
     canvas.line(950,224,950,Puntero-2)
-    
     #Rotulo
     Dibujar_Rotulo(canvas, Nombre_Usuario, Nombre_Paila)
     canvas.showPage() #Salto de página  
@@ -755,6 +768,7 @@ def Dibujar_plano(Nombre_Sitio,Nombre_archivo,Tipo_paila,H_fl,H_fn,Ancho,L,Ho,Hc
     global Lo_g
     #Convertir medidas en milimetros
     A=H_fl*1000                                             #0
+    A=A+1
     B=H_fn*1000                                             #1
     C=Ancho*1000                                            #2
     G=L*1000                                                #3
@@ -1090,12 +1104,14 @@ def comprobar_individuo(Lim_inf,Lim_sup,valor_actual):
 """--------->>>Función que optimiza las dimensiones de la paila a partir de los,
 pesos<<-------------""" 
 #Dimensiones de la lamina 4*10 pies o 1.21*3.04 metros (Restricción del sistema)
-def Mostrar_pailas(Vol_aux, Etapas, Sitio, T_Hornilla, Cap_hornilla):
+def Mostrar_pailas(Vol_aux, Etapas, Sitio, T_Hornilla, Cap_hornilla, altura_media):
     global Cantidad_pailas
     global Lista_de_pailas
     global Dimensiones_Pailas
     global An_g
     global Lo_g
+    global Altura_snm
+    Altura_snm=altura_media
     Pailas_Planta=[] 
     Nombres_Ubi=[]
     Dimensiones_Pailas=[]

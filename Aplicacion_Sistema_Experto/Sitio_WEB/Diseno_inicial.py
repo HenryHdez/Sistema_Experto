@@ -62,26 +62,29 @@ def Normalizar_Capacidad(Capacidad_Hornilla, Nivel_Freat):
     if (Capacidad_Hornilla<=100):
         Capacidad_Hornilla=75
         Cant_Pailas=5
-        Tipo_Hornilla="Plana de una camara"
+        if (Nivel_Freat<=15):
+            Tipo_Hornilla="Ward cimpa"
+        else: #Evaluacion Ward cimpa
+            Tipo_Hornilla="Plana de una camara"
     elif((Capacidad_Hornilla>100) and (Capacidad_Hornilla<=125)):
         Capacidad_Hornilla=125
         Cant_Pailas=6
-        if (Nivel_Freat<=100):
-            Tipo_Hornilla="Plana de una camara"
+        if (Nivel_Freat<=15):
+            Tipo_Hornilla="Ward cimpa"
         else: #Evaluacion Ward cimpa
             Tipo_Hornilla=random.choice(["Plana de una camara","Ward cimpa","Mini-ward"])      
     elif((Capacidad_Hornilla>125) and (Capacidad_Hornilla<=150)):
         Capacidad_Hornilla=150
         Cant_Pailas=6
-        if (Nivel_Freat<=100):
-            Tipo_Hornilla="Plana de una camara"
+        if (Nivel_Freat<=15):
+            Tipo_Hornilla="Ward cimpa"
         else: 
             Tipo_Hornilla=random.choice(["Plana de una camara","Ward cimpa","Mini-ward"])
     elif((Capacidad_Hornilla>150) and (Capacidad_Hornilla<=175)):
         Capacidad_Hornilla=175 
         Cant_Pailas=7
-        if (Nivel_Freat<=100):
-            Tipo_Hornilla="Plana de una camara"
+        if (Nivel_Freat<=15):
+            Tipo_Hornilla="Ward cimpa"
         else: 
             Tipo_Hornilla=random.choice(["Plana de una camara","Ward cimpa","Mini-ward"])
         ##################Sin recuperador#########
@@ -138,7 +141,7 @@ def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
     # Area cosechada al mes = Caña esperada por hectarea/Caña molida al mes
     Area_Cosechada_mes=Cana_molida_mes/Cana_esperada_hectarea
     #Caña molida a la semana = Caña molida al mes/numero de moliendas
-    Cana_molida_semana=Cana_molida_mes/float(Diccionario['Número de moliendas al mes'])
+    Cana_molida_semana=Cana_molida_mes/float(Diccionario['Número de moliendas al año'])
     #Caña molida por hora = Caña molida a la semana/Dias de trabajo*Horas al dia
     Cana_molida_hora=Cana_molida_semana/(float(Diccionario['Días de trabajo de la hornilla por semana'])*float(Diccionario['Horas de trabajo de la hornilla por día']))
     #Jugo Crudo=Caña molida por hora*porcentaje de extraccion
@@ -156,9 +159,8 @@ def datos_entrada(Diccionario,iteracion,Valor_Algoritmo):
     #Capacidad de la hornilla=Masa de panela
     Capacidad_Hornilla=Masa_panela*1.61
     #Normalización de la capacidad de la hornilla
-    Mem_Fre=Diccionario['Nivel freático'].split()
-    ############>>>>>>>>-----------<<<<<<<<<<<
-    Mem_Temp=Normalizar_Capacidad(Capacidad_Hornilla, float(Mem_Fre[1]))
+    Mem_dias=float(Diccionario['¿Cada cuantos días quiere moler? (días)'])
+    Mem_Temp=Normalizar_Capacidad(Capacidad_Hornilla, Mem_dias)
     Capacidad_Hornilla=Mem_Temp[0]
     """Cálculos para la masa de panela"""
     Masa_Jugo_Clarificado=(CSS_Panela*Capacidad_Hornilla)/CSS_Cana
@@ -367,8 +369,10 @@ def Calculo_por_etapas(Diccionario):
     Lista_Contenido=[]
     Lista_columnas=[]
      #Normalización de la capacidad de la hornilla
-    Mem_Fre=Diccionario['Nivel freático'].split()
-    Mem_Temp=Normalizar_Capacidad(float(Diccionario['Capacidad estimada de la hornilla']),float(Mem_Fre[1]))
+    Mem_dias=float(Diccionario['¿Cada cuantos días quiere moler? (días)'])
+    Mem_Temp=Normalizar_Capacidad(float(Diccionario['Capacidad estimada de la hornilla']),Mem_dias)
+    print(float(Diccionario['Capacidad estimada de la hornilla']))
+    print(Mem_Temp)
     Etapas=Mem_Temp[1]
     #Etapas=12
     #Saturador "minimo son dos etapas"
