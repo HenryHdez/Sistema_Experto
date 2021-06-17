@@ -683,7 +683,7 @@ def contac_rta():
             # Crear el objeto mensaje
             mensaje = MIMEMultipart()             
             mensaje['de']     = 'agropru1@gmail.com'       #Correo de prueba para enviar algo desde la página
-            mensaje['para']   = 'hahernandez@agrosavia.co' #Correo funcionario a cargo            
+            mensaje['para']   = 'hornillapp@agrosavia.co'  #Correo funcionario a cargo            
             #Cuerpo del mensaje
             msn = ('Este mensaje fue enviado por: '+Nombre+'\n'
                   +'Responder al correo electronico: '+Correo+'\n'
