@@ -27,10 +27,24 @@ class Documento_Latex():
         
         with doc.create(Center()) as centered:
                     centered.append(TextColor('white','HH')) 
-                    for i in range(15):
-                        centered.append(LineBreak())   
-                    centered.append(HugeText('PROPUESTA DE VALOR PARA LA CONSTRUCCIÓN DE UNA HORNILLA'))
                     for i in range(10):
+                        centered.append(LineBreak())   
+                    centered.append(HugeText('PROPUESTA DE VALOR PARA LA CONSTRUCCIÓN DE UNA HORNILLA '))
+                    centered.append(LineBreak()) 
+                    centered.append(SmallText('(Generado por HornillAPP)'))
+                    for i in range(8):
+                        centered.append(LineBreak()) 
+                    
+        with doc.create(Figure(position='h!')) as imagesRow1:
+            with doc.create(SubFigure(
+                    position='b',
+                    width=NoEscape(r'1\linewidth'))) as left_imagesRow1:
+                left_imagesRow1.add_image('IconoAPP.png')
+            imagesRow1.append(LineBreak())
+                                    
+        with doc.create(Center()) as centered:
+                    centered.append(TextColor('white','HH')) 
+                    for i in range(8):
                         centered.append(LineBreak())
                     #centered.append(VerticalSpace('50')) 
                     centered.append(LargeText('Presentado por: AGROSAVIA'))
@@ -86,9 +100,9 @@ class Documento_Latex():
 
                     Parrafo= ('\n \n Nota: Está propuesta de valor se basa en condiciones del terreno ideales y estacionarias, por lo que, '+
                               'AGROSAVIA no se hace responsable de la reproducción total o parcial del material aquí suministrado sin una aprobación '+
-                              'corporativa.')           
+                              'corporativa.')
                     tlg.append(Parrafo)
-
+                    
         doc.append(NewPage())
         
         with doc.create(MediumText(' ')) as tlg:

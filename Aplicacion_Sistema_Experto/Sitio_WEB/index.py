@@ -8,6 +8,8 @@ from werkzeug.utils import secure_filename               #Encriptar información
 from email.mime.multipart import MIMEMultipart           #Creación del cuerpo del correo electrónico 1
 from email.mime.application import MIMEApplication       #Creación del cuerpo del correo electrónico 2            
 from email.mime.text import MIMEText                     #Creación del cuerpo del correo electrónico 3
+from email.mime.base import MIMEBase
+from email import encoders
 from shutil import rmtree                                #Gestión de directorios en el servidor
 import smtplib                                           #Conexión con el servidor de correo
 from rpy2.robjects import r                              #Interfaz entre PYTHON y R
@@ -23,6 +25,7 @@ import Diseno_inicial                                    #Calculo preliminar de 
 import Costos_funcionamiento                             #Calculo del costo financiero de la hornilla
 import Pailas                                            #Calculo de las dimensiones de las pailas
 import Gases                                             #Calculo de las propiedades de los gases
+import threading
 
 #Generación de la interfaz WEB
 app = Flask(__name__)
@@ -34,6 +37,42 @@ try:
     os.makedirs(uploads_dir, True)
 except OSError: 
     print('Directorio existente')
+
+def Espera():
+    global Lista_clientes
+    global Estado_Cliente
+    i=0
+    while True:
+        sleep(15)
+        j=len(Lista_clientes)
+        print(j)
+        while j>0 and Estado_Cliente==False:
+            #Limpiar directorios de uso temporal
+            try:
+                rmtree('static/Temp')
+                os.mkdir('static/Temp')
+            except:
+                os.mkdir('static/Temp')
+            try:    
+                rmtree('static/pdf01')
+                rmtree('static/pdf02')
+                os.mkdir('static/pdf01')
+                os.mkdir('static/pdf02')
+            except:
+                os.mkdir('static/pdf01')
+                os.mkdir('static/pdf02')
+            try:
+                generar_valores_informe(Lista_clientes[0][0])
+                sleep(10)
+                Lista_clientes.pop(0)
+                sleep(10)
+                i=i+1
+            except:
+                print("Error")
+                j=0
+        j=0
+        i=0
+   
    
 '''---Funciones de direccionamiento en la interfaz WEB---'''
 #Eliminar datos cargados en cache al actualizar la página.
@@ -98,7 +137,7 @@ def usua():
                            provincia=df.ciudades,
                            Ciudad_cana_1=Ciudad_cana,
                            Variedad_cana_1=Variedad_cana,
-                           )      
+                           )   
 
 #Codificar los pdf en formato de texto plano
 def Crear_archivo_base_64(ruta):
@@ -114,12 +153,38 @@ def Leer_pdf_base64(Nombre_pdf, Texto_base64):
     with open(Nombre_pdf, 'wb') as Archivo_Normal:
         Archivo_deco = base64.decodebytes(PDF_Base64)
         Archivo_Normal.write(Archivo_deco)
-        
+
+def Enviar_msn(Correo):
+    try:
+        # Crear el objeto mensaje
+        mensaje = MIMEMultipart()             
+        mensaje['From']     = 'hornillapp@agrosavia.co'       #Correo de prueba para enviar algo desde la página
+        mensaje['To']       = Correo                          #Correo funcionario a cargo    
+        mensaje['Subject']  = 'Informe generado con HornillAPP'                       #Correo funcionario a cargo          
+        #Cuerpo del mensaje
+        msn = ('Cordial saludo.\n En este correo encontrara el resultado generado con HornillAPP a través de un informe.\n Atentamente: Equipo técnico de AGROSAVIA.')
+        mensaje.attach(MIMEText(msn, 'plain'))
+        # Adjuntar el archivo dado por el usuario
+        # Estructura para adjuntar un archivo usando flask y HTML desde la raiz del directorio      
+        archivo_adjunto = MIMEApplication(open('static/Informe.pdf',"rb").read())
+        archivo_adjunto.add_header('Content-Disposition', 'attachment', filename='Informe.pdf')
+        mensaje.attach(archivo_adjunto)
+        # Datos de acceso a la cuenta de usuario
+        usuario   ='hornillapp@agrosavia.co'
+        contrasena='Contrasena1234567@'          
+        #Interfaz de conexión con el servidor de gmail
+        servidor = smtplib.SMTP('correo.agrosavia.co:587')
+        servidor.starttls()
+        servidor.login(usuario, contrasena)
+        servidor.sendmail(mensaje['From'], mensaje['To'], mensaje.as_string())
+        servidor.quit()  
+    except:
+        print('No se pudo enviar el informe')
+    
 #Función para crear los diccionarios a partir de los calculos de la aplicación
-def generar_valores_informe():
+def generar_valores_informe(Cliente_actual):
     #----------->>>>>>>>>>>Variables globales<<<<<<<<<<<<<<<---------
     global df
-    global result
     global altura_media
     global NivelFre
     global Formulario_1_Etiquetas
@@ -145,6 +210,7 @@ def generar_valores_informe():
     global Diccionario_2
     global Diccionario_3
     global Diccionario_4
+    result=Cliente_actual
     """Creación de la primer parte del diccionario (leer del formulario de usuario)"""
     Pais_sel=result.get('Pais')
     if(Pais_sel=='Colombia'):
@@ -292,7 +358,7 @@ def generar_valores_informe():
     Formulario_1_Valores.append(str(round(Jugo_clarificado))) 
     Formulario_1_Etiquetas.append('Cachaza por año [t]')
     Formulario_1_Valores.append(str(round(Cachaza_por_ano)))
-    Formulario_1_Etiquetas.append('Melto por año [t]')
+    Formulario_1_Etiquetas.append('Melote por año [t]')
     Formulario_1_Valores.append(str(round(Melto_ano))) 
     Formulario_1_Etiquetas.append('Producción de panela anual [t]')
     Formulario_1_Valores.append(str(round(Panela_anual))) 
@@ -379,7 +445,9 @@ def generar_valores_informe():
     #            Crear_archivo_base_64("static/B3_Etapa_Planta_WEB.pdf"), 
     #            Crear_archivo_base_64("static/Calculos_WEB.pdf"))
     Operaciones_db(2,usuarios)        #Usar base de datos
-
+    sleep(1)
+    Enviar_msn(str(Diccionario['Correo']))
+    
 #Filtrar caracteres desconocidos de las cadenas de texto de los archivos temporales
 def Convertir(string): 
     li = list(string.split(",")) 
@@ -476,25 +544,38 @@ def infor1():
 @app.route('/informe', methods = ['POST','GET'])
 def infor():
     global result
+    global Lista_clientes
+    global Estado_Cliente
     #Limpiar directorios de uso temporal
-    try:
-        rmtree('static/Temp')
-        os.mkdir('static/Temp')
-    except:
-        os.mkdir('static/Temp')
-    try:    
-        rmtree('static/pdf01')
-        rmtree('static/pdf02')
-        os.mkdir('static/pdf01')
-        os.mkdir('static/pdf02')
-    except:
-        os.mkdir('static/pdf01')
-        os.mkdir('static/pdf02')
     #Continuar ejecución
     if request.method == 'POST':
         result = request.form
-        generar_valores_informe()
-        return render_template('informe.html') 
+        Lista_clientes.append([result])
+        if(len(Lista_clientes)<=1):
+            try:
+                rmtree('static/Temp')
+                os.mkdir('static/Temp')
+            except:
+                os.mkdir('static/Temp')
+            try:    
+                rmtree('static/pdf01')
+                rmtree('static/pdf02')
+                os.mkdir('static/pdf01')
+                os.mkdir('static/pdf02')
+            except:
+                os.mkdir('static/pdf01')
+                os.mkdir('static/pdf02')
+            Estado_Cliente=True
+            generar_valores_informe(Lista_clientes[0][0])
+            sleep(5)
+            Lista_clientes.pop(0)
+            sleep(5)
+            Estado_Cliente=False
+            return render_template('informe.html') 
+        else:
+            return render_template('respuesta.html', rta="El informe generado con HornillAPP llegará a su correo electrónico en una hora aproximadamente.")
+        
+        
 
 #------->>>>>>>>Operaciones básicas con la base de datos<<<<<<<<--------
 def Operaciones_db(Operacion, usuarios):
@@ -682,8 +763,9 @@ def contac_rta():
             Mensaje_HTML = request.form['mensaje_usuario']
             # Crear el objeto mensaje
             mensaje = MIMEMultipart()             
-            mensaje['de']     = 'agropru1@gmail.com'       #Correo de prueba para enviar algo desde la página
-            mensaje['para']   = 'hornillapp@agrosavia.co'  #Correo funcionario a cargo            
+            mensaje['From']     = 'hornillapp@agrosavia.co'       #Correo de prueba para enviar algo desde la página
+            mensaje['To']   = 'hornillapp@agrosavia.co'  #Correo funcionario a cargo        
+            mensaje['Subject'] = 'Información clientes'  #Correo funcionario a cargo   
             #Cuerpo del mensaje
             msn = ('Este mensaje fue enviado por: '+Nombre+'\n'
                   +'Responder al correo electronico: '+Correo+'\n'
@@ -700,13 +782,14 @@ def contac_rta():
                 mensaje.attach(archivo_pdf) 
                 os.remove(nombre_archivo_pdf)
             # Datos de acceso a la cuenta de usuario
-            usuario   ='agropru1'
-            contrasena='Agrosavia123'          
+            usuario   ='hornillapp@agrosavia.co'
+            contrasena='Contrasena1234567@'          
             #Interfaz de conexión con el servidor de gmail
-            servidor = smtplib.SMTP('smtp.gmail.com:587')
+            servidor = smtplib.SMTP('correo.agrosavia.co:587')
             servidor.starttls()
             servidor.login(usuario, contrasena)
-            servidor.sendmail(mensaje['de'], mensaje['para'], mensaje.as_string())
+            
+            servidor.sendmail(mensaje['From'], mensaje['To'], mensaje.as_string())
             servidor.quit()  
             return render_template('respuesta.html',rta="MENSAJE ENVIADO CON EXITO.")
     except:
@@ -714,4 +797,10 @@ def contac_rta():
 
 #Función principal    
 if __name__ == '__main__':
+    global Lista_clientes
+    global Estado_Cliente
+    Estado_Cliente=False
+    Lista_clientes=[]
+    t = threading.Thread(target=Espera)
+    t.start()
     app.run(host='0.0.0.0', port='7000')
